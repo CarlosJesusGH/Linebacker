@@ -34,11 +34,15 @@ import com.cmsys.linebacker.service.RecordService;
 public class MyPhoneReciever extends BroadcastReceiver { //extends DeviceAdminReceiver{//
 
     public static final String LISTEN_ENABLED = "ListenEnabled";
-    public static final String FILE_DIRECTORY = "recordedCalls";
+    //public static final String FILE_DIRECTORY = "recordedCalls";
     private String phoneNumber;
     public static final int STATE_INCOMING_NUMBER = 0;
     public static final int STATE_CALL_START = 1;
     public static final int STATE_CALL_END = 2;
+    //private static final String ACTION_IN = "android.intent.action.PHONE_STATE";
+    //private static final String ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL";
+    //
+    public boolean wasRinging = false;
 
     /*@Override
     public void onReceive(Context context, Intent intent) {
@@ -59,22 +63,27 @@ public class MyPhoneReciever extends BroadcastReceiver { //extends DeviceAdminRe
 
 
         //if (silent && MainActivity.updateExternalStorageState() == MainActivity.MEDIA_MOUNTED)
+        //if(intent.getAction().equals(ACTION_IN)){
         if(true){
             if (phoneNumber == null){
                 if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_OFFHOOK)){
-                    Toast.makeText(context, "Answered: " + phoneNumber, Toast.LENGTH_LONG).show();
-                    Intent myIntent = new Intent(context, RecordService.class);
-                    myIntent.putExtra("commandType", STATE_CALL_START);
-                    myIntent.putExtra("phoneNumber", phoneNumber);
-                    context.startService(myIntent);
+                    //if (wasRinging == true) {
+                        Toast.makeText(context, "Answered: " + phoneNumber, Toast.LENGTH_LONG).show();
+                        Intent myIntent = new Intent(context, RecordService.class);
+                        myIntent.putExtra("commandType", STATE_CALL_START);
+                        myIntent.putExtra("phoneNumber", phoneNumber);
+                        context.startService(myIntent);
+                    //}
                 }
                 else if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_IDLE)){
                     Toast.makeText(context, "Idle", Toast.LENGTH_LONG).show();
+                    //wasRinging = false;
                     Intent myIntent = new Intent(context, RecordService.class);
                     myIntent.putExtra("commandType", STATE_CALL_END);
                     context.startService(myIntent);
                 }
                 else if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING)){
+                    //wasRinging = true;
                     if (phoneNumber == null)
                         phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
                     Toast.makeText(context, "Ringing: " + phoneNumber, Toast.LENGTH_LONG).show();
@@ -83,20 +92,16 @@ public class MyPhoneReciever extends BroadcastReceiver { //extends DeviceAdminRe
                     myIntent.putExtra("phoneNumber", phoneNumber);
                     context.startService(myIntent);
                 }
-            }
-            else{
-                Toast.makeText(context, "IncomingNumber!=null: " + phoneNumber, Toast.LENGTH_LONG).show();
+            } else{
+                Toast.makeText(context, "IncomingNumber!=null: ", Toast.LENGTH_LONG).show();
                 Intent myIntent = new Intent(context, RecordService.class);
                 myIntent.putExtra("commandType", TelephonyManager.EXTRA_INCOMING_NUMBER);
                 myIntent.putExtra("phoneNumber", phoneNumber);
                 context.startService(myIntent);
             }
 
-        }
-
+        } /*else if(intent.getAction().equals(ACTION_OUT)){
+            Toast.makeText(context, "Outgoing call", Toast.LENGTH_LONG).show();
+        }*/
     }
-
-
-
-
 }
