@@ -1,8 +1,6 @@
 package com.cmsys.linebacker.util;
 
 
-		import java.util.List;
-
 		//import com.carrental.cj.androidcarrental.ManageContractsActivity;
 		import com.cmsys.linebacker.R;
 
@@ -14,17 +12,13 @@ package com.cmsys.linebacker.util;
 		import android.content.Context;
 		import android.content.Intent;
 		import android.support.v4.app.NotificationCompat;
-		import android.view.View.OnClickListener;
-		import android.view.LayoutInflater;
+				import android.view.LayoutInflater;
 		import android.view.View;
-		import android.view.Window;
-		import android.view.WindowManager;
+				import android.view.WindowManager;
 		import android.widget.Button;
 		import android.widget.EditText;
-		import android.widget.ListView;
-		import android.widget.TextView;
+				import android.widget.TextView;
 		import android.widget.Toast;
-		import android.widget.AdapterView.OnItemClickListener;
 
 public class MessageUtils extends AlertDialog{
 	public static Toast sToast;
@@ -195,7 +189,6 @@ public class MessageUtils extends AlertDialog{
 				.setAutoCancel(true);
 
 		// Creates an explicit intent for an Activity in your app
-
 		Intent resultIntent = new Intent();
 		PendingIntent resultPendingIntent = PendingIntent.getActivity(pContext, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 

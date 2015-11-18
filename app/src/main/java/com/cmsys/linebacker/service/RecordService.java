@@ -91,10 +91,11 @@ public class RecordService extends Service {
 
 
             try {
-                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
-                recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                //recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-                recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                //recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);  // Original
+                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP); // Original
+                //recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+                recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);    // Original
                 //recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
                 myFileName = getFilename();
                 recorder.setOutputFile(myFileName);
@@ -108,7 +109,7 @@ public class RecordService extends Service {
                 terminateAndEraseFile();
             }
 
-            OnErrorListener errorListener = new OnErrorListener() {
+            /*OnErrorListener errorListener = new OnErrorListener() {
 
                 public void onError(MediaRecorder arg0, int arg1, int arg2) {
                     //Log.e("Call recorder OnErrorListener: ", arg1 + "," + arg2);
@@ -133,28 +134,11 @@ public class RecordService extends Service {
                 }
 
             };
-            recorder.setOnInfoListener(infoListener);
+            recorder.setOnInfoListener(infoListener);*/
 
 
             try {
                 recorder.prepare();
-                recorder.start();
-                Toast toast = Toast.makeText(this, this.getString(R.string.reciever_start_call), Toast.LENGTH_SHORT);
-                toast.show();
-
-                //manger = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                //Notification notification = new Notification(R.drawable.ic_menu_send, this.getString(R.string.notification_ticker), System.currentTimeMillis());
-                //notification.flags = Notification.FLAG_NO_CLEAR;
-
-                //Intent intent2 = new Intent(this, AudioRecordsActivity.class);
-                //intent2.putExtra("RecordStatus", true);
-
-                //PendingIntent contentIntent = PendingIntent.getActivity(getBaseContext(), 0, intent2, 0);
-                //notification.setLatestEventInfo(this, this.getString(R.string.notification_title), this.getString(R.string.notification_text), contentIntent);
-                //manger.notify(0, notification);
-
-                //startForeground(1337, notification);
-
             } catch (IllegalStateException e) {
                 //Log.e("Call recorder IllegalStateException: ", "");
                 terminateAndEraseFile();
@@ -169,6 +153,8 @@ public class RecordService extends Service {
                 terminateAndEraseFile();
                 e.printStackTrace();
             }
+                recorder.start();   // TODO Check sometimes gives a problem here
+                Toast.makeText(this, this.getString(R.string.reciever_start_call), Toast.LENGTH_LONG).show();
         }
         else if (commandType == STATE_CALL_END)
         {
@@ -187,7 +173,7 @@ public class RecordService extends Service {
                 // Show notification
                 Date now = new Date();
                 int mNotificationId = (int) now.getTime();//use date to generate an unique id to differentiate the notifications.
-                MessageUtils.notification(this, "New Audio Recorded", myFileName, mNotificationId, AudioRecordsActivity.class);
+                MessageUtils.notification(this, this.getString(R.string.notification_new_audio_recorded), myFileName, mNotificationId, AudioRecordsActivity.class);
             } catch (IllegalStateException e) {
                 e.printStackTrace();
             }
@@ -245,9 +231,9 @@ public class RecordService extends Service {
         }
 
         String myDate = new String();
-        myDate = (String) DateFormat.format("yyyy-MM-dd_kk:mm:ss", new Date());
-
-        return (file.getAbsolutePath() + "/" + myDate + "_N-" + phoneNumber + ".mp3");
+        myDate = (String) DateFormat.format("yyyyMMdd_kkmmss", new Date());
+        return (file.getAbsolutePath() + "/" + myDate + "_" + phoneNumber + ".mp3");
+        //return (file.getAbsolutePath() + "/" + myDate + "_" + phoneNumber + ".amr");
     }
 
 }
