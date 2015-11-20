@@ -45,15 +45,18 @@ import android.widget.Toast;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.ui.AudioRecordsActivity;
+import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.ExceptionUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.firebase.client.Firebase;
 
 public class RecordService extends Service {
 
     public static final String LISTEN_ENABLED = "ListenEnabled";
-    public static final String FILE_DIRECTORY = "Linebacker/Audio";
+    public static final String FILE_DIRECTORY = CONSTANTS.FOLDER_NAME_ROOT + File.separator + CONSTANTS.FOLDER_NAME_AUDIOS;
     private MediaRecorder recorder = new MediaRecorder();
-    private String phoneNumber = null;;
+    private String phoneNumber = null;
+    private boolean recordstarted = false;
     public static final int STATE_INCOMING_NUMBER = 0;
     public static final int STATE_CALL_START = 1;
     public static final int STATE_CALL_END = 2;
@@ -103,10 +106,12 @@ public class RecordService extends Service {
             catch (IllegalStateException e) {
                 //Log.e("Call recorder IllegalStateException: ", "");
                 terminateAndEraseFile();
+                ExceptionUtils.printExceptionToFile(this, e);
             }
             catch (Exception e) {
                 //Log.e("Call recorder Exception: ", "");
                 terminateAndEraseFile();
+                ExceptionUtils.printExceptionToFile(this, e);
             }
 
             /*OnErrorListener errorListener = new OnErrorListener() {
@@ -143,29 +148,42 @@ public class RecordService extends Service {
                 //Log.e("Call recorder IllegalStateException: ", "");
                 terminateAndEraseFile();
                 e.printStackTrace();
+                ExceptionUtils.printExceptionToFile(this, e);
             } catch (IOException e) {
                 //Log.e("Call recorder IOException: ", "");
                 terminateAndEraseFile();
                 e.printStackTrace();
+                ExceptionUtils.printExceptionToFile(this, e);
             }
             catch (Exception e) {
                 //Log.e("Call recorder Exception: ", "");
                 terminateAndEraseFile();
                 e.printStackTrace();
+                ExceptionUtils.printExceptionToFile(this, e);
             }
+
+            try {
                 recorder.start();   // TODO Check sometimes gives a problem here
+                recordstarted = true;
                 Toast.makeText(this, this.getString(R.string.reciever_start_call), Toast.LENGTH_LONG).show();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+                ExceptionUtils.printExceptionToFile(this, e);
+            }
         }
         else if (commandType == STATE_CALL_END)
         {
             try {
-                recorder.stop();
-                recorder.reset();
-                recorder.release();
+                if(recordstarted) {
+                    recorder.stop();
+                    recorder.reset();
+                    recorder.release();
+                    recordstarted = false;
+                }
                 recorder = null;
                 Toast toast = Toast.makeText(this, this.getString(R.string.reciever_end_call), Toast.LENGTH_SHORT);
                 toast.show();
-                new Firebase("https://linebacker.firebaseio.com/todoItems")
+                new Firebase("https://" + CONSTANTS.FIREBASE_APP_NAME + ".firebaseio.com/todoItems")
                         .push()
                         .child("text")
                         .setValue("value: " + myFileName);
@@ -176,11 +194,19 @@ public class RecordService extends Service {
                 MessageUtils.notification(this, this.getString(R.string.notification_new_audio_recorded), myFileName, mNotificationId, AudioRecordsActivity.class);
             } catch (IllegalStateException e) {
                 e.printStackTrace();
+                ExceptionUtils.displayExceptionMessage(this, e);
+                ExceptionUtils.printExceptionToFile(this, e);
             }
-            if (manger != null)
-                manger.cancel(0);
-            stopForeground(true);
-            this.stopSelf();
+
+            try {
+                if (manger != null)
+                    manger.cancel(0);
+                stopForeground(true);
+                this.stopSelf();
+            } catch (Exception e) {
+                ExceptionUtils.displayExceptionMessage(this, e);
+                ExceptionUtils.printExceptionToFile(this, e);
+            }
         }
 
         return super.onStartCommand(intent, flags, startId);

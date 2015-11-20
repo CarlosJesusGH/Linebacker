@@ -39,7 +39,7 @@ public class MessageUtils extends AlertDialog{
 		super(pActivity);
 		pContentView = (pContentView == 0)? R.layout.util_cust_dialog : pContentView;
 		setupViews(pActivity, pTitle, pMessage, pContentView);
-		this.setView(convertView,0,0,0,0);
+		this.setView(convertView, 0, 0, 0, 0);
 		this.setCanceledOnTouchOutside(false);
 		if(isJustMessage){
 			bOk.setVisibility(View.VISIBLE);
@@ -182,42 +182,47 @@ public class MessageUtils extends AlertDialog{
 	public static void notification(Context pContext, String pTitle, String pText, int pNotificationId,
 									Class<?> pClassToStart){
 
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(pContext)
-				.setSmallIcon(R.mipmap.ic_launcher)
-				.setContentTitle(pTitle)
-				.setContentText(pText)
-				.setAutoCancel(true);
+		try {
+			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(pContext)
+					.setSmallIcon(R.mipmap.ic_launcher)
+					.setContentTitle(pTitle)
+					.setContentText(pText)
+					.setAutoCancel(true);
 
-		// Creates an explicit intent for an Activity in your app
-		Intent resultIntent = new Intent();
-		PendingIntent resultPendingIntent = PendingIntent.getActivity(pContext, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			// Creates an explicit intent for an Activity in your app
+			Intent resultIntent = new Intent();
+			PendingIntent resultPendingIntent = PendingIntent.getActivity(pContext, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-		if(pClassToStart != null){
-			resultIntent = new Intent(pContext, pClassToStart);
+			if (pClassToStart != null) {
+				resultIntent = new Intent(pContext, pClassToStart);
 
-			// The stack builder object will contain an artificial back stack for the
-			// started Activity.
-			// This ensures that navigating backward from the Activity leads out of
-			// your application to the Home screen.
-			TaskStackBuilder stackBuilder = null;
-			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-				stackBuilder = TaskStackBuilder.create(pContext);
+				// The stack builder object will contain an artificial back stack for the
+				// started Activity.
+				// This ensures that navigating backward from the Activity leads out of
+				// your application to the Home screen.
+				TaskStackBuilder stackBuilder = null;
+				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+					stackBuilder = TaskStackBuilder.create(pContext);
 
-				// Adds the back stack for the Intent (but not the Intent itself)
-				stackBuilder.addParentStack(pClassToStart);
-				// Adds the Intent that starts the Activity to the top of the stack
-				stackBuilder.addNextIntent(resultIntent);
-				resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+					// Adds the back stack for the Intent (but not the Intent itself)
+					stackBuilder.addParentStack(pClassToStart);
+					// Adds the Intent that starts the Activity to the top of the stack
+					stackBuilder.addNextIntent(resultIntent);
+					resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+				}
 			}
-		}
 
-		mBuilder.setContentIntent(resultPendingIntent);
-		NotificationManager mNotificationManager = (NotificationManager) pContext.getSystemService(Context.NOTIFICATION_SERVICE);
+			mBuilder.setContentIntent(resultPendingIntent);
+			NotificationManager mNotificationManager = (NotificationManager) pContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-		// mId allows you to update the notification later on.
+			// mId allows you to update the notification later on.
 //        mNotificationManager.notify(mId, mBuilder.build());
-		mNotificationManager.notify(pNotificationId, mBuilder.build());
+			mNotificationManager.notify(pNotificationId, mBuilder.build());
+		} catch (Exception e){
+			ExceptionUtils.displayExceptionMessage(pContext, e);
+			ExceptionUtils.printExceptionToFile(pContext, e);
+		}
 	}
 
 }
