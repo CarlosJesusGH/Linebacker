@@ -31,7 +31,7 @@ public class CONSTANTS {
 
     //---Firebase------------------
     public static String FIREBASE_APP_NAME = "linebacker";
-
+    public static String FIREBASE_APP_URL = "https://" + CONSTANTS.FIREBASE_APP_NAME + ".firebaseio.com/";
     //-----------------------------
 
     public static String FOLDER_NAME_LOGS = "Log";

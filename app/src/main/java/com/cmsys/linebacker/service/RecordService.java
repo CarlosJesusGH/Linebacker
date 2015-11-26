@@ -19,6 +19,7 @@ package com.cmsys.linebacker.service;
     along with Call recorder For Android.  If not, see <http://www.gnu.org/licenses/>
  */
 
+import android.net.Uri;
 import android.widget.Toast;
 
         import java.io.File;
@@ -63,6 +64,7 @@ public class RecordService extends Service {
 
     private NotificationManager manger;
     private String myFileName;
+    public static boolean wasRinging = false;
 
 
     @Override
@@ -89,12 +91,24 @@ public class RecordService extends Service {
         }
         else if (commandType == STATE_CALL_START)
         {
+
+            /*try {
+                Intent intentCall = new Intent(Intent.ACTION_CALL);
+                //Intent intentCall = new Intent(Intent.ACTION_DIAL);
+                intentCall.setData(Uri.parse("tel:0414-5458521"));
+                intentCall.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intentCall.addFlags(Intent.FLAG_FROM_BACKGROUND);
+                startActivity(intentCall);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }*/
+
             if (phoneNumber == null)
                 phoneNumber = intent.getStringExtra("phoneNumber");
 
 
             try {
-                //recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);  // Original
+                //recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);  // Original (This should be the selected option, but returns error on Nexus5) (E/MediaRecorder: start failed: -2147483648)
                 recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
                 recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP); // Original
                 //recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
@@ -163,7 +177,7 @@ public class RecordService extends Service {
             }
 
             try {
-                recorder.start();   // TODO Check sometimes gives a problem here
+                recorder.start();   // TODO Check sometimes gives a problem here (This is beacause recorder parameters setAudioSource, OutputFormat and AudioEncoder)
                 recordstarted = true;
                 Toast.makeText(this, this.getString(R.string.reciever_start_call), Toast.LENGTH_LONG).show();
             } catch (IllegalStateException e) {
@@ -179,19 +193,22 @@ public class RecordService extends Service {
                     recorder.reset();
                     recorder.release();
                     recordstarted = false;
+                    //
+                    Toast toast = Toast.makeText(this, this.getString(R.string.reciever_end_call), Toast.LENGTH_SHORT);
+                    toast.show();
+                    Firebase.setAndroidContext(this);
+                    new Firebase(CONSTANTS.FIREBASE_APP_URL + "RecordedAudiosByUser/CarlosJesusGH")
+                            .push()
+                            .child("AudioId")
+                            .setValue(myFileName);
+
+                    // Show notification
+                    Date now = new Date();
+                    int mNotificationId = (int) now.getTime();//use date to generate an unique id to differentiate the notifications.
+                    MessageUtils.notification(this, this.getString(R.string.notification_new_audio_recorded), myFileName, mNotificationId, AudioRecordsActivity.class);
                 }
                 recorder = null;
-                Toast toast = Toast.makeText(this, this.getString(R.string.reciever_end_call), Toast.LENGTH_SHORT);
-                toast.show();
-                new Firebase("https://" + CONSTANTS.FIREBASE_APP_NAME + ".firebaseio.com/todoItems")
-                        .push()
-                        .child("text")
-                        .setValue("value: " + myFileName);
-
-                // Show notification
-                Date now = new Date();
-                int mNotificationId = (int) now.getTime();//use date to generate an unique id to differentiate the notifications.
-                MessageUtils.notification(this, this.getString(R.string.notification_new_audio_recorded), myFileName, mNotificationId, AudioRecordsActivity.class);
+                wasRinging = false;
             } catch (IllegalStateException e) {
                 e.printStackTrace();
                 ExceptionUtils.displayExceptionMessage(this, e);

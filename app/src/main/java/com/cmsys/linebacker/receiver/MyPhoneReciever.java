@@ -25,6 +25,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
@@ -39,10 +40,10 @@ public class MyPhoneReciever extends BroadcastReceiver { //extends DeviceAdminRe
     public static final int STATE_INCOMING_NUMBER = 0;
     public static final int STATE_CALL_START = 1;
     public static final int STATE_CALL_END = 2;
-    //private static final String ACTION_IN = "android.intent.action.PHONE_STATE";
-    //private static final String ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL";
+    private static final String ACTION_IN = "android.intent.action.PHONE_STATE";
+    private static final String ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL";
     //
-    public boolean wasRinging = false;
+
 
     /*@Override
     public void onReceive(Context context, Intent intent) {
@@ -63,27 +64,54 @@ public class MyPhoneReciever extends BroadcastReceiver { //extends DeviceAdminRe
 
 
         //if (silent && MainActivity.updateExternalStorageState() == MainActivity.MEDIA_MOUNTED)
-        //if(intent.getAction().equals(ACTION_IN)){
-        if(true){
+        if(intent.getAction().equals(ACTION_IN)){
+        //if(true){
             if (phoneNumber == null){
                 if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_OFFHOOK)){
-                    //if (wasRinging == true) {
-                        Toast.makeText(context, "Answered: " + phoneNumber, Toast.LENGTH_LONG).show();
+                    if (RecordService.wasRinging == true) {
+                        /*Toast.makeText(context, "Answered: " + phoneNumber, Toast.LENGTH_LONG).show();
                         Intent myIntent = new Intent(context, RecordService.class);
                         myIntent.putExtra("commandType", STATE_CALL_START);
                         myIntent.putExtra("phoneNumber", phoneNumber);
-                        context.startService(myIntent);
-                    //}
+                        context.startService(myIntent);*/
+                        //
+                        Toast.makeText(context, "JUST BEFORE Forwarding Call", Toast.LENGTH_LONG).show();
+                        // Call Forward another number
+                        //String forwNumber = "0426-2728817";   // Gerardo
+                        String forwNumber = "0414-5458521";     // Samsung Tablet
+                        //String forwNumber = "0412-7469782";     // Albany
+                        try {
+                            Intent intentCall = new Intent(Intent.ACTION_CALL);
+                            //Intent intentCall = new Intent(Intent.ACTION_DIAL);
+                            intentCall.setData(Uri.parse("tel:" + forwNumber));
+                            intentCall.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intentCall.addFlags(Intent.FLAG_FROM_BACKGROUND);
+                            context.startActivity(intentCall);
+                        } catch (SecurityException se){
+                            try {
+                                //Intent intentCall = new Intent(Intent.ACTION_CALL);
+                                Intent intentCall = new Intent(Intent.ACTION_DIAL);
+                                intentCall.setData(Uri.parse("tel:" + forwNumber));
+                                intentCall.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intentCall.addFlags(Intent.FLAG_FROM_BACKGROUND);
+                                context.startActivity(intentCall);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(context, "JUST AFTER Forwarding Call", Toast.LENGTH_LONG).show();
+                    }
                 }
                 else if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_IDLE)){
-                    Toast.makeText(context, "Idle", Toast.LENGTH_LONG).show();
+                    /*Toast.makeText(context, "Idle", Toast.LENGTH_LONG).show();
                     //wasRinging = false;
                     Intent myIntent = new Intent(context, RecordService.class);
                     myIntent.putExtra("commandType", STATE_CALL_END);
-                    context.startService(myIntent);
+                    context.startService(myIntent);*/
                 }
                 else if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING)){
-                    //wasRinging = true;
                     if (phoneNumber == null)
                         phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
                     Toast.makeText(context, "Ringing: " + phoneNumber, Toast.LENGTH_LONG).show();
@@ -91,13 +119,14 @@ public class MyPhoneReciever extends BroadcastReceiver { //extends DeviceAdminRe
                     myIntent.putExtra("commandType", STATE_INCOMING_NUMBER);
                     myIntent.putExtra("phoneNumber", phoneNumber);
                     context.startService(myIntent);
+                    RecordService.wasRinging = true;
                 }
             } else{
-                Toast.makeText(context, "IncomingNumber!=null: ", Toast.LENGTH_LONG).show();
+                /*Toast.makeText(context, "IncomingNumber!=null: ", Toast.LENGTH_LONG).show();
                 Intent myIntent = new Intent(context, RecordService.class);
                 myIntent.putExtra("commandType", TelephonyManager.EXTRA_INCOMING_NUMBER);
                 myIntent.putExtra("phoneNumber", phoneNumber);
-                context.startService(myIntent);
+                context.startService(myIntent);*/
             }
 
         } /*else if(intent.getAction().equals(ACTION_OUT)){
