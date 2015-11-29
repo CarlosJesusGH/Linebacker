@@ -19,33 +19,22 @@ package com.cmsys.linebacker.service;
     along with Call recorder For Android.  If not, see <http://www.gnu.org/licenses/>
  */
 
-import android.net.Uri;
 import android.widget.Toast;
 
         import java.io.File;
-        import java.io.FileNotFoundException;
-        import java.io.IOException;
+import java.io.IOException;
         import java.util.Date;
 
-        import android.app.AlertDialog;
-        import android.app.Notification;
-        import android.app.NotificationManager;
-        import android.app.PendingIntent;
-        import android.app.Service;
-        import android.content.Context;
-        import android.content.DialogInterface;
-        import android.content.Intent;
+import android.app.NotificationManager;
+import android.app.Service;
+import android.content.Intent;
         import android.media.MediaRecorder;
-        import android.media.MediaRecorder.OnErrorListener;
-        import android.media.MediaRecorder.OnInfoListener;
-        import android.os.Environment;
+import android.os.Environment;
         import android.os.IBinder;
         import android.text.format.DateFormat;
-        import android.util.Log;
-        import android.widget.Toast;
 
 import com.cmsys.linebacker.R;
-import com.cmsys.linebacker.ui.AudioRecordsActivity;
+import com.cmsys.linebacker.ui.RecordingLogActivity;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.ExceptionUtils;
 import com.cmsys.linebacker.util.MessageUtils;
@@ -179,7 +168,7 @@ public class RecordService extends Service {
             try {
                 recorder.start();   // TODO Check sometimes gives a problem here (This is beacause recorder parameters setAudioSource, OutputFormat and AudioEncoder)
                 recordstarted = true;
-                Toast.makeText(this, this.getString(R.string.reciever_start_call), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, this.getString(R.string.receiver_start_call), Toast.LENGTH_LONG).show();
             } catch (IllegalStateException e) {
                 e.printStackTrace();
                 ExceptionUtils.printExceptionToFile(this, e);
@@ -194,7 +183,7 @@ public class RecordService extends Service {
                     recorder.release();
                     recordstarted = false;
                     //
-                    Toast toast = Toast.makeText(this, this.getString(R.string.reciever_end_call), Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(this, this.getString(R.string.receiver_end_call), Toast.LENGTH_SHORT);
                     toast.show();
                     Firebase.setAndroidContext(this);
                     new Firebase(CONSTANTS.FIREBASE_APP_URL + "RecordedAudiosByUser/CarlosJesusGH")
@@ -205,7 +194,7 @@ public class RecordService extends Service {
                     // Show notification
                     Date now = new Date();
                     int mNotificationId = (int) now.getTime();//use date to generate an unique id to differentiate the notifications.
-                    MessageUtils.notification(this, this.getString(R.string.notification_new_audio_recorded), myFileName, mNotificationId, AudioRecordsActivity.class);
+                    MessageUtils.notification(this, this.getString(R.string.notification_new_audio_recorded), myFileName, mNotificationId, RecordingLogActivity.class);
                 }
                 recorder = null;
                 wasRinging = false;
@@ -239,7 +228,7 @@ public class RecordService extends Service {
             recorder.reset();
             recorder.release();
             recorder = null;
-            Toast toast = Toast.makeText(this, this.getString(R.string.reciever_end_call), Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(this, this.getString(R.string.receiver_end_call), Toast.LENGTH_SHORT);
             toast.show();
         } catch (IllegalStateException e) {
             e.printStackTrace();

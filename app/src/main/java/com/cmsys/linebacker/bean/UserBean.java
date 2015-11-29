@@ -13,6 +13,7 @@ public class UserBean implements Serializable {
     private String mUserFirstName;
     private String mUserLastName;
 
+
     /*public BeanUser(ModelBean pModelBean){
         mUserId = pModelBean.getTv1();
         mUserEmail = pModelBean.getTv2();

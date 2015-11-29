@@ -348,7 +348,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             // Firebase access
             Firebase.setAndroidContext(mContext);
-            Firebase ref = new Firebase(CONSTANTS.FIREBASE_APP_URL + "User");
+            Firebase ref = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_USER);
             // Reading Data Once
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

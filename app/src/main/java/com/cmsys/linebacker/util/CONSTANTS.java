@@ -23,6 +23,10 @@ public class CONSTANTS {
     //---Shared Preferences------
     public static String PREFS_NAME = "MyPrefsFile";
 
+    //---Bundle Extras ----------
+    public static final String BUNDLE_EXTRA_USER = "user";
+    public static final String BUNDLE_EXTRA_RECORDING = "recording";
+
     //---WS Sync-----------------
     public static String SYNC_WS_IP = "cj-website.ddns.net";
     public static String SYNC_WS_PORT = "8080";
@@ -32,6 +36,8 @@ public class CONSTANTS {
     //---Firebase------------------
     public static String FIREBASE_APP_NAME = "linebacker";
     public static String FIREBASE_APP_URL = "https://" + CONSTANTS.FIREBASE_APP_NAME + ".firebaseio.com/";
+    public static String FIREBASE_DOC_USER = "user";
+    public static String FIREBASE_DOC_RECORDED_AUDIOS = "recordedAudiosByUser";
     //-----------------------------
 
     public static String FOLDER_NAME_LOGS = "Log";
