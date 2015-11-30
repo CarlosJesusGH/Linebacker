@@ -223,6 +223,5 @@ public class MessageUtils extends AlertDialog{
 			ExceptionUtils.displayExceptionMessage(pContext, e);
 			ExceptionUtils.printExceptionToFile(pContext, e);
 		}
-	}
-
+	}//
 }
