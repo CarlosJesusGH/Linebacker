@@ -70,7 +70,7 @@ public class MessageUtils extends AlertDialog{
 		mThis = this;
 		mIdContentView = pContentView;
 		LayoutInflater inflater = getLayoutInflater();
-		convertView = (View) inflater.inflate(pContentView, null);
+		convertView = inflater.inflate(pContentView, null);
 		tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
 		tvMessage = (TextView) convertView.findViewById(R.id.tvMessage);
 		etInput = (EditText) convertView.findViewById(R.id.etInput);
@@ -141,7 +141,7 @@ public class MessageUtils extends AlertDialog{
 		builder.setCancelable(true);
 		//builder.setIcon(R.drawable.dialog_question);
 		builder.setTitle(pTitle);
-		builder.setInverseBackgroundForced(true);
+		///builder.setInverseBackgroundForced(true);	// Removed 20151129
 		builder.setPositiveButton("Yes", pPositiveClickListenter);
 		builder.setNegativeButton("No", pNegativeClickListenter);
 		AlertDialog alert = builder.create();
@@ -201,7 +201,7 @@ public class MessageUtils extends AlertDialog{
 				// started Activity.
 				// This ensures that navigating backward from the Activity leads out of
 				// your application to the Home screen.
-				TaskStackBuilder stackBuilder = null;
+				TaskStackBuilder stackBuilder;
 				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
 					stackBuilder = TaskStackBuilder.create(pContext);
 
