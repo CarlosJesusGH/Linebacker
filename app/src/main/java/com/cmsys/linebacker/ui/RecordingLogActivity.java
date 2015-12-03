@@ -17,10 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TableRow;
+import android.widget.ProgressBar;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.adapter.RecordingAdapter;
@@ -30,6 +28,7 @@ import com.cmsys.linebacker.util.AppInitialSetupUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
+import com.cmsys.linebacker.util.ViewUtils;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -50,6 +49,7 @@ public class RecordingLogActivity extends AppCompatActivity
     private UserBean mUser;     // Check if necessary
     private String mUserId;
     private ListView listView;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +80,11 @@ public class RecordingLogActivity extends AppCompatActivity
         AppInitialSetupUtils.createAppFolders();
         // Activity Views Setup --------------------------------------------------------------------
         setupViews();
+        // Test code
+//        boolean phoneNumberExists = PhoneContactUtils.contactPhoneExists(this, null);
+//        MessageUtils.toast(this, "Number " + (phoneNumberExists?"":"DOESN'T ") + "Exists", true);
+        // Start Service
+        //PhoneState.init(getBaseContext());
     }
 
     @Override
@@ -107,6 +112,7 @@ public class RecordingLogActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
     }
 
     private void getDataFromFirebase(){
@@ -119,10 +125,10 @@ public class RecordingLogActivity extends AppCompatActivity
         // Set Firebase Context.
         Firebase.setAndroidContext(this);
         // Get Firebase Reference
-        Firebase ref = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS
+        Firebase firebaseRef = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS
                 + File.separator + mUserId);
         //Firebase ref = new Firebase("https://docs-examples.firebaseio.com/web/saving-data/fireblog/posts");
-        ref.addChildEventListener(new ChildEventListener() {
+        firebaseRef.addChildEventListener(new ChildEventListener() {
             // Retrieve new posts as they are added to the database
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
@@ -131,6 +137,7 @@ public class RecordingLogActivity extends AppCompatActivity
                 RecordingBean newRecording = snapshot.getValue(RecordingBean.class);
                 newRecording.setKey(snapshot.getKey());
                 adapter.add(newRecording);
+                ViewUtils.hideProgressBar(progressBar);
             }
 
             @Override
@@ -141,11 +148,15 @@ public class RecordingLogActivity extends AppCompatActivity
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+
             @Override
             public void onCancelled(FirebaseError firebaseError) {}
         });
+
+
     }
 
 
@@ -189,7 +200,8 @@ public class RecordingLogActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            MessageUtils mu = new MessageUtils(this, "Settings", "Go to settings activity", 0, true);
+            //MessageUtils mu = new MessageUtils(this, "Settings", "Go to settings activity", 0, true);
+            MessageUtils.toast(this, "Go to settings activity...", false);
             /*Intent intent = new Intent(this, CreateCaseActivity.class);
             startActivity(intent);*/
             return true;
@@ -210,18 +222,18 @@ public class RecordingLogActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        /*if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
         } else if (id == R.id.nav_send) {
 
+        } else*/ if (id == R.id.nav_manage) {
+            MessageUtils.toast(this, "Go to settings activity...", false);
+        } else if (id == R.id.nav_share) {
+            MessageUtils.toast(this, "Go to share activity...", false);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

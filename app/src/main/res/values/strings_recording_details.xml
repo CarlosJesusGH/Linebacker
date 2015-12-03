@@ -7,6 +7,7 @@
     <string name="recording_audio_duration">Recording Duration:</string>
     <string name="recording_is_audio_on_case">Is Recording on Case?</string>
     <string name="button_report">REPORT</string>
+    <string name="button_show_log">SHOW CASE LOG</string>
     <string name="report_this_event">Report this event</string>
 
 </resources>

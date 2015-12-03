@@ -32,7 +32,7 @@ import android.widget.Toast;
 import com.cmsys.linebacker.service.RecordService;
 
 
-public class MyPhoneReciever extends BroadcastReceiver { //extends DeviceAdminReceiver{//
+public class MyPhoneReceiver extends BroadcastReceiver { //extends DeviceAdminReceiver{//
 
     public static final String LISTEN_ENABLED = "ListenEnabled";
     //public static final String FILE_DIRECTORY = "recordedCalls";

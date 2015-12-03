@@ -55,26 +55,33 @@ public class RecordingDetailsActivity extends AppCompatActivity {
         addViewToLayout(getString(R.string.recording_audio_duration), mRecordingBean.getDuration());
         addViewToLayout(getString(R.string.recording_is_audio_on_case), mRecordingBean.isOnCase() ? getString(R.string.yes) : getString(R.string.no));
 
+        if(mRecordingBean.isOnCase())
+            bReport.setText(getString(R.string.button_show_log));
+
         final Activity activity = this;
         bReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final MessageUtils mu = new MessageUtils(activity, getString(R.string.report_this_event), getString(R.string.are_you_sure), 0, false);
-                mu.setOnClickListenerYes(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        MessageUtils.toast(v.getContext(), "Go to report activity...", false);
-                        mu.cancel();
-                    }
-                });
-                mu.setOnClickListenerNo(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mu.cancel();
-                    }
-                });
-                mu.getBAccept().setVisibility(View.GONE);
-                mu.show();
+                if(((Button) v).getText().equals(getString(R.string.button_report))) {
+                    final MessageUtils mu = new MessageUtils(activity, getString(R.string.report_this_event), getString(R.string.are_you_sure), 0, false);
+                    mu.setOnClickListenerYes(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            MessageUtils.toast(v.getContext(), "Go to report activity...", false);
+                            mu.cancel();
+                        }
+                    });
+                    mu.setOnClickListenerNo(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mu.cancel();
+                        }
+                    });
+                    mu.getBAccept().setVisibility(View.GONE);
+                    mu.show();
+                } else{
+                    MessageUtils.toast(v.getContext(), "Go to case logger activity...", false);
+                }
             }
         });
     }
