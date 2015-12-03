@@ -36,15 +36,15 @@
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
         android:paddingTop="20dp" >
-        
-         <TextView
-             android:id="@+id/tvMessage"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_gravity="center_horizontal"
-             android:text="Big Text"
-             android:textColor="@android:color/black"
-             android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Big Text"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
 
         <EditText
             android:layout_width="match_parent"
@@ -67,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Yes"
-            android:visibility="gone" 
+            android:visibility="gone"
             android:ems="6"/>
 
         <Button
@@ -75,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="No"
-            android:visibility="gone" 
+            android:visibility="gone"
             android:ems="6"/>
 
         <Button
