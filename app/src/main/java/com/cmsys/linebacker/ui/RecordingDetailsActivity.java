@@ -1,6 +1,5 @@
 package com.cmsys.linebacker.ui;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,17 +7,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
-import com.cmsys.linebacker.util.SharedPreferencesUtils;
 
 public class RecordingDetailsActivity extends AppCompatActivity {
     private LinearLayout llRecordingDetails;
@@ -80,7 +76,10 @@ public class RecordingDetailsActivity extends AppCompatActivity {
                     mu.getBAccept().setVisibility(View.GONE);
                     mu.show();
                 } else{
-                    MessageUtils.toast(v.getContext(), "Go to case logger activity...", false);
+                    //MessageUtils.toast(v.getContext(), "Go to case logger activity...", false);
+                    Intent intent = new Intent(v.getContext(), CaseDetailsActivity.class);
+                    intent.putExtra(CONSTANTS.BUNDLE_EXTRA_RECORDING, mRecordingBean);
+                    startActivity(intent);
                 }
             }
         });

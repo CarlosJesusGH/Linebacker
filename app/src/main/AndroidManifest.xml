@@ -53,7 +53,7 @@
             android:label="@string/title_activity_login" />
 
         <activity
-            android:name=".ui.CreateCaseActivity"
+            android:name=".ui.CaseDetailsActivity"
             android:label="@string/title_activity_create_case"
             android:theme="@style/AppTheme.NoActionBar" >
             <!--<meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".ui.RecordingLogActivity"/> //This is another way to handle click on the Home/Up button-->

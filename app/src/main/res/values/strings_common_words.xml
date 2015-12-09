@@ -29,5 +29,6 @@
     <string name="common_error_invalid_email">This email address is invalid</string>
     <string name="common_error_field_required">This field is required</string>
     <string name="error_all_fields_required">All fields are required</string>
+    <string name="error_no_info_to_show">No info to show</string>
 
 </resources>
