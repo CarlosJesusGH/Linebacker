@@ -46,4 +46,5 @@ public class UserBean implements Serializable {
     public String getUserLastName() {
         return mUserLastName;
     }
+    // Test change from GitHub server
 }
