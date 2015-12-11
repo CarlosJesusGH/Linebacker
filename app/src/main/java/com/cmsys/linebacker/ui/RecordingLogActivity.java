@@ -81,10 +81,8 @@ public class RecordingLogActivity extends AppCompatActivity
         // Activity Views Setup --------------------------------------------------------------------
         setupViews();
         // Test code
-//        boolean phoneNumberExists = PhoneContactUtils.contactPhoneExists(this, null);
-//        MessageUtils.toast(this, "Number " + (phoneNumberExists?"":"DOESN'T ") + "Exists", true);
-        // Start Service
-        //PhoneState.init(getBaseContext());
+        //Intent intent = new Intent(this, SettingsActivity.class);
+        //startActivity(intent);
     }
 
     @Override
@@ -93,6 +91,10 @@ public class RecordingLogActivity extends AppCompatActivity
         // Check if user is logged in --------------------------------------------------------------
         mUserId = SharedPreferencesUtils.getUserIdFromPreferences(this, getString(R.string.pref_key_user_id));
         if(mUserId != null){
+            // Get Firebase settings if SharedPreference doesn't exists
+            if(!SharedPreferencesUtils.checkIfContainsKey(this, getString(R.string.pref_key_setting_block_calls))){
+                AppInitialSetupUtils.getFirebaseSettings(this, mUserId);
+            }
             getDataFromFirebase();
         } else{
             Intent intent = new Intent(this, LoginActivity.class);
@@ -201,9 +203,9 @@ public class RecordingLogActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             //MessageUtils mu = new MessageUtils(this, "Settings", "Go to settings activity", 0, true);
-            MessageUtils.toast(this, "Go to settings activity...", false);
-            /*Intent intent = new Intent(this, CreateCaseActivity.class);
-            startActivity(intent);*/
+            //MessageUtils.toast(this, "Go to settings activity...", false);
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
         if (id == R.id.action_logout) {

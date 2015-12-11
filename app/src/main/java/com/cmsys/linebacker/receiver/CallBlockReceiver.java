@@ -8,11 +8,13 @@ import android.media.AudioManager;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
+import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.ui.RecordingLogActivity;
 import com.cmsys.linebacker.util.LogUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneCallUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
+import com.cmsys.linebacker.util.SharedPreferencesUtils;
 
 import java.util.Date;
 
@@ -51,9 +53,12 @@ public class CallBlockReceiver extends BroadcastReceiver {
             if (mPhoneNumber == null)
                 mPhoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
             boolean phoneNumberExists = PhoneContactUtils.contactPhoneExists(context, mPhoneNumber);
-            MessageUtils.toast(context, mPhoneNumber +"\nPhone Number " + (phoneNumberExists ? "" : "DOESN'T ") + "Exists", true);
-            // End phone call if number doesn't exists
-            if(!phoneNumberExists) {
+            // Check if blockCalls is enabled
+            boolean blockCalls = SharedPreferencesUtils.getBoolean(context, context.getString(R.string.pref_key_setting_block_calls), true);
+            MessageUtils.toast(context, mPhoneNumber + "\nPhone Number " + (phoneNumberExists ? "" : "DOESN'T ")
+                    + "Exists. \nCallBlock is " + (blockCalls ? "Enabled" : "Disabled"), true);
+            // End phone call if number doesn't exists and blockCalls is enabled
+            if(!phoneNumberExists && blockCalls) {
                 PhoneCallUtils.endCall(context);
                 // Show notification
                 Date now = new Date();

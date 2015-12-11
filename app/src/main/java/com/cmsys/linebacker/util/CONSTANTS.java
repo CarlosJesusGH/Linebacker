@@ -38,6 +38,7 @@ public class CONSTANTS {
     public static String FIREBASE_APP_URL = "https://" + CONSTANTS.FIREBASE_APP_NAME + ".firebaseio.com/";
     public static String FIREBASE_DOC_USER = "user";
     public static String FIREBASE_DOC_RECORDED_AUDIOS = "recordedAudiosByUser";
+    public static String FIREBASE_DOC_SETTINGS = "setting";
     //-----------------------------
 
     public static String FOLDER_NAME_LOGS = "Log";

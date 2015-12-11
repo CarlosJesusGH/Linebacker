@@ -17,11 +17,37 @@ public class SharedPreferencesUtils {
         return sharedPref.getString(pKey, pDefaultValue);
     }
 
+    public static boolean getBoolean(Context pContext, String pKey, Boolean pDefaultValue){
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
+        //
+        return sharedPref.getBoolean(pKey, pDefaultValue);
+    }
+
     public static boolean putOrEditString(Context pContext, String pKey, String pValue){
         sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
         preferencesEditor = sharedPref.edit();
         preferencesEditor.remove(pKey);
         preferencesEditor.putString(pKey, pValue);
+        preferencesEditor.commit();
+        //
+        return true;
+    }
+
+    public static boolean putOrEditString(Context pContext, String pKey, boolean pValue){
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
+        preferencesEditor = sharedPref.edit();
+        preferencesEditor.remove(pKey);
+        preferencesEditor.putBoolean(pKey, pValue);
+        preferencesEditor.commit();
+        //
+        return true;
+    }
+
+    public static boolean putOrEditString(Context pContext, String pKey, int pValue){
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
+        preferencesEditor = sharedPref.edit();
+        preferencesEditor.remove(pKey);
+        preferencesEditor.putInt(pKey, pValue);
         preferencesEditor.commit();
         //
         return true;
@@ -40,5 +66,10 @@ public class SharedPreferencesUtils {
         String userId = SharedPreferencesUtils.getString(pContext, pKey, null);
         //
         return userId;
+    }
+
+    public static boolean checkIfContainsKey(Context pContext, String pKey){
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
+        return sharedPref.contains(pKey);
     }
 }
