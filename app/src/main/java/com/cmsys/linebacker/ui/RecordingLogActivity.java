@@ -24,6 +24,7 @@ import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.adapter.RecordingAdapter;
 import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.bean.UserBean;
+import com.cmsys.linebacker.io.DataIO;
 import com.cmsys.linebacker.util.AppInitialSetupUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
@@ -93,7 +94,7 @@ public class RecordingLogActivity extends AppCompatActivity
         if(mUserId != null){
             // Get Firebase settings if SharedPreference doesn't exists
             if(!SharedPreferencesUtils.checkIfContainsKey(this, getString(R.string.pref_key_setting_block_calls))){
-                AppInitialSetupUtils.getFirebaseSettings(this, mUserId);
+                DataIO.getFirebaseSettings(this, mUserId);
             }
             getDataFromFirebase();
         } else{

@@ -1,5 +1,6 @@
 package com.cmsys.linebacker.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
@@ -9,7 +10,9 @@ import java.io.Serializable;
  */
 // @JsonIgnoreProperties(ignoreUnknown=true)    // Use if necessary
 public class RecordingBean implements Serializable {
+    @JsonIgnore     // Ignore this field when converting to json object
     private String key;
+
     private String audioId;
     private String phoneNumber;
     private String datetime;

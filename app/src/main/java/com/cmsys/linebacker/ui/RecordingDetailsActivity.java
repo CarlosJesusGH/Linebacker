@@ -1,7 +1,10 @@
 package com.cmsys.linebacker.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.preference.ListPreference;
+import android.preference.SwitchPreference;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,14 +15,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cmsys.linebacker.R;
+import com.cmsys.linebacker.bean.CaseBean;
 import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
+import com.cmsys.linebacker.util.SharedPreferencesUtils;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RecordingDetailsActivity extends AppCompatActivity {
     private LinearLayout llRecordingDetails;
     private RecordingBean mRecordingBean;
     private Button bReport;
+    private String mUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +42,8 @@ public class RecordingDetailsActivity extends AppCompatActivity {
         if(bundle != null){
             mRecordingBean = (RecordingBean) bundle.getSerializable(CONSTANTS.BUNDLE_EXTRA_RECORDING);
         }
+        // Check if user is logged in
+        mUserId = SharedPreferencesUtils.getUserIdFromPreferences(this, getString(R.string.pref_key_user_id));
         if(mRecordingBean != null) {
             // Set Home/Up button
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -55,6 +69,7 @@ public class RecordingDetailsActivity extends AppCompatActivity {
             bReport.setText(getString(R.string.button_show_log));
 
         final Activity activity = this;
+        final Context context = this;
         bReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +78,39 @@ public class RecordingDetailsActivity extends AppCompatActivity {
                     mu.setOnClickListenerYes(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            MessageUtils.toast(v.getContext(), "Go to report activity...", false);
+                            // Create new case object
+                            CaseBean caseBean = new CaseBean(mRecordingBean);
+                            // Get save changes to Firebase
+                            Firebase.setAndroidContext(context);
+                            final Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL);
+                            //fbRef.child(CONSTANTS.FIREBASE_DOC_CASES + File.separator + mUserId + File.separator + caseBean.getKey())
+                            Map<String, Object> firebaseTrans = new HashMap<String, Object>();
+                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_CASES + File.separator + mUserId + File.separator + caseBean.getKey(), caseBean.getObjectMap());
+                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId + File.separator + mRecordingBean.getKey() + File.separator + CONSTANTS.FIREBASE_FIELD_ISONCASE, true);
+                            fbRef.updateChildren(firebaseTrans, new Firebase.CompletionListener() {
+                                @Override
+                                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                    if (firebaseError != null) {
+                                        MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+                                    } else {
+                                        MessageUtils.toast(context, "New Firebase object saved", false);
+                                        bReport.setText(getString(R.string.button_show_log));
+                                    }
+                                }
+                            });
+                            /*fbRef.child(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId + File.separator +
+                                    mRecordingBean.getKey() + File.separator + CONSTANTS.FIREBASE_FIELD_ISONCASE)
+                                    .setValue(true, new Firebase.CompletionListener() {
+                                        @Override
+                                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                            if (firebaseError != null) {
+                                                MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+                                            } else {
+
+                                            }
+                                        }
+                                    });*/
+
                             mu.cancel();
                         }
                     });

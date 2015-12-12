@@ -1,5 +1,7 @@
 package com.cmsys.linebacker.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 /**
@@ -7,7 +9,9 @@ import java.io.Serializable;
  */
 // @JsonIgnoreProperties(ignoreUnknown=true)    // Use if necessary
 public class CommentBean implements Serializable {
+    @JsonIgnore     // Ignore this field when converting to json object
     private String key;
+
     private String commentText;
     private String datetime;
     private String userId;

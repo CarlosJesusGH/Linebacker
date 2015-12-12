@@ -255,7 +255,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                                     @Override
                                     public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                                         if (firebaseError != null) {
-                                            MessageUtils.toast(context, "Data could not be saved. " + firebaseError.getMessage(), false);
+                                            MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
                                         } else {
                                             if (preference instanceof SwitchPreference) {
                                                 SwitchPreference switchPref = (SwitchPreference) preference;
