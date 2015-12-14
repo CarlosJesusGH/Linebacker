@@ -3,8 +3,12 @@ package com.cmsys.linebacker.bean;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.DateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.firebase.client.Firebase;
+import com.firebase.client.ServerValue;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +30,7 @@ public class LogBean implements Serializable {
     @JsonIgnore
     public Map<String, Object> getObjectMap(){
         Map<String, Object> fieldsMap = new HashMap<>();
-        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_DATETIME, DateUtils.getDateTimeString(DateUtils.getNow()));
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_DATETIME, ServerValue.TIMESTAMP);
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_STATUSID, 0);
         return fieldsMap;
     }
@@ -41,6 +45,10 @@ public class LogBean implements Serializable {
 
     public String getDatetime() {
         return datetime;
+    }
+
+    public String getDatetimeString() {
+        return DateUtils.getDateTimeString(Long.parseLong(datetime));
     }
 
     public void setDatetime(String datetime) {

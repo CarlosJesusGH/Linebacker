@@ -1,7 +1,9 @@
 package com.cmsys.linebacker.util;
 
+import java.security.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -22,16 +24,24 @@ public class DateUtils {
 		String date = sdf.format(pDate);
 		return date;
 	}
+
+	public static String getDateTimeString(Long pTimeStamp){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(pTimeStamp);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+		String date = sdf.format(calendar.getTime());
+		return date;
+	}
 	
 	public static Date getDateFromString(String pStringDate){
-		Date parsed = new Date();		
+		Date parsed = new Date();
 		SimpleDateFormat sdfStandard = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 		try{		    
 		    parsed = sdfStandard.parse(pStringDate);
 		}catch(ParseException pe){
 		    throw new IllegalArgumentException();
-		}		
-		return parsed;	
+		}
+		return parsed;
 	}
 	
 	public static double getDaysDiff(Date pStart, Date pEnd){

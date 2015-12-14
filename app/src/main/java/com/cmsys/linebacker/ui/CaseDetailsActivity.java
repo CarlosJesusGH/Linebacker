@@ -173,7 +173,7 @@ public class CaseDetailsActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                                     if (dataSnapshot.exists())
-                                                        addViewToLayout(iter.getDatetime(), (String) dataSnapshot.getValue(), llCaseLogsContent,
+                                                        addViewToLayout(iter.getDatetimeString(), (String) dataSnapshot.getValue(), llCaseLogsContent,
                                                                 R.layout.activity_case_details_logs_item);
                                                     if (lastIter) {
                                                         // Hide ProgressBar and expand Layout
