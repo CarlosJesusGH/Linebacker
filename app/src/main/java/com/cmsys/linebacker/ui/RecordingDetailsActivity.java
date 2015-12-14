@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.CaseBean;
+import com.cmsys.linebacker.bean.LogBean;
 import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
@@ -44,7 +45,7 @@ public class RecordingDetailsActivity extends AppCompatActivity {
         }
         // Check if user is logged in
         mUserId = SharedPreferencesUtils.getUserIdFromPreferences(this, getString(R.string.pref_key_user_id));
-        if(mRecordingBean != null) {
+        if(mRecordingBean != null && mUserId != null) {
             // Set Home/Up button
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -87,6 +88,7 @@ public class RecordingDetailsActivity extends AppCompatActivity {
                             Map<String, Object> firebaseTrans = new HashMap<String, Object>();
                             firebaseTrans.put(CONSTANTS.FIREBASE_DOC_CASES + File.separator + mUserId + File.separator + caseBean.getKey(), caseBean.getObjectMap());
                             firebaseTrans.put(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId + File.separator + mRecordingBean.getKey() + File.separator + CONSTANTS.FIREBASE_FIELD_ISONCASE, true);
+                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_CASE_LOGS + File.separator + mRecordingBean.getKey() + File.separator + "0", new LogBean().getObjectMap());
                             fbRef.updateChildren(firebaseTrans, new Firebase.CompletionListener() {
                                 @Override
                                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {

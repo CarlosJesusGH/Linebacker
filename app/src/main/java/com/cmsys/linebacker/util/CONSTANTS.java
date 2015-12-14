@@ -40,6 +40,9 @@ public class CONSTANTS {
     public static String FIREBASE_DOC_RECORDED_AUDIOS = "recordedAudiosByUser";
     public static String FIREBASE_DOC_SETTINGS = "setting";
     public static String FIREBASE_DOC_CASES = "casesByUser";
+    public static String FIREBASE_DOC_CASE_STATUS = "caseStatus";
+    public static String FIREBASE_DOC_CASE_LOGS = "logsByCase";
+    public static String FIREBASE_DOC_CASE_COMMENTS = "commentsByCase";
 
     public static String FIREBASE_FIELD_ISONCASE = "isOnCase";
     public static String FIREBASE_FIELD_AUDIOID = "audioId";
@@ -48,6 +51,7 @@ public class CONSTANTS {
     public static String FIREBASE_FIELD_MARKETINGPHONE = "marketingPhone";
     public static String FIREBASE_FIELD_STATUSID = "statusId";
     public static String FIREBASE_FIELD_USERPHONE = "userPhone";
+    public static String FIREBASE_FIELD_STATUSNAME = "statusName";
 
     //-----------------------------
 

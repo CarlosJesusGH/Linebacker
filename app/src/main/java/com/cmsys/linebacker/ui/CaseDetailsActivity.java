@@ -29,8 +29,8 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 
+import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 public class CaseDetailsActivity extends AppCompatActivity {
     private RecordingBean mRecordingBean;
@@ -39,6 +39,7 @@ public class CaseDetailsActivity extends AppCompatActivity {
     private ImageView ivCaseDetails, ivCaseLogs, ivCaseComments;
     private ProgressBar pbCaseDetails, pbCaseLogs, pbCaseComments;
     private Firebase ref;
+    private String mUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +48,11 @@ public class CaseDetailsActivity extends AppCompatActivity {
         //
         // Get recording from bundle
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null){
+        if(bundle != null)
             mRecordingBean = (RecordingBean) bundle.getSerializable(CONSTANTS.BUNDLE_EXTRA_RECORDING);
-        }
-        if(mRecordingBean != null) {
+        // Check if user is logged in
+        mUserId = SharedPreferencesUtils.getUserIdFromPreferences(this, getString(R.string.pref_key_user_id));
+        if(mRecordingBean != null && mUserId != null) {
             // Set Home/Up button
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -100,7 +102,7 @@ public class CaseDetailsActivity extends AppCompatActivity {
                     pbCaseDetails.setVisibility(View.VISIBLE);
                     // Reading Data Once
                     ref = new Firebase(CONSTANTS.FIREBASE_APP_URL);
-                    ref.child("casesByUser/CarlosJesusGH/test_audio1").addListenerForSingleValueEvent(new ValueEventListener() {
+                    ref.child(CONSTANTS.FIREBASE_DOC_CASES + File.separator + mUserId + File.separator + mRecordingBean.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             CaseBean caseBean = (CaseBean) snapshot.getValue(CaseBean.class);
@@ -110,21 +112,27 @@ public class CaseDetailsActivity extends AppCompatActivity {
                                 addViewToLayout(getString(R.string.recording_phone_number), caseBean.getUserPhone(), llCaseDetailsContent, R.layout.activity_case_details_item);
                                 addViewToLayout(getString(R.string.recording_date), caseBean.getDatetime().substring(0, caseBean.getDatetime().indexOf(" ")), llCaseDetailsContent, R.layout.activity_case_details_item);
                                 addViewToLayout(getString(R.string.recording_time), caseBean.getDatetime().substring(caseBean.getDatetime().indexOf(" ")), llCaseDetailsContent, R.layout.activity_case_details_item);
-                                ref.child("/caseStatus/" + caseBean.getStatusId() + "/statusName").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if(dataSnapshot.exists())
-                                            addViewToLayout(getString(R.string.case_status), (String) dataSnapshot.getValue(), llCaseDetailsContent, R.layout.activity_case_details_item);
-                                        // Hide ProgressBar and expand Layout
-                                        pbCaseDetails.setVisibility(View.GONE);
-                                        ViewUtils.expand(llCaseDetailsContent);
-                                        ivCaseDetails.setImageResource(android.R.drawable.arrow_up_float);
-                                    }
+                                ref.child(File.separator + CONSTANTS.FIREBASE_DOC_CASE_STATUS + File.separator
+                                        + caseBean.getStatusId() + File.separator + CONSTANTS.FIREBASE_FIELD_STATUSNAME)
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.exists())
+                                                    addViewToLayout(getString(R.string.case_status), (String) dataSnapshot.getValue(), llCaseDetailsContent, R.layout.activity_case_details_item);
+                                                // Hide ProgressBar and expand Layout
+                                                pbCaseDetails.setVisibility(View.GONE);
+                                                ViewUtils.expand(llCaseDetailsContent);
+                                                ivCaseDetails.setImageResource(android.R.drawable.arrow_up_float);
+                                            }
 
-                                    @Override public void onCancelled(FirebaseError firebaseError) {}
-                                });
+                                            @Override
+                                            public void onCancelled(FirebaseError firebaseError) {
+                                            }
+                                        });
                             } else {
                                 MessageUtils.toast(getApplicationContext(), getString(R.string.error_no_info_to_show), true);
+                                // Hide ProgressBar
+                                pbCaseDetails.setVisibility(View.GONE);
                             }
                         }
 
@@ -143,7 +151,7 @@ public class CaseDetailsActivity extends AppCompatActivity {
                     pbCaseLogs.setVisibility(View.VISIBLE);
                     // Reading Data Once
                     ref = new Firebase(CONSTANTS.FIREBASE_APP_URL);
-                    ref.child("logsByCase/test_audio1").addListenerForSingleValueEvent(new ValueEventListener() {
+                    ref.child(CONSTANTS.FIREBASE_DOC_CASE_LOGS + File.separator + mRecordingBean.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             //Map<String, Object> logsMap = (Map<String, Object>) snapshot.getValue();
@@ -159,23 +167,31 @@ public class CaseDetailsActivity extends AppCompatActivity {
                                 llCaseLogsContent.removeAllViews();
                                 for (final LogBean iter: caseLogs) {
                                     final boolean lastIter = caseLogs.indexOf(iter) == (caseLogs.size() - 1) ? true : false;
-                                    ref.child("/caseStatus/" + iter.getStatusId() + "/statusName").addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            if (dataSnapshot.exists())
-                                                addViewToLayout(iter.getDatetime(), (String) dataSnapshot.getValue(), llCaseLogsContent, R.layout.activity_case_details_logs_item);
-                                            if(lastIter){
-                                                // Hide ProgressBar and expand Layout
-                                                pbCaseLogs.setVisibility(View.GONE);
-                                                ViewUtils.expand(llCaseLogsContent);
-                                                ivCaseLogs.setImageResource(android.R.drawable.arrow_up_float);
-                                            }
-                                        }
-                                        @Override public void onCancelled(FirebaseError firebaseError) {}
-                                    });
+                                    ref.child(File.separator + CONSTANTS.FIREBASE_DOC_CASE_STATUS + File.separator + iter.getStatusId()
+                                            + File.separator + CONSTANTS.FIREBASE_FIELD_STATUSNAME)
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    if (dataSnapshot.exists())
+                                                        addViewToLayout(iter.getDatetime(), (String) dataSnapshot.getValue(), llCaseLogsContent,
+                                                                R.layout.activity_case_details_logs_item);
+                                                    if (lastIter) {
+                                                        // Hide ProgressBar and expand Layout
+                                                        pbCaseLogs.setVisibility(View.GONE);
+                                                        ViewUtils.expand(llCaseLogsContent);
+                                                        ivCaseLogs.setImageResource(android.R.drawable.arrow_up_float);
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(FirebaseError firebaseError) {
+                                                }
+                                            });
                                 }
                             } else {
                                 MessageUtils.toast(getApplicationContext(), getString(R.string.error_no_info_to_show), true);
+                                // Hide ProgressBar
+                                pbCaseLogs.setVisibility(View.GONE);
                             }
                         }
 
@@ -196,40 +212,43 @@ public class CaseDetailsActivity extends AppCompatActivity {
                     pbCaseComments.setVisibility(View.VISIBLE);
                     // Reading Data Once
                     ref = new Firebase(CONSTANTS.FIREBASE_APP_URL);
-                    ref.child("commentsByCase/test_audio1").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            //Map<String, Object> logsMap = (Map<String, Object>) snapshot.getValue();
-                            List<CommentBean> caseComments = null;
-                            try {
-                                GenericTypeIndicator<List<CommentBean>> gti = new GenericTypeIndicator<List<CommentBean>>() {
-                                };
-                                caseComments = (List<CommentBean>) snapshot.getValue(gti);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                    ref.child(CONSTANTS.FIREBASE_DOC_CASE_COMMENTS + File.separator + mRecordingBean.getKey())
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot snapshot) {
+                                    //Map<String, Object> logsMap = (Map<String, Object>) snapshot.getValue();
+                                    List<CommentBean> caseComments = null;
+                                    try {
+                                        GenericTypeIndicator<List<CommentBean>> gti = new GenericTypeIndicator<List<CommentBean>>() {
+                                        };
+                                        caseComments = (List<CommentBean>) snapshot.getValue(gti);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
 
-                            if (caseComments != null && caseComments.size() > 0) {
-                                llCaseCommentsContent.removeAllViews();
-                                for (final CommentBean iter : caseComments) {
-                                    final boolean lastIter = caseComments.indexOf(iter) == (caseComments.size() - 1) ? true : false;
-                                    addViewToLayout(iter.getUserId(), iter.getCommentText(), iter.getDatetime(), llCaseCommentsContent, R.layout.activity_case_details_comments_item);
-                                    if (lastIter) {
+                                    if (caseComments != null && caseComments.size() > 0) {
+                                        llCaseCommentsContent.removeAllViews();
+                                        for (final CommentBean iter : caseComments) {
+                                            final boolean lastIter = caseComments.indexOf(iter) == (caseComments.size() - 1) ? true : false;
+                                            addViewToLayout(iter.getUserId(), iter.getCommentText(), iter.getDatetime(), llCaseCommentsContent, R.layout.activity_case_details_comments_item);
+                                            if (lastIter) {
+                                                // Hide ProgressBar and expand Layout
+                                                pbCaseComments.setVisibility(View.GONE);
+                                                ViewUtils.expand(llCaseCommentsContent);
+                                                ivCaseComments.setImageResource(android.R.drawable.arrow_up_float);
+                                            }
+                                        }
+                                    } else {
+                                        MessageUtils.toast(getApplicationContext(), getString(R.string.error_no_info_to_show), true);
                                         // Hide ProgressBar and expand Layout
                                         pbCaseComments.setVisibility(View.GONE);
-                                        ViewUtils.expand(llCaseCommentsContent);
-                                        ivCaseComments.setImageResource(android.R.drawable.arrow_up_float);
                                     }
                                 }
-                            } else {
-                                MessageUtils.toast(getApplicationContext(), getString(R.string.error_no_info_to_show), true);
-                            }
-                        }
 
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-                        }
-                    });
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                }
+                            });
                 }
             }
         });
