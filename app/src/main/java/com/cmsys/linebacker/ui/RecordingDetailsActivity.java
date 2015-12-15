@@ -95,7 +95,6 @@ public class RecordingDetailsActivity extends AppCompatActivity {
                                     if (firebaseError != null) {
                                         MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
                                     } else {
-                                        MessageUtils.toast(context, "New Firebase object saved", false);
                                         bReport.setText(getString(R.string.button_show_log));
                                     }
                                 }

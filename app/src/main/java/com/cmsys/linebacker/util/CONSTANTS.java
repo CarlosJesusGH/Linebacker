@@ -43,6 +43,7 @@ public class CONSTANTS {
     public static String FIREBASE_DOC_CASE_STATUS = "caseStatus";
     public static String FIREBASE_DOC_CASE_LOGS = "logsByCase";
     public static String FIREBASE_DOC_CASE_COMMENTS = "commentsByCase";
+    public static String FIREBASE_DOC_CASE_CONTACTS = "contactsByUser";
 
     public static String FIREBASE_FIELD_ISONCASE = "isOnCase";
     public static String FIREBASE_FIELD_AUDIOID = "audioId";
