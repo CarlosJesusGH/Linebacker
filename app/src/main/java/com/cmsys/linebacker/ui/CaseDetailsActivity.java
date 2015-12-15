@@ -1,11 +1,13 @@
 package com.cmsys.linebacker.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -277,8 +279,19 @@ public class CaseDetailsActivity extends AppCompatActivity {
         if (id == android.R.id.home){
             finish();
             return true;
+        } else if (id == R.id.action_home) {
+            Intent intent = new Intent(getApplicationContext(), RecordingLogActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_case_details, menu);
+        return true;
     }
 }
