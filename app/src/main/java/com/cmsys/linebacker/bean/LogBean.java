@@ -48,7 +48,12 @@ public class LogBean implements Serializable {
     }
 
     public String getDatetimeString() {
-        return DateUtils.getDateTimeString(Long.parseLong(datetime));
+        try {
+            return DateUtils.getDateTimeString(Long.parseLong(datetime));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return  datetime;
     }
 
     public void setDatetime(String datetime) {
