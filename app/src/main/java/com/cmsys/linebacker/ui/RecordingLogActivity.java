@@ -227,25 +227,31 @@ public class RecordingLogActivity extends AppCompatActivity
             listView.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
             MessageUtils.toast(getApplicationContext(), getString(R.string.uploading_contacts), false);
-            // Get phone contacts info
-            HashMap<String, HashMap<String, List<String>>> hmContacts = PhoneContactUtils.getPhoneContactsHashMap(getApplicationContext());
-            // Save contacts to Firebase
-            final Context context = getApplicationContext();
-            Firebase.setAndroidContext(context);
-            Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL);
-            fbRef = fbRef.child(CONSTANTS.FIREBASE_DOC_CASE_CONTACTS + File.separator + mUserId);
-            fbRef.setValue(hmContacts, new Firebase.CompletionListener() {
+            // New Thread
+            new Thread(new Runnable() {
                 @Override
-                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                    if (firebaseError != null) {
-                        MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
-                    } else {
-                        MessageUtils.toast(context, getString(R.string.upload_successful), false);
-                        listView.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
-                    }
+                public void run() {
+                    // Get phone contacts info
+                    HashMap<String, HashMap<String, Object>> hmContacts = PhoneContactUtils.getPhoneContactsHashMap(getApplicationContext());
+                    // Save contacts to Firebase
+                    final Context context = getApplicationContext();
+                    Firebase.setAndroidContext(context);
+                    Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL);
+                    fbRef = fbRef.child(CONSTANTS.FIREBASE_DOC_CASE_CONTACTS + File.separator + mUserId);
+                    fbRef.setValue(hmContacts, new Firebase.CompletionListener() {
+                        @Override
+                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                            if (firebaseError != null) {
+                                MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+                            } else {
+                                MessageUtils.toast(context, getString(R.string.upload_successful), false);
+                                listView.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        }
+                    });
                 }
-            });
+            }).start();
         }
 
         return super.onOptionsItemSelected(item);

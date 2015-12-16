@@ -50,9 +50,9 @@ public class PhoneContactUtils {
         }
     }
 
-    public static HashMap<String, HashMap<String, List<String>>> getPhoneContactsHashMap(Context pContext) {
+    public static HashMap<String, HashMap<String, Object>> getPhoneContactsHashMap(Context pContext) {
         // Get cursor query
-        HashMap<String, HashMap<String, List<String>>> hmContacts = new HashMap<>();
+        HashMap<String, HashMap<String, Object>> hmContacts = new HashMap<>();
         ContentResolver cr = pContext.getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         if (cur.getCount() > 0) {
@@ -61,9 +61,12 @@ public class PhoneContactUtils {
                 String name = cur.getString( cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                 if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                     List<String> phoneNumbers = getPhoneNumbersById(pContext, id);
-                    HashMap<String, List<String>> hmPhones = new HashMap<>();
-                    hmPhones.put("phones", phoneNumbers);
-                    hmContacts.put(id, hmPhones);
+                    List<String> emails = getEmailsById(pContext, id);
+                    HashMap<String, Object> hmData = new HashMap<>();
+                    hmData.put("name", name);
+                    hmData.put("phones", phoneNumbers);
+                    hmData.put("emails", emails);
+                    hmContacts.put(id, hmData);
                 }
             }
         }
@@ -121,7 +124,7 @@ public class PhoneContactUtils {
         return list;
     }
 
-    public static List<String> getListOfAllEmails(Context pContext) {
+    public static List<String> getListAllEmails(Context pContext) {
         // Get emails
         ContentResolver cr = pContext.getContentResolver();
         Cursor emailCur = cr.query(
