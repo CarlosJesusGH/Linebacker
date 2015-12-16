@@ -53,6 +53,8 @@ public class CONSTANTS {
     public static String FIREBASE_FIELD_STATUSID = "statusId";
     public static String FIREBASE_FIELD_USERPHONE = "userPhone";
     public static String FIREBASE_FIELD_STATUSNAME = "statusName";
+    public static String FIREBASE_FIELD_USERID = "userId";
+    public static String FIREBASE_FIELD_COMMENTTEXT = "commentText";
 
     //-----------------------------
 

@@ -1,8 +1,12 @@
 package com.cmsys.linebacker.bean;
 
+import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.DateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by cj on 04/12/15.
@@ -13,11 +17,26 @@ public class CommentBean implements Serializable {
     private String key;
 
     private String commentText;
-    private String datetime;
+    private Object datetime;
     private String userId;
 
     public CommentBean(){
         // empty default constructor, necessary for Firebase to be able to deserialize blog class
+    }
+
+    public CommentBean(String userId, Object datetime, String commentText) {
+        this.userId = userId;
+        this.datetime = datetime;
+        this.commentText = commentText;
+    }
+
+    @JsonIgnore
+    public Map<String, Object> getObjectMap(){
+        Map<String, Object> fieldsMap = new HashMap<>();
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_DATETIME, this.getDatetime());
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERID, this.getUserId());
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_COMMENTTEXT, this.getCommentText());
+        return fieldsMap;
     }
 
     public String getKey() {
@@ -36,8 +55,17 @@ public class CommentBean implements Serializable {
         this.commentText = commentText;
     }
 
-    public String getDatetime() {
+    public Object getDatetime() {
         return datetime;
+    }
+
+    public String getDatetimeString() {
+        try {
+            return DateUtils.getDateTimeString(Long.parseLong((String) datetime));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return (String) datetime;
     }
 
     public void setDatetime(String datetime) {

@@ -20,18 +20,23 @@ public class LogBean implements Serializable {
     @JsonIgnore     // Ignore this field when converting to json object
     private String key;
 
-    private String datetime;
-    private String statusId;
+    private Object datetime;
+    private Object statusId;
 
     public LogBean(){
         // empty default constructor, necessary for Firebase to be able to deserialize blog class
     }
 
+    public LogBean(Object timeStamp, Object statusId) {
+        this.datetime = timeStamp;
+        this.statusId = statusId;
+    }
+
     @JsonIgnore
     public Map<String, Object> getObjectMap(){
         Map<String, Object> fieldsMap = new HashMap<>();
-        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_DATETIME, ServerValue.TIMESTAMP);
-        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_STATUSID, 0);
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_DATETIME, this.getDatetime());
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_STATUSID, this.getStatusId());
         return fieldsMap;
     }
 
@@ -43,24 +48,24 @@ public class LogBean implements Serializable {
         this.key = key;
     }
 
-    public String getDatetime() {
+    public Object getDatetime() {
         return datetime;
     }
 
     public String getDatetimeString() {
         try {
-            return DateUtils.getDateTimeString(Long.parseLong(datetime));
+            return DateUtils.getDateTimeString(Long.parseLong((String) datetime));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        return  datetime;
+        return (String) datetime;
     }
 
     public void setDatetime(String datetime) {
         this.datetime = datetime;
     }
 
-    public String getStatusId() {
+    public Object getStatusId() {
         return statusId;
     }
 

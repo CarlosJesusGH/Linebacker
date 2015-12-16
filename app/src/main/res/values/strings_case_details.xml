@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_new_comment">NEW COMMENT</string>
+    <string name="new_comment_added">New comment added</string>
+    <string name="type_comment_here">Type comment here</string>
+    <string name="error_comment_empty">Comment field can\'t be empty</string>
+</resources>

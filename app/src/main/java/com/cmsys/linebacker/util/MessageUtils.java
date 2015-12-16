@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ public class MessageUtils extends AlertDialog{
 	private TextView tvTitle, tvMessage;
 	private EditText etInput;
 	private Button bYes, bNo, bAccept, bCancel, bOk;
+	private ProgressBar progressBar;
 	private View convertView;
 
 	public MessageUtils(Context pContext){
@@ -79,6 +81,7 @@ public class MessageUtils extends AlertDialog{
 		bAccept = (Button) convertView.findViewById(R.id.bAccept);
 		bCancel = (Button) convertView.findViewById(R.id.bCancel);
 		bOk = (Button) convertView.findViewById(R.id.bOk);
+		progressBar = (ProgressBar) convertView.findViewById(R.id.progressBar);
 
 		tvTitle.setText(pTitle);
 		tvMessage.setText(pMessage);
@@ -172,6 +175,10 @@ public class MessageUtils extends AlertDialog{
 
 	public EditText getEtInput() {
 		return etInput;
+	}
+
+	public ProgressBar getProgressBar(){
+		return progressBar;
 	}
 
 	public View getConvertView(){

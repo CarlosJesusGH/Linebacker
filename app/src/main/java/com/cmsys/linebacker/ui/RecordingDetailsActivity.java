@@ -23,6 +23,7 @@ import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
 
 import java.io.File;
 import java.util.HashMap;
@@ -85,10 +86,11 @@ public class RecordingDetailsActivity extends AppCompatActivity {
                             Firebase.setAndroidContext(context);
                             final Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL);
                             //fbRef.child(CONSTANTS.FIREBASE_DOC_CASES + File.separator + mUserId + File.separator + caseBean.getKey())
+                            String logUniqueId = fbRef.push().getKey();
                             Map<String, Object> firebaseTrans = new HashMap<String, Object>();
                             firebaseTrans.put(CONSTANTS.FIREBASE_DOC_CASES + File.separator + mUserId + File.separator + caseBean.getKey(), caseBean.getObjectMap());
                             firebaseTrans.put(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId + File.separator + mRecordingBean.getKey() + File.separator + CONSTANTS.FIREBASE_FIELD_ISONCASE, true);
-                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_CASE_LOGS + File.separator + mRecordingBean.getKey() + File.separator + "0", new LogBean().getObjectMap());
+                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_CASE_LOGS + File.separator + mRecordingBean.getKey() + File.separator + logUniqueId, new LogBean(ServerValue.TIMESTAMP, 0).getObjectMap());
                             fbRef.updateChildren(firebaseTrans, new Firebase.CompletionListener() {
                                 @Override
                                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -99,19 +101,6 @@ public class RecordingDetailsActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-                            /*fbRef.child(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId + File.separator +
-                                    mRecordingBean.getKey() + File.separator + CONSTANTS.FIREBASE_FIELD_ISONCASE)
-                                    .setValue(true, new Firebase.CompletionListener() {
-                                        @Override
-                                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                                            if (firebaseError != null) {
-                                                MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
-                                            } else {
-
-                                            }
-                                        }
-                                    });*/
-
                             mu.cancel();
                         }
                     });
