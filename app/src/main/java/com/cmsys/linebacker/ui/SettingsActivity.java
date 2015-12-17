@@ -29,6 +29,7 @@ import com.cmsys.linebacker.bean.SettingsBean;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
+import com.cmsys.linebacker.util.UserAuthUtils;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -140,7 +141,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         super.onCreate(savedInstanceState);
         setupActionBar();
         // Get user id
-        mUserId = SharedPreferencesUtils.getUserIdFromPreferences(this, getString(R.string.pref_key_user_id));
+        mUserId = UserAuthUtils.getUserId(this);
         if(mUserId == null){
             finish();
         }

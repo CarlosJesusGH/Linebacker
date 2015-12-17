@@ -21,6 +21,7 @@ import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
+import com.cmsys.linebacker.util.UserAuthUtils;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ServerValue;
@@ -45,7 +46,7 @@ public class RecordingDetailsActivity extends AppCompatActivity {
             mRecordingBean = (RecordingBean) bundle.getSerializable(CONSTANTS.BUNDLE_EXTRA_RECORDING);
         }
         // Check if user is logged in
-        mUserId = SharedPreferencesUtils.getUserIdFromPreferences(this, getString(R.string.pref_key_user_id));
+        mUserId = UserAuthUtils.getUserId(this);
         if(mRecordingBean != null && mUserId != null) {
             // Set Home/Up button
             getSupportActionBar().setHomeButtonEnabled(true);

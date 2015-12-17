@@ -33,11 +33,13 @@ import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneCallUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
+import com.cmsys.linebacker.util.UserAuthUtils;
 import com.cmsys.linebacker.util.ViewUtils;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -97,7 +99,7 @@ public class RecordingLogActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         // Check if user is logged in --------------------------------------------------------------
-        mUserId = SharedPreferencesUtils.getUserIdFromPreferences(this, getString(R.string.pref_key_user_id));
+        mUserId = UserAuthUtils.getUserId(this);
         if(mUserId != null){
             // Get Firebase settings if SharedPreference doesn't exists
             if(!SharedPreferencesUtils.checkIfContainsKey(this, getString(R.string.pref_key_setting_block_calls))){
@@ -155,18 +157,21 @@ public class RecordingLogActivity extends AppCompatActivity
                 //adapter.remove((String) dataSnapshot.child("AudioId").getValue());
                 adapter.remove(dataSnapshot.getValue(RecordingBean.class));
             }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {}
+            @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+            @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            @Override public void onCancelled(FirebaseError firebaseError) {}
         });
-
-
+        //
+        firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (!snapshot.hasChildren()) {
+                    ViewUtils.hideProgressBar(progressBar);
+                    MessageUtils.toast(getApplicationContext(), getApplicationContext().getString(R.string.no_recordings), false);
+                }
+            }
+            @Override public void onCancelled(FirebaseError error) {}
+        });
     }
 
 
@@ -217,7 +222,7 @@ public class RecordingLogActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.action_logout) {
-            SharedPreferencesUtils.removeKey(this, getString(R.string.pref_key_user_id));
+            UserAuthUtils.logUserOut(this);
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             return true;

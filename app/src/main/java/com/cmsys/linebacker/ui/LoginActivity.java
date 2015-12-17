@@ -35,7 +35,10 @@ import java.util.List;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
+import com.cmsys.linebacker.util.UserAuthUtils;
+import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -207,7 +210,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return true; //password.length() > 4;
     }
 
     /**
@@ -346,28 +349,56 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            // Firebase access
-            Firebase.setAndroidContext(mContext);
-            Firebase ref = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_USER);
-            // Reading Data Once
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.hasChild(mEmail)) {
-                        mUserExists = true;
-                        mUserId = mEmail;
-                        SharedPreferencesUtils.putOrEditString(mContext, getString(R.string.pref_key_user_id), mUserId);
+            if(UserAuthUtils.AUTH_TYPE == UserAuthUtils.TYPE_CUSTOM) {
+                // Firebase access
+                Firebase.setAndroidContext(mContext);
+                Firebase ref = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_USER);
+                // Reading Data Once
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        if (snapshot.hasChild(mEmail)) {
+                            mUserExists = true;
+                            mUserId = mEmail;
+                            SharedPreferencesUtils.putOrEditString(mContext, getString(R.string.pref_key_user_id), mUserId);
+                            finish();
+                        } else {
+                            mPasswordView.setError(getString(R.string.error_incorrect_password));
+                            mPasswordView.requestFocus();
+                        }
+                        showProgress(false);
+                    }
+
+                    @Override public void onCancelled(FirebaseError firebaseError) {}
+                });
+            }
+            //
+            if(UserAuthUtils.AUTH_TYPE == UserAuthUtils.TYPE_FIREBASE_EMAIL) {
+                // Firebase access
+                Firebase.setAndroidContext(mContext);
+                Firebase ref = new Firebase(CONSTANTS.FIREBASE_APP_URL);
+                // Create a handler to handle the result of the authentication
+                Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
+                    @Override
+                    public void onAuthenticated(AuthData authData) {
+                        // Authenticated successfully with payload authData
+                        MessageUtils.toast(getApplicationContext(), "UserID: " + authData.getUid(), false);
                         finish();
-                    } else {
+                        showProgress(false);
+                    }
+                    @Override
+                    public void onAuthenticationError(FirebaseError firebaseError) {
+                        // Authenticated failed with error firebaseError
+                        MessageUtils.toast(getApplicationContext(), firebaseError.getMessage(), false);
                         mPasswordView.setError(getString(R.string.error_incorrect_password));
                         mPasswordView.requestFocus();
+                        showProgress(false);
                     }
-                    showProgress(false);
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {}
-            });
+                };
+                //
+                // Or with an email/password combination
+                ref.authWithPassword(mEmail, mPassword, authResultHandler);
+            }
         }
 
         @Override
