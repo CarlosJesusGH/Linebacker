@@ -3,6 +3,7 @@ package com.cmsys.linebacker.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -30,18 +31,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.cmsys.linebacker.R;
+import com.cmsys.linebacker.bean.CommentBean;
 import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.CheckInputDataUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
+import com.cmsys.linebacker.util.ViewUtils;
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -73,11 +80,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mActivity = this;
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -99,6 +108,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+
+        Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
+        mEmailRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptRegister();
             }
         });
 
@@ -200,6 +217,72 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = new UserLoginTask(email, password, this);
             mAuthTask.execute((Void) null);
         }
+    }
+
+    private void attemptRegister() {
+        final MessageUtils mu = new MessageUtils(mActivity, getString(R.string.register_new_user), "", R.layout.activity_login_register_new_user, false);
+        mu.setOnClickListenerAccept(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Context context = getApplicationContext();
+                EditText etFirstName = (EditText) mu.getConvertView().findViewById(R.id.etInput1);
+                EditText etMiddleName = (EditText) mu.getConvertView().findViewById(R.id.etInput2);
+                EditText etLastName = (EditText) mu.getConvertView().findViewById(R.id.etInput3);
+                EditText etPhoneNumber = (EditText) mu.getConvertView().findViewById(R.id.etInput4);
+                EditText etAddress = (EditText) mu.getConvertView().findViewById(R.id.etInput5);
+                final EditText etEmail = (EditText) mu.getConvertView().findViewById(R.id.etInput6);
+                EditText etPassword = (EditText) mu.getConvertView().findViewById(R.id.etInput7);
+                EditText etRepeatPassword = (EditText) mu.getConvertView().findViewById(R.id.etInput8);
+                List<EditText> editTextList = new ArrayList<EditText>();
+                editTextList.add(etFirstName); editTextList.add(etMiddleName); editTextList.add(etLastName);
+                editTextList.add(etPhoneNumber); editTextList.add(etAddress); editTextList.add(etEmail);
+                editTextList.add(etPassword); editTextList.add(etRepeatPassword);
+                CheckInputDataUtils.fillAllFieldsSampleData(editTextList);
+                // Check if text is filled
+                if (CheckInputDataUtils.areAllFieldsFilled(editTextList)
+                        && etPassword.getText().toString().equals(etRepeatPassword.getText().toString())
+                        && CheckInputDataUtils.isValidEmail(etEmail.getText())) {
+                    mu.getProgressBar().setVisibility(View.VISIBLE);
+                    mu.getBAccept().setVisibility(View.GONE);
+                    mu.getBCancel().setVisibility(View.GONE);
+                    // Connect to Firebase
+                    Firebase.setAndroidContext(context);
+                    final Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL);
+                    fbRef.createUser(etEmail.getText().toString(), etPassword.getText().toString(), new Firebase.ValueResultHandler<Map<String, Object>>() {
+                        @Override
+                        public void onSuccess(Map<String, Object> result) {
+                            //System.out.println("Successfully created user account with uid: " + result.get("uid"));
+                            MessageUtils.toast(context, getString(R.string.message_new_user_registered) + result.get("uid"), true);
+                            mEmailView.setText(etEmail.getText());
+                            mPasswordView.setText("");
+                            mu.cancel();
+                        }
+                        @Override
+                        public void onError(FirebaseError firebaseError) {
+                            // there was an error
+                            MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+                            mu.getProgressBar().setVisibility(View.GONE);
+                            mu.getBAccept().setVisibility(View.VISIBLE);
+                            mu.getBCancel().setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    if(!CheckInputDataUtils.areAllFieldsFilled(editTextList))
+                        MessageUtils.toast(context, getString(R.string.error_all_fields_required), false);
+                    else if(!CheckInputDataUtils.isValidEmail(etEmail.getText()))
+                        MessageUtils.toast(context, getString(R.string.error_invalid_email), false);
+                    else if(!etPassword.getText().toString().equals(etRepeatPassword.getText().toString()))
+                        MessageUtils.toast(context, getString(R.string.error_passwords_not_match), false);
+                }
+            }
+        });
+        mu.setOnClickListenerCancel(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mu.cancel();
+            }
+        });
+        mu.show();
     }
 
     private boolean isEmailValid(String email) {
@@ -389,9 +472,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void onAuthenticationError(FirebaseError firebaseError) {
                         // Authenticated failed with error firebaseError
-                        MessageUtils.toast(getApplicationContext(), firebaseError.getMessage(), false);
-                        mPasswordView.setError(getString(R.string.error_incorrect_password));
-                        mPasswordView.requestFocus();
+                        if (firebaseError.getCode() == FirebaseError.USER_DOES_NOT_EXIST){
+                            MessageUtils.toast(getApplicationContext(), getApplicationContext().getString(R.string.error_user_does_not_exist), false);
+                        } else if (firebaseError.getCode() == FirebaseError.INVALID_PASSWORD){
+                            mPasswordView.setError(getString(R.string.error_incorrect_password));
+                            mPasswordView.requestFocus();
+                        } else {
+                            MessageUtils.toast(getApplicationContext(), firebaseError.getMessage(), true);
+                        }
+                        //
+                        //MessageUtils.toast(getApplicationContext(), firebaseError.getMessage(), false);
                         showProgress(false);
                     }
                 };
