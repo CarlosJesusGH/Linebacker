@@ -45,15 +45,31 @@ public class CONSTANTS {
     public static String FIREBASE_DOC_CASE_COMMENTS = "commentsByCase";
     public static String FIREBASE_DOC_CASE_CONTACTS = "contactsByUser";
 
+    public static String FIREBASE_FIELD_USERID = "userId";
+    public static String FIREBASE_FIELD_USERFIRSTNAME = "firstName";
+    public static String FIREBASE_FIELD_USERMIDDLENAME = "middleName";
+    public static String FIREBASE_FIELD_USERLASTNAME = "lastName";
+    public static String FIREBASE_FIELD_PHONENUMBER = "phoneNumber";
+    public static String FIREBASE_FIELD_USERADDRESS = "address";
+    public static String FIREBASE_FIELD_EMAIL = "email";
+    public static String FIREBASE_FIELD_USERCREATIONDATE = "creationDate";
+    public static String FIREBASE_FIELD_USERLASTCONNECTION = "lastConnection";
+    public static String FIREBASE_FIELD_USERBIRTHDAY = "birthday";
+    public static String FIREBASE_FIELD_USERLEVEL = "userLevel  ";
+    //
+    public static String FIREBASE_FIELD_SETTINGBLOCKCALLS = "blockCalls";
+    public static String FIREBASE_FIELD_SETTINGDELETEEVERY = "deleteAudiosEveryWeeks";
+    public static String FIREBASE_FIELD_SETTINGEMAILNOTIF = "emailNotification";
+    public static String FIREBASE_FIELD_SETTINGMOBILENOTIF = "mobileNotification";
+    //
     public static String FIREBASE_FIELD_ISONCASE = "isOnCase";
+    public static String FIREBASE_FIELD_DURATION = "duration";
     public static String FIREBASE_FIELD_AUDIOID = "audioId";
     public static String FIREBASE_FIELD_CASEID = "caseId";
     public static String FIREBASE_FIELD_DATETIME = "datetime";
     public static String FIREBASE_FIELD_MARKETINGPHONE = "marketingPhone";
     public static String FIREBASE_FIELD_STATUSID = "statusId";
-    public static String FIREBASE_FIELD_USERPHONE = "userPhone";
     public static String FIREBASE_FIELD_STATUSNAME = "statusName";
-    public static String FIREBASE_FIELD_USERID = "userId";
     public static String FIREBASE_FIELD_COMMENTTEXT = "commentText";
 
     //-----------------------------

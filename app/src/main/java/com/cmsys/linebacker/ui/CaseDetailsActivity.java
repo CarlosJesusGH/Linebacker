@@ -23,23 +23,18 @@ import com.cmsys.linebacker.bean.CaseBean;
 import com.cmsys.linebacker.bean.CommentBean;
 import com.cmsys.linebacker.bean.LogBean;
 import com.cmsys.linebacker.bean.RecordingBean;
+import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
-import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
 import com.cmsys.linebacker.util.ViewUtils;
-import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class CaseDetailsActivity extends AppCompatActivity {
     private RecordingBean mRecordingBean;
@@ -86,7 +81,8 @@ public class CaseDetailsActivity extends AppCompatActivity {
                 Snackbar.make(view, getString(R.string.add_new_comment), Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 final MessageUtils mu = new MessageUtils(activity, getString(R.string.add_new_comment), "", 0, false);
                 mu.getEtInput().setVisibility(View.VISIBLE);
-                mu.getEtInput().setHint(getString(R.string.type_comment_here));
+                //mu.getEtInput().setHint(getString(R.string.type_comment_here));
+                mu.getTilInput().setHint(getString(R.string.type_comment_here));
                 mu.setOnClickListenerAccept(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -163,10 +159,10 @@ public class CaseDetailsActivity extends AppCompatActivity {
                             CaseBean caseBean = (CaseBean) snapshot.getValue(CaseBean.class);
                             if (caseBean != null) {
                                 llCaseDetailsContent.removeAllViews();
-                                addViewToLayout(getString(R.string.recording_phone_number), caseBean.getMarketingPhone(), llCaseDetailsContent, R.layout.activity_case_details_item);
-                                addViewToLayout(getString(R.string.recording_phone_number), caseBean.getUserPhone(), llCaseDetailsContent, R.layout.activity_case_details_item);
-                                addViewToLayout(getString(R.string.recording_date), caseBean.getDatetime().substring(0, caseBean.getDatetime().indexOf(" ")), llCaseDetailsContent, R.layout.activity_case_details_item);
-                                addViewToLayout(getString(R.string.recording_time), caseBean.getDatetime().substring(caseBean.getDatetime().indexOf(" ")), llCaseDetailsContent, R.layout.activity_case_details_item);
+                                addViewToLayout(getString(R.string.case_marketing_phone_number), caseBean.getMarketingPhone(), llCaseDetailsContent, R.layout.activity_case_details_item);
+                                addViewToLayout(getString(R.string.case_user_phone_number), caseBean.getPhoneNumber(), llCaseDetailsContent, R.layout.activity_case_details_item);
+                                addViewToLayout(getString(R.string.recording_date), caseBean.getDatetimeString().substring(0, caseBean.getDatetimeString().indexOf(" ")), llCaseDetailsContent, R.layout.activity_case_details_item);
+                                addViewToLayout(getString(R.string.recording_time), caseBean.getDatetimeString().substring(caseBean.getDatetimeString().indexOf(" ")), llCaseDetailsContent, R.layout.activity_case_details_item);
                                 ref.child(File.separator + CONSTANTS.FIREBASE_DOC_CASE_STATUS + File.separator
                                         + caseBean.getStatusId() + File.separator + CONSTANTS.FIREBASE_FIELD_STATUSNAME)
                                         .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -259,28 +255,47 @@ public class CaseDetailsActivity extends AppCompatActivity {
                     pbCaseComments.setVisibility(View.VISIBLE);
                     // Reading Data Once
                     ref = new Firebase(CONSTANTS.FIREBASE_APP_URL);
-                    ref = ref.child(CONSTANTS.FIREBASE_DOC_CASE_COMMENTS + File.separator + mRecordingBean.getKey());
-                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    ref.child(CONSTANTS.FIREBASE_DOC_CASE_COMMENTS + File.separator + mRecordingBean.getKey())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             llCaseCommentsContent.removeAllViews();
                             if (dataSnapshot.getChildrenCount() > 0) {
+                                int counter = 0;
                                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                    CommentBean commentBean = (CommentBean) child.getValue(CommentBean.class);
-                                    //final boolean lastIter = caseComments.indexOf(iter) == (caseComments.size() - 1) ? true : false;
-                                    addViewToLayout(commentBean.getUserId(), commentBean.getCommentText(), commentBean.getDatetimeString(), llCaseCommentsContent, R.layout.activity_case_details_comments_item);
+                                    final CommentBean commentBean = (CommentBean) child.getValue(CommentBean.class);
+                                    final boolean lastIter = (++counter == dataSnapshot.getChildrenCount()) ? true : false;
+                                    ref.child(CONSTANTS.FIREBASE_DOC_USER + File.separator + mUserId)
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    UserBean userBean = (UserBean) dataSnapshot.getValue(UserBean.class);
+                                                    if (userBean != null)
+                                                        addViewToLayout(userBean.getFirstName() + "\n" + userBean.getLastName(), commentBean.getCommentText(), commentBean.getDatetimeString(), llCaseCommentsContent, R.layout.activity_case_details_comments_item);
+                                                    //addViewToLayout(logBean.getDatetimeString(), (String) dataSnapshot.getValue(), llCaseLogsContent, R.layout.activity_case_details_logs_item);
+                                                    if (lastIter) {
+                                                        // Hide ProgressBar and expand Layout
+                                                        pbCaseComments.setVisibility(View.GONE);
+                                                        ViewUtils.expand(llCaseCommentsContent);
+                                                        ivCaseComments.setImageResource(android.R.drawable.arrow_up_float);
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(FirebaseError firebaseError) {
+                                                }
+                                            });
                                 }
-                                // Hide ProgressBar and expand Layout
-                                pbCaseComments.setVisibility(View.GONE);
-                                ViewUtils.expand(llCaseCommentsContent);
-                                ivCaseComments.setImageResource(android.R.drawable.arrow_up_float);
                             } else {
                                 MessageUtils.toast(getApplicationContext(), getString(R.string.error_no_info_to_show), true);
                                 // Hide ProgressBar
                                 pbCaseComments.setVisibility(View.GONE);
                             }
                         }
-                        @Override public void onCancelled(FirebaseError firebaseError) {}
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                        }
                     });
                 }
             }

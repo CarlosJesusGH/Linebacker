@@ -1,9 +1,15 @@
 package com.cmsys.linebacker.bean;
 
+import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.DateUtils;
+import com.cmsys.linebacker.util.ExceptionUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.firebase.client.ServerValue;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by cj on 27/11/15.
@@ -15,12 +21,38 @@ public class RecordingBean implements Serializable {
 
     private String audioId;
     private String phoneNumber;
-    private String datetime;
+    private Object datetime;
     private String duration;
     private boolean isOnCase;
 
     public RecordingBean(){
         // empty default constructor, necessary for Firebase to be able to deserialize blog class
+    }
+
+    @JsonIgnore
+    public Map<String, Object> getObjectMap(){
+        Map<String, Object> fieldsMap = new HashMap<>();
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_PHONENUMBER, this.getPhoneNumber());
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_DATETIME, this.getDatetime());
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_DURATION, this.getDuration());
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_ISONCASE, this.isOnCase());
+        return fieldsMap;
+    }
+
+    @JsonIgnore
+    public static Map<String, Map<String, Object>> getTestRecordingsMap(String userId) {
+        Map<String, Map<String, Object>> objectsMap = new HashMap<>();
+        for (int i = 1; i <= 5; i++) {
+            //Map<String, Object> fieldsMap = new HashMap<>();
+            RecordingBean recordingBean = new RecordingBean();
+            recordingBean.setKey("test_audio_" + Integer.toString(i) + "_" + userId);
+            recordingBean.setPhoneNumber(Integer.toString(i) + Integer.toString(i) + Integer.toString(i) + "-" + Integer.toString(i) + Integer.toString(i) + Integer.toString(i));
+            recordingBean.setDatetime(ServerValue.TIMESTAMP);
+            recordingBean.setDuration("00:05:00");
+            recordingBean.setIsOnCase(false);
+            objectsMap.put(recordingBean.getKey(), recordingBean.getObjectMap());
+        }
+        return objectsMap;
     }
 
     public String getKey() {
@@ -47,11 +79,22 @@ public class RecordingBean implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getDatetime() {
+    public Object getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(String datetime) {
+    public String getDatetimeString() {
+        try {
+            return DateUtils.getDateTimeString((Long) datetime);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return (String) datetime;
+    }
+
+    public void setDatetime(Object datetime) {
         this.datetime = datetime;
     }
 

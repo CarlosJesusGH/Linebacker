@@ -62,11 +62,7 @@ public class RecordingDetailsActivity extends AppCompatActivity {
         llRecordingDetails = (LinearLayout) findViewById(R.id.llRecordingDetails);
         bReport = (Button) findViewById(R.id.bReport);
 
-        addViewToLayout(getString(R.string.recording_phone_number), mRecordingBean.getPhoneNumber());
-        addViewToLayout(getString(R.string.recording_date), mRecordingBean.getDatetime().substring(0, mRecordingBean.getDatetime().indexOf(" ")));
-        addViewToLayout(getString(R.string.recording_time), mRecordingBean.getDatetime().substring(mRecordingBean.getDatetime().indexOf(" ")));
-        addViewToLayout(getString(R.string.recording_audio_duration), mRecordingBean.getDuration());
-        addViewToLayout(getString(R.string.recording_is_audio_on_case), mRecordingBean.isOnCase() ? getString(R.string.yes) : getString(R.string.no));
+        fillRecordingData();
 
         if(mRecordingBean.isOnCase())
             bReport.setText(getString(R.string.button_show_log));
@@ -99,6 +95,8 @@ public class RecordingDetailsActivity extends AppCompatActivity {
                                         MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
                                     } else {
                                         bReport.setText(getString(R.string.button_show_log));
+                                        mRecordingBean.setIsOnCase(true);
+                                        fillRecordingData();
                                     }
                                 }
                             });
@@ -121,6 +119,15 @@ public class RecordingDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void fillRecordingData(){
+        llRecordingDetails.removeAllViews();
+        addViewToLayout(getString(R.string.recording_phone_number), mRecordingBean.getPhoneNumber());
+        addViewToLayout(getString(R.string.recording_date), mRecordingBean.getDatetimeString().substring(0, mRecordingBean.getDatetimeString().indexOf(" ")));
+        addViewToLayout(getString(R.string.recording_time), mRecordingBean.getDatetimeString().substring(mRecordingBean.getDatetimeString().indexOf(" ")));
+        addViewToLayout(getString(R.string.recording_audio_duration), mRecordingBean.getDuration());
+        addViewToLayout(getString(R.string.recording_is_audio_on_case), mRecordingBean.isOnCase() ? getString(R.string.yes) : getString(R.string.no));
     }
 
     private void addViewToLayout(String pTitle, String pText) {

@@ -1,6 +1,7 @@
 package com.cmsys.linebacker.bean;
 
 import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.DateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
@@ -17,34 +18,34 @@ public class CaseBean implements Serializable {
 
     private String audioId;
     private String caseId;
-    private String datetime;
+    private Object datetime;
     private String marketingPhone;
     private String statusId;
-    private String userPhone;
+    private String phoneNumber;
 
     public CaseBean(){
         // empty default constructor, necessary for Firebase to be able to deserialize blog class
     }
 
     public CaseBean(RecordingBean recordingBean){
-        this.key = recordingBean.getAudioId();
-        this.audioId = recordingBean.getAudioId();
-        this.caseId = recordingBean.getAudioId();
+        this.key = recordingBean.getKey();
+        this.audioId = recordingBean.getKey();
+        this.caseId = recordingBean.getKey();
         this.datetime = recordingBean.getDatetime();
         this.marketingPhone = recordingBean.getPhoneNumber();
         this.statusId = "0";
-        this.userPhone = "UserPhoneNumber";
+        this.phoneNumber = "UserPhoneNumber";
     }
 
     @JsonIgnore
-    public Map<String, String> getObjectMap(){
-        Map<String, String> fieldsMap = new HashMap<>();
+    public Map<String, Object> getObjectMap(){
+        Map<String, Object> fieldsMap = new HashMap<>();
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_AUDIOID, this.getAudioId());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_CASEID, this.getCaseId());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_DATETIME, this.getDatetime());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_MARKETINGPHONE, this.getMarketingPhone());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_STATUSID, this.getStatusId());
-        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERPHONE, this.getUserPhone());
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_PHONENUMBER, this.getPhoneNumber());
         return fieldsMap;
     }
 
@@ -80,16 +81,25 @@ public class CaseBean implements Serializable {
         this.marketingPhone = marketingPhone;
     }
 
-    public String getUserPhone() {
-        return userPhone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setUserPhone(String userPhone) {
-        this.userPhone = userPhone;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getDatetime() {
+    public Object getDatetime() {
         return datetime;
+    }
+
+    public String getDatetimeString() {
+        try {
+            return DateUtils.getDateTimeString(Long.parseLong((String) datetime));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return (String) datetime;
     }
 
     public void setDatetime(String datetime) {

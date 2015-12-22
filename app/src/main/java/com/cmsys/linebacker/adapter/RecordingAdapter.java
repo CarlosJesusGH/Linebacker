@@ -36,7 +36,7 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> {
 
         // Populate the data into the template view using the data object
         tvPhoneNumber.setText(recording.getPhoneNumber());
-        tvDate.setText(recording.getDatetime());
+        tvDate.setText(recording.getDatetimeString());
         tvTime.setVisibility(View.GONE);
         if(recording.isOnCase())
             ivCheck.setImageResource(R.mipmap.ic_check_blue);

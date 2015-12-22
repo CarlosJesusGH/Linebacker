@@ -4,4 +4,6 @@
     <string name="new_comment_added">New comment added</string>
     <string name="type_comment_here">Type comment here</string>
     <string name="error_comment_empty">Comment field can\'t be empty</string>
+    <string name="case_user_phone_number">User Phone:</string>
+    <string name="case_marketing_phone_number">Marketing Phone:</string>
 </resources>

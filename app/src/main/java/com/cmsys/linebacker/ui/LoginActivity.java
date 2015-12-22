@@ -33,11 +33,16 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.CommentBean;
+import com.cmsys.linebacker.bean.LogBean;
+import com.cmsys.linebacker.bean.RecordingBean;
+import com.cmsys.linebacker.bean.SettingsBean;
+import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.CheckInputDataUtils;
 import com.cmsys.linebacker.util.MessageUtils;
@@ -81,6 +86,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private Activity mActivity;
+    private String mUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
@@ -225,11 +231,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View v) {
                 final Context context = getApplicationContext();
-                EditText etFirstName = (EditText) mu.getConvertView().findViewById(R.id.etInput1);
-                EditText etMiddleName = (EditText) mu.getConvertView().findViewById(R.id.etInput2);
-                EditText etLastName = (EditText) mu.getConvertView().findViewById(R.id.etInput3);
-                EditText etPhoneNumber = (EditText) mu.getConvertView().findViewById(R.id.etInput4);
-                EditText etAddress = (EditText) mu.getConvertView().findViewById(R.id.etInput5);
+                final EditText etFirstName = (EditText) mu.getConvertView().findViewById(R.id.etInput1);
+                final EditText etMiddleName = (EditText) mu.getConvertView().findViewById(R.id.etInput2);
+                final EditText etLastName = (EditText) mu.getConvertView().findViewById(R.id.etInput3);
+                final EditText etPhoneNumber = (EditText) mu.getConvertView().findViewById(R.id.etInput4);
+                final EditText etAddress = (EditText) mu.getConvertView().findViewById(R.id.etInput5);
                 final EditText etEmail = (EditText) mu.getConvertView().findViewById(R.id.etInput6);
                 EditText etPassword = (EditText) mu.getConvertView().findViewById(R.id.etInput7);
                 EditText etRepeatPassword = (EditText) mu.getConvertView().findViewById(R.id.etInput8);
@@ -252,15 +258,35 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         @Override
                         public void onSuccess(Map<String, Object> result) {
                             //System.out.println("Successfully created user account with uid: " + result.get("uid"));
-                            MessageUtils.toast(context, getString(R.string.message_new_user_registered) + result.get("uid"), true);
-                            mEmailView.setText(etEmail.getText());
-                            mPasswordView.setText("");
-                            mu.cancel();
+                            mUserId = (String) result.get("uid");
+                            MessageUtils.toast(context, getString(R.string.message_new_user_registered) + mUserId, false);
+                            MessageUtils.toast(context, "NOW CREATING USER SERVER DATA", false);
+                            UserBean userBean = new UserBean(mUserId, etFirstName.getText().toString(), etMiddleName.getText().toString(),
+                                    etLastName.getText().toString(), etPhoneNumber.getText().toString(), etAddress.getText().toString(),
+                                    etEmail.getText().toString(), "0");
+                            Map<String, Object> firebaseTrans = new HashMap<String, Object>();
+                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_USER + File.separator + mUserId, userBean.getObjectMap());
+                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_SETTINGS + File.separator + mUserId, (new SettingsBean().setAllDefaults()).getObjectMap());
+                            // Add test recorded audios TODO remove this at the end
+                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId, RecordingBean.getTestRecordingsMap(mUserId));
+                            fbRef.updateChildren(firebaseTrans, new Firebase.CompletionListener() {
+                                @Override
+                                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                    if (firebaseError != null) {
+                                        MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+                                    } else {
+                                        mEmailView.setText(etEmail.getText());
+                                        mPasswordView.setText("");
+                                        MessageUtils.toast(context, "ALL DATA CREATED SUCCESSFULLY", false);
+                                        mu.cancel();
+                                    }
+                                }
+                            });
                         }
                         @Override
                         public void onError(FirebaseError firebaseError) {
                             // there was an error
-                            MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+                            MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), true);
                             mu.getProgressBar().setVisibility(View.GONE);
                             mu.getBAccept().setVisibility(View.VISIBLE);
                             mu.getBCancel().setVisibility(View.VISIBLE);
@@ -480,7 +506,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         } else {
                             MessageUtils.toast(getApplicationContext(), firebaseError.getMessage(), true);
                         }
-                        //
                         //MessageUtils.toast(getApplicationContext(), firebaseError.getMessage(), false);
                         showProgress(false);
                     }

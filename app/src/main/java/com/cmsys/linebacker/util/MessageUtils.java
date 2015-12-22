@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ public class MessageUtils extends AlertDialog{
 	private int mIdContentView;
 	private TextView tvTitle, tvMessage;
 	private EditText etInput;
+	private TextInputLayout tilInput;
 	private Button bYes, bNo, bAccept, bCancel, bOk;
 	private ProgressBar progressBar;
 	private View convertView;
@@ -76,6 +78,7 @@ public class MessageUtils extends AlertDialog{
 		tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
 		tvMessage = (TextView) convertView.findViewById(R.id.tvMessage);
 		etInput = (EditText) convertView.findViewById(R.id.etInput);
+		tilInput = (TextInputLayout) convertView.findViewById(R.id.tilInput);
 		bYes = (Button) convertView.findViewById(R.id.bYes);
 		bNo = (Button) convertView.findViewById(R.id.bNo);
 		bAccept = (Button) convertView.findViewById(R.id.bAccept);
@@ -175,6 +178,10 @@ public class MessageUtils extends AlertDialog{
 
 	public EditText getEtInput() {
 		return etInput;
+	}
+
+	public TextInputLayout getTilInput() {
+		return tilInput;
 	}
 
 	public ProgressBar getProgressBar(){

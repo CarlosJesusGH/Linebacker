@@ -46,13 +46,18 @@
             android:textColor="@android:color/black"
             android:textSize="15sp" />
 
-        <EditText
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/etInput"
-            android:layout_gravity="bottom"
-            android:gravity="bottom"
-            android:visibility="gone" />
+            android:id="@+id/tilInput">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etInput"
+                android:layout_gravity="bottom"
+                android:gravity="bottom"
+                android:visibility="gone" />
+        </android.support.design.widget.TextInputLayout>
 
         <ProgressBar
             android:layout_width="wrap_content"

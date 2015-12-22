@@ -40,7 +40,7 @@ public class CheckInputDataUtils {
     public static boolean fillAllFieldsSampleData(List<EditText> editTextList) {
         for (EditText iterator: editTextList) {
             if (TextUtils.isEmpty(iterator.getText())) {
-                iterator.setText("Sample Data");
+                iterator.setText("xxx@xxx.xxx");
             }
         }
         return true;
