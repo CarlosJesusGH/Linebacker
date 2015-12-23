@@ -24,6 +24,7 @@ public class RecordingBean implements Serializable {
     private Object datetime;
     private String duration;
     private boolean isOnCase;
+    private String audioFileUrl;
 
     public RecordingBean(){
         // empty default constructor, necessary for Firebase to be able to deserialize blog class
@@ -36,6 +37,7 @@ public class RecordingBean implements Serializable {
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_DATETIME, this.getDatetime());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_DURATION, this.getDuration());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_ISONCASE, this.isOnCase());
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_AUDIOFILEURL, this.getAudioFileUrl());
         return fieldsMap;
     }
 
@@ -50,6 +52,7 @@ public class RecordingBean implements Serializable {
             recordingBean.setDatetime(ServerValue.TIMESTAMP);
             recordingBean.setDuration("00:05:00");
             recordingBean.setIsOnCase(false);
+            recordingBean.setAudioFileUrl("http://dl.dropboxusercontent.com/u/18586179/Linebacker/animal_" + Integer.toString(i) + ".mp3");
             objectsMap.put(recordingBean.getKey(), recordingBean.getObjectMap());
         }
         return objectsMap;
@@ -112,5 +115,13 @@ public class RecordingBean implements Serializable {
 
     public void setIsOnCase(boolean isOnCase) {
         this.isOnCase = isOnCase;
+    }
+
+    public String getAudioFileUrl() {
+        return audioFileUrl;
+    }
+
+    public void setAudioFileUrl(String audioFileUrl) {
+        this.audioFileUrl = audioFileUrl;
     }
 }

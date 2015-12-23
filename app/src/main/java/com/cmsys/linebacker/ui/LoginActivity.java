@@ -243,7 +243,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 editTextList.add(etFirstName); editTextList.add(etMiddleName); editTextList.add(etLastName);
                 editTextList.add(etPhoneNumber); editTextList.add(etAddress); editTextList.add(etEmail);
                 editTextList.add(etPassword); editTextList.add(etRepeatPassword);
-                CheckInputDataUtils.fillAllFieldsSampleData(editTextList);
+                //CheckInputDataUtils.fillAllFieldsSampleData(editTextList);
                 // Check if text is filled
                 if (CheckInputDataUtils.areAllFieldsFilled(editTextList)
                         && etPassword.getText().toString().equals(etRepeatPassword.getText().toString())

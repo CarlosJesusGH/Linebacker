@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.preference.ListPreference;
 import android.preference.SwitchPreference;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.CaseBean;
 import com.cmsys.linebacker.bean.LogBean;
 import com.cmsys.linebacker.bean.RecordingBean;
+import com.cmsys.linebacker.util.AudioUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
@@ -33,7 +35,7 @@ import java.util.Map;
 public class RecordingDetailsActivity extends AppCompatActivity {
     private LinearLayout llRecordingDetails;
     private RecordingBean mRecordingBean;
-    private Button bReport;
+    private Button bReport, bPlay;
     private String mUserId;
 
     @Override
@@ -61,6 +63,7 @@ public class RecordingDetailsActivity extends AppCompatActivity {
     private void setupViews() {
         llRecordingDetails = (LinearLayout) findViewById(R.id.llRecordingDetails);
         bReport = (Button) findViewById(R.id.bReport);
+        bPlay = (Button) findViewById(R.id.bPlayAudio);
 
         fillRecordingData();
 
@@ -117,6 +120,15 @@ public class RecordingDetailsActivity extends AppCompatActivity {
                     intent.putExtra(CONSTANTS.BUNDLE_EXTRA_RECORDING, mRecordingBean);
                     startActivity(intent);
                 }
+            }
+        });
+
+        bPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //AudioUtils.playAudioRaw(getApplicationContext(), R.raw.test_audio_file);
+                //AudioUtils.streamOnDefaultPlayer(activity, "http://www.hrupin.com/wp-content/uploads/mp3/testsong_20_sec.mp3");
+                AudioUtils.streamOnDefaultPlayer(activity, mRecordingBean.getAudioFileUrl());
             }
         });
     }

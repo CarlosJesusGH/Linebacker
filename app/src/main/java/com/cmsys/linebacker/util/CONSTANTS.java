@@ -65,6 +65,8 @@ public class CONSTANTS {
     public static String FIREBASE_FIELD_ISONCASE = "isOnCase";
     public static String FIREBASE_FIELD_DURATION = "duration";
     public static String FIREBASE_FIELD_AUDIOID = "audioId";
+    public static String FIREBASE_FIELD_AUDIOFILEURL = "audioFileUrl";
+    //
     public static String FIREBASE_FIELD_CASEID = "caseId";
     public static String FIREBASE_FIELD_DATETIME = "datetime";
     public static String FIREBASE_FIELD_MARKETINGPHONE = "marketingPhone";
