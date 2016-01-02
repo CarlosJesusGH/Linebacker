@@ -26,9 +26,11 @@ import com.cmsys.linebacker.adapter.RecordingAdapter;
 import com.cmsys.linebacker.bean.LogBean;
 import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.bean.UserBean;
+import com.cmsys.linebacker.gcm.GcmRegistrationAsyncTask;
 import com.cmsys.linebacker.io.DataIO;
 import com.cmsys.linebacker.util.AppInitialSetupUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.GcmUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneCallUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
@@ -40,6 +42,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -90,16 +93,29 @@ public class RecordingLogActivity extends AppCompatActivity
         AppInitialSetupUtils.createAppFolders();
         // Activity Views Setup --------------------------------------------------------------------
         setupViews();
-        // Test code
-        //Intent intent = new Intent(this, SettingsActivity.class);
-        //startActivity(intent);
+        // Check if user is logged in --------------------------------------------------------------
+        mUserId = UserAuthUtils.getUserId(this);
+        // Register device on Google Cloud Messaging backend
+        // Check device for Play Services APK. If check succeeds, proceed
+        // with GCM registration.
+        if (true//GcmUtils.checkPlayServices(this)
+                && mUserId != null) {
+            String regId = GcmUtils.getRegistrationId(this);
+            if (regId.isEmpty()) {
+                Log.i(TAG, "Not registered with GCM.");
+
+                // Register GCM id in the background
+                new GcmRegistrationAsyncTask(this, mUserId).execute();
+            }
+        } else {
+            Log.i(TAG, "No valid Google Play Services APK found.");
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         // Check if user is logged in --------------------------------------------------------------
-        mUserId = UserAuthUtils.getUserId(this);
         if(mUserId != null){
             // Get Firebase settings if SharedPreference doesn't exists
             if(!SharedPreferencesUtils.checkIfContainsKey(this, getString(R.string.pref_key_setting_block_calls))){

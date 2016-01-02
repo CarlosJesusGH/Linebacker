@@ -13,7 +13,7 @@
         <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
         <init-param>
             <param-name>services</param-name>
-            <param-value>com.linebacker.backend.RegistrationEndpoint, com.linebacker.backend.MessagingEndpoint</param-value>
+            <param-value>com.linebacker.backend.RegistrationEndpoint, com.linebacker.backend.MessagingEndpoint, com.linebacker.backend.SendMessageEndpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

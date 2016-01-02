@@ -46,6 +46,7 @@ public class CONSTANTS {
     public static String FIREBASE_DOC_CASE_CONTACTS = "contactsByUser";
 
     public static String FIREBASE_FIELD_USERID = "userId";
+    public static String FIREBASE_FIELD_GCM_REGISTRATION_ID = "gcmRegistrationId";
     public static String FIREBASE_FIELD_USERFIRSTNAME = "firstName";
     public static String FIREBASE_FIELD_USERMIDDLENAME = "middleName";
     public static String FIREBASE_FIELD_USERLASTNAME = "lastName";
