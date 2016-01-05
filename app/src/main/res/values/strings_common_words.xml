@@ -25,6 +25,10 @@
     <string name="message_restored_values">Restored Values</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="user_login_successful">User Login Successful</string>
+    <string name="message_click_back_again_to_exit">Please click BACK again to exit</string>
+    <string name="message_firebase_data_created_successfully">All data created successfully</string>
+    <string name="message_firebase_email_password_sent">Email password sent successfully</string>
+    <string name="message_firebase_user_password_changed">Password changed successfully</string>
 
     <!--Error Messages-->
     <string name="common_error_invalid_email">This email address is invalid</string>
@@ -33,5 +37,6 @@
     <string name="error_no_info_to_show">No info to show</string>
     <string name="error_login">Login Error</string>
     <string name="error_firebase_save">Data could not be saved.\n</string>
+    <string name="error_firebase_connect">Error connecting to Firebase.\n</string>
 
 </resources>

@@ -5,8 +5,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -63,6 +65,7 @@ public class RecordingLogActivity extends AppCompatActivity
     private String mUserId;
     private ListView listView;
     private ProgressBar progressBar;
+    private boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,7 @@ public class RecordingLogActivity extends AppCompatActivity
         setContentView(R.layout.activity_recording_log);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle(getString(R.string.title_activity_recording_log));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +130,26 @@ public class RecordingLogActivity extends AppCompatActivity
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            //super.onBackPressed();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            return;
+        }
+        this.doubleBackToExitPressedOnce = true;
+        MessageUtils.toast(this, getString(R.string.message_click_back_again_to_exit), false);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 
     private void setupViews() {
@@ -196,7 +220,7 @@ public class RecordingLogActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (REQUEST_CODE == requestCode) {
+        if (REQUEST_CODE == requestCode ) {
             Log.i(TAG, "Request code1 = " + requestCode);
             //Intent intent = new Intent(AudioRecordsActivity.this, TService.class);
             //startService(intent);
@@ -205,7 +229,7 @@ public class RecordingLogActivity extends AppCompatActivity
 
     //----------------------------------------------------------------------------------------------
     // Default created methods for back and menu buttons -------------------------------------------
-    @Override
+    /*@Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -213,7 +237,7 @@ public class RecordingLogActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

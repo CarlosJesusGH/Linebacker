@@ -48,9 +48,11 @@ public class CONSTANTS {
     public static String FIREBASE_FIELD_USERID = "userId";
     public static String FIREBASE_FIELD_GCM_REGISTRATION_ID = "gcmRegistrationId";
     public static String FIREBASE_FIELD_USERFIRSTNAME = "firstName";
-    public static String FIREBASE_FIELD_USERMIDDLENAME = "middleName";
     public static String FIREBASE_FIELD_USERLASTNAME = "lastName";
     public static String FIREBASE_FIELD_PHONENUMBER = "phoneNumber";
+    public static String FIREBASE_FIELD_USERSTATE = "state";
+    public static String FIREBASE_FIELD_USERCITY = "city";
+    public static String FIREBASE_FIELD_USERZIPCODE = "zipCode";
     public static String FIREBASE_FIELD_USERADDRESS = "address";
     public static String FIREBASE_FIELD_EMAIL = "email";
     public static String FIREBASE_FIELD_USERCREATIONDATE = "creationDate";

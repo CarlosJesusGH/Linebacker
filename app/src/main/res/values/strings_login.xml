@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="register_new_user">REGISTER USER</string>
+    <string name="password_recovery">PASSWORD RECOVERY</string>
+    <string name="send_new_password">SEND PASSWORD</string>
+    <!-- -->
     <string name="new_user_first_name">First Name</string>
-    <string name="new_user_middle_name">Middle Name</string>
     <string name="new_user_last_name">Last Name</string>
     <string name="new_user_phone_number">Phone Number</string>
     <string name="new_user_address">Address</string>
+    <string name="new_user_state">State</string>
+    <string name="new_user_city">City</string>
+    <string name="new_user_zip_code">Zip Code</string>
     <string name="new_user_email">Email</string>
     <string name="new_user_password">Password</string>
     <string name="new_user_password_repeat">Repeat Password</string>
     <!-- -->
-    <string name="message_new_user_registered">New user created succesfully \nUser Id: </string>
+    <string name="insert_received_email_password">Received Email Password</string>
+    <string name="insert_new_password">Insert New Password</string>
+    <string name="insert_new_password_repeat">Repeat New Password</string>
+    <!-- -->
+    <string name="button_send_email_password"><u>Send New Email Password</u></string>
+    <!-- -->
+    <string name="message_new_user_registered">New user created successfully \nUser Id: </string>
     <!-- -->
     <string name="error_passwords_not_match">Both passwords must be the same</string>
     <string name="error_user_does_not_exist">User doesn\'t exist, try registering</string>

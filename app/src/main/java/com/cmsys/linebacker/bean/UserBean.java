@@ -18,25 +18,29 @@ public class UserBean implements Serializable {
 
     private String address;
     private String birthday;
+    private String city;
     private Object creationDate;
     private String email;
     private String firstName;
     private Object lastConnection;
     private String lastName;
-    private String middleName;
     private String phoneNumber;
+    private String state;
     private int userLevel;
+    private String zipCode;
 
     public UserBean(){
         // empty default constructor, necessary for Firebase to be able to deserialize blog class
     }
 
-    public UserBean(String uId, String firstName, String middleName, String lastName, String phoneNumber, String address, String email, String birthday) {
+    public UserBean(String uId, String firstName, String lastName, String phoneNumber, String state, String city, String zipCode, String address, String email, String birthday) {
         this.key = uId;
         this.firstName = firstName;
-        this.middleName = middleName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+        this.state = state;
+        this.city = city;
+        this.zipCode = zipCode;
         this.address = address;
         this.email = email;
         this.birthday = birthday;
@@ -49,9 +53,11 @@ public class UserBean implements Serializable {
     public Map<String, Object> getObjectMap(){
         Map<String, Object> fieldsMap = new HashMap<>();
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERFIRSTNAME, this.getFirstName());
-        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERMIDDLENAME, this.getMiddleName());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERLASTNAME, this.getLastName());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_PHONENUMBER, this.getPhoneNumber());
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERSTATE, this.getState());
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERCITY, this.getCity());
+        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERZIPCODE, this.getZipCode());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERADDRESS, this.getAddress());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_EMAIL, this.getEmail());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERBIRTHDAY, this.getBirthday());
@@ -146,14 +152,6 @@ public class UserBean implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -168,5 +166,29 @@ public class UserBean implements Serializable {
 
     public void setUserLevel(int userLevel) {
         this.userLevel = userLevel;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 }

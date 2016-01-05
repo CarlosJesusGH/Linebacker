@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -88,6 +91,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private Activity mActivity;
     private String mUserId;
 
+    private boolean doubleBackToExitPressedOnce = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,8 +130,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        Button mPasswordRecovery = (Button) findViewById(R.id.password_recovery);
+        mPasswordRecovery.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptPasswordRecovery();
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            //super.onBackPressed();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            return;
+        }
+        this.doubleBackToExitPressedOnce = true;
+        MessageUtils.toast(this, getString(R.string.message_click_back_again_to_exit), false);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 
     private void populateAutoComplete() {
@@ -231,18 +264,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View v) {
                 final Context context = getApplicationContext();
-                final EditText etFirstName = (EditText) mu.getConvertView().findViewById(R.id.etInput1);
-                final EditText etMiddleName = (EditText) mu.getConvertView().findViewById(R.id.etInput2);
-                final EditText etLastName = (EditText) mu.getConvertView().findViewById(R.id.etInput3);
-                final EditText etPhoneNumber = (EditText) mu.getConvertView().findViewById(R.id.etInput4);
-                final EditText etAddress = (EditText) mu.getConvertView().findViewById(R.id.etInput5);
-                final EditText etEmail = (EditText) mu.getConvertView().findViewById(R.id.etInput6);
-                EditText etPassword = (EditText) mu.getConvertView().findViewById(R.id.etInput7);
-                EditText etRepeatPassword = (EditText) mu.getConvertView().findViewById(R.id.etInput8);
+                final EditText etFirstName = (EditText) mu.getConvertView().findViewById(R.id.etInputFirstName);
+                final EditText etLastName = (EditText) mu.getConvertView().findViewById(R.id.etInputLastName);
+                final EditText etPhoneNumber = (EditText) mu.getConvertView().findViewById(R.id.etInputPhoneNumber);
+                final EditText etState = (EditText) mu.getConvertView().findViewById(R.id.etInputState);
+                final EditText etCity = (EditText) mu.getConvertView().findViewById(R.id.etInputCity);
+                final EditText etZipCode = (EditText) mu.getConvertView().findViewById(R.id.etInputZipCode);
+                final EditText etAddress = (EditText) mu.getConvertView().findViewById(R.id.etInputAddress);
+                final EditText etEmail = (EditText) mu.getConvertView().findViewById(R.id.etInputEmail);
+                EditText etPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputPassword);
+                EditText etRepeatPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputRepeatPassword);
+                //
                 List<EditText> editTextList = new ArrayList<EditText>();
-                editTextList.add(etFirstName); editTextList.add(etMiddleName); editTextList.add(etLastName);
-                editTextList.add(etPhoneNumber); editTextList.add(etAddress); editTextList.add(etEmail);
-                editTextList.add(etPassword); editTextList.add(etRepeatPassword);
+                editTextList.add(etFirstName); editTextList.add(etLastName); editTextList.add(etPhoneNumber);
+                editTextList.add(etState); editTextList.add(etCity); editTextList.add(etZipCode); editTextList.add(etAddress);
+                editTextList.add(etEmail); editTextList.add(etPassword); editTextList.add(etRepeatPassword);
                 //CheckInputDataUtils.fillAllFieldsSampleData(editTextList);
                 // Check if text is filled
                 if (CheckInputDataUtils.areAllFieldsFilled(editTextList)
@@ -261,8 +297,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             mUserId = (String) result.get("uid");
                             MessageUtils.toast(context, getString(R.string.message_new_user_registered) + mUserId, false);
                             MessageUtils.toast(context, "NOW CREATING USER SERVER DATA", false);
-                            UserBean userBean = new UserBean(mUserId, etFirstName.getText().toString(), etMiddleName.getText().toString(),
-                                    etLastName.getText().toString(), etPhoneNumber.getText().toString(), etAddress.getText().toString(),
+                            UserBean userBean = new UserBean(mUserId, etFirstName.getText().toString(),
+                                    etLastName.getText().toString(), etPhoneNumber.getText().toString(),
+                                    etState.getText().toString(), etCity.getText().toString(),
+                                    etZipCode.getText().toString(), etAddress.getText().toString(),
                                     etEmail.getText().toString(), "0");
                             Map<String, Object> firebaseTrans = new HashMap<String, Object>();
                             firebaseTrans.put(CONSTANTS.FIREBASE_DOC_USER + File.separator + mUserId, userBean.getObjectMap());
@@ -277,7 +315,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                     } else {
                                         mEmailView.setText(etEmail.getText());
                                         mPasswordView.setText("");
-                                        MessageUtils.toast(context, "ALL DATA CREATED SUCCESSFULLY", false);
+                                        MessageUtils.toast(context, context.getString(R.string.message_firebase_data_created_successfully), false);
                                         mu.cancel();
                                     }
                                 }
@@ -306,6 +344,127 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View v) {
                 mu.cancel();
+            }
+        });
+        mu.show();
+        // Try getting phone number from SIM card
+        TelephonyManager tMgr = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String phoneNumber = tMgr.getLine1Number();
+        if(!TextUtils.isEmpty(phoneNumber))
+            ((EditText) mu.getConvertView().findViewById(R.id.etInputPhoneNumber)).setText(phoneNumber);
+    }
+
+    void attemptPasswordRecovery(){
+        final MessageUtils mu = new MessageUtils(mActivity, getString(R.string.password_recovery), "", R.layout.activity_login_password_recovery, false);
+        mu.setOnClickListenerAccept(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText etEmail = (EditText) mu.getConvertView().findViewById(R.id.etInputEmail);
+                EditText etReceivedEmailPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputReceivedEmailPassword);
+                EditText etNewPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputNewPassword);
+                EditText etRepeatNewPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputRepeatNewPassword);
+                //
+                List<EditText> editTextList = new ArrayList<EditText>();
+                editTextList.add(etEmail); editTextList.add(etReceivedEmailPassword);
+                editTextList.add(etNewPassword); editTextList.add(etRepeatNewPassword);
+                // Check if text is filled
+                if (CheckInputDataUtils.areAllFieldsFilled(editTextList)
+                        && etNewPassword.getText().toString().equals(etRepeatNewPassword.getText().toString())
+                        && CheckInputDataUtils.isValidEmail(etEmail.getText())) {
+                    // Show progress bar
+                    mu.getProgressBar().setVisibility(View.VISIBLE);
+                    mu.getBAccept().setVisibility(View.GONE);
+                    mu.getBCancel().setVisibility(View.GONE);
+                    // Firebase change user password
+                    Firebase.setAndroidContext(getApplicationContext());
+                    Firebase ref = new Firebase(CONSTANTS.FIREBASE_APP_URL);
+                    ref.changePassword(etEmail.getText().toString(), etReceivedEmailPassword.getText().toString(),
+                            etNewPassword.getText().toString(), new Firebase.ResultHandler() {
+                        @Override
+                        public void onSuccess() {
+                            // password changed
+                            MessageUtils.toast(getApplicationContext(), getString(R.string.message_firebase_user_password_changed), false);
+                            mu.cancel();
+                            mEmailView.setText(etEmail.getText());
+                            mPasswordView.setText("");
+                        }
+
+                        @Override
+                        public void onError(FirebaseError firebaseError) {
+                            // error encountered
+                            MessageUtils.toast(getApplicationContext(), getApplicationContext().getString(R.string.error_firebase_connect) + firebaseError.getMessage(), true);
+                            mu.getProgressBar().setVisibility(View.GONE);
+                            mu.getBAccept().setVisibility(View.VISIBLE);
+                            mu.getBCancel().setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    if(!CheckInputDataUtils.areAllFieldsFilled(editTextList))
+                        MessageUtils.toast(getApplicationContext(), getString(R.string.error_all_fields_required), false);
+                    else if(!CheckInputDataUtils.isValidEmail(etEmail.getText()))
+                        MessageUtils.toast(getApplicationContext(), getString(R.string.error_invalid_email), false);
+                    else if(!etNewPassword.getText().toString().equals(etRepeatNewPassword.getText().toString()))
+                        MessageUtils.toast(getApplicationContext(), getString(R.string.error_passwords_not_match), false);
+                }
+            }
+        });
+        mu.setOnClickListenerCancel(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mu.cancel();
+            }
+        });
+        TextView tvSendNewEmailPassword = (TextView) mu.getConvertView().findViewById(R.id.tvSendNewEmailPassword);
+        tvSendNewEmailPassword.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final MessageUtils mu2 = new MessageUtils(mActivity, getString(R.string.send_new_password), getString(R.string.are_you_sure), 0, false);
+                mu2.setOnClickListenerYes(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText etEmail = (EditText) mu.getConvertView().findViewById(R.id.etInputEmail);
+                        if (CheckInputDataUtils.isValidEmail(etEmail.getText())) {
+                            mu2.cancel();
+                            // Show progress bar
+                            mu.getProgressBar().setVisibility(View.VISIBLE);
+                            mu.getBAccept().setVisibility(View.GONE);
+                            mu.getBCancel().setVisibility(View.GONE);
+                            // Send Firebase Password Reset Email
+                            Firebase.setAndroidContext(getApplicationContext());
+                            Firebase ref = new Firebase(CONSTANTS.FIREBASE_APP_URL);
+                            ref.resetPassword(etEmail.getText().toString(), new Firebase.ResultHandler() {
+                                @Override
+                                public void onSuccess() {
+                                    // password reset email sent
+                                    MessageUtils.toast(getApplicationContext(), getApplicationContext().getString(R.string.message_firebase_email_password_sent), false);
+                                    mu.getProgressBar().setVisibility(View.GONE);
+                                    mu.getBAccept().setVisibility(View.VISIBLE);
+                                    mu.getBCancel().setVisibility(View.VISIBLE);
+                                }
+
+                                @Override
+                                public void onError(FirebaseError firebaseError) {
+                                    // error encountered
+                                    MessageUtils.toast(getApplicationContext(), getApplicationContext().getString(R.string.error_firebase_connect) + firebaseError.getMessage(), true);
+                                    mu.getProgressBar().setVisibility(View.GONE);
+                                    mu.getBAccept().setVisibility(View.VISIBLE);
+                                    mu.getBCancel().setVisibility(View.VISIBLE);
+                                }
+                            });
+                        } else {
+                            MessageUtils.toast(getApplicationContext(), getString(R.string.error_invalid_email), false);
+                            mu2.cancel();
+                        }
+                    }
+                });
+                mu2.setOnClickListenerNo(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mu2.cancel();
+                    }
+                });
+                mu2.getBAccept().setVisibility(View.GONE);
+                mu2.show();
             }
         });
         mu.show();
@@ -491,7 +650,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void onAuthenticated(AuthData authData) {
                         // Authenticated successfully with payload authData
-                        MessageUtils.toast(getApplicationContext(), "UserID: " + authData.getUid(), false);
+                        //MessageUtils.toast(getApplicationContext(), "UserID: " + authData.getUid(), false);
                         finish();
                         showProgress(false);
                     }

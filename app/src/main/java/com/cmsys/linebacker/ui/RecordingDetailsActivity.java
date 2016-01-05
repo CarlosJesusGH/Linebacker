@@ -128,7 +128,9 @@ public class RecordingDetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //AudioUtils.playAudioRaw(getApplicationContext(), R.raw.test_audio_file);
                 //AudioUtils.streamOnDefaultPlayer(activity, "http://www.hrupin.com/wp-content/uploads/mp3/testsong_20_sec.mp3");
-                AudioUtils.streamOnDefaultPlayer(activity, mRecordingBean.getAudioFileUrl());
+                // Stream player doesn't work using https, so we use replace
+                AudioUtils.streamOnDefaultPlayer(activity, mRecordingBean.getAudioFileUrl().replace("https", "http"));
+                MessageUtils.toast(getApplicationContext(), mRecordingBean.getAudioFileUrl().replace("https", "http"), true);
             }
         });
     }
