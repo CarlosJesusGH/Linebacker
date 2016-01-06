@@ -106,6 +106,9 @@ public class MessageUtils extends AlertDialog{
 	public void setOnClickListenerYes(View.OnClickListener onClickListener){
 		bYes.setVisibility(View.VISIBLE);
 		bYes.setOnClickListener(onClickListener);
+		// Hide ACCEPT button if using YES instead
+		if(bAccept.getVisibility() == View.VISIBLE)
+			bAccept.setVisibility(View.GONE);
 	}
 
 	public void setOnClickListenerNo(View.OnClickListener onClickListener){

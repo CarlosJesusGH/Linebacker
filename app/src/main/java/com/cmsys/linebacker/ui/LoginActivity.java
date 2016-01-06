@@ -41,8 +41,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.cmsys.linebacker.R;
-import com.cmsys.linebacker.bean.CommentBean;
-import com.cmsys.linebacker.bean.LogBean;
 import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.bean.SettingsBean;
 import com.cmsys.linebacker.bean.UserBean;
@@ -51,12 +49,10 @@ import com.cmsys.linebacker.util.CheckInputDataUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
-import com.cmsys.linebacker.util.ViewUtils;
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -138,6 +134,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        Button mDeleteUser = (Button) findViewById(R.id.delete_user);
+        mDeleteUser.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptDeleteUser();
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
@@ -157,7 +161,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                doubleBackToExitPressedOnce=false;
+                doubleBackToExitPressedOnce = false;
             }
         }, 2000);
     }
@@ -267,17 +271,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 final EditText etFirstName = (EditText) mu.getConvertView().findViewById(R.id.etInputFirstName);
                 final EditText etLastName = (EditText) mu.getConvertView().findViewById(R.id.etInputLastName);
                 final EditText etPhoneNumber = (EditText) mu.getConvertView().findViewById(R.id.etInputPhoneNumber);
-                final EditText etState = (EditText) mu.getConvertView().findViewById(R.id.etInputState);
-                final EditText etCity = (EditText) mu.getConvertView().findViewById(R.id.etInputCity);
+                //final EditText etState = (EditText) mu.getConvertView().findViewById(R.id.etInputState);
+                //final EditText etCity = (EditText) mu.getConvertView().findViewById(R.id.etInputCity);
                 final EditText etZipCode = (EditText) mu.getConvertView().findViewById(R.id.etInputZipCode);
-                final EditText etAddress = (EditText) mu.getConvertView().findViewById(R.id.etInputAddress);
+                //final EditText etAddress = (EditText) mu.getConvertView().findViewById(R.id.etInputAddress);
                 final EditText etEmail = (EditText) mu.getConvertView().findViewById(R.id.etInputEmail);
                 EditText etPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputPassword);
                 EditText etRepeatPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputRepeatPassword);
                 //
                 List<EditText> editTextList = new ArrayList<EditText>();
                 editTextList.add(etFirstName); editTextList.add(etLastName); editTextList.add(etPhoneNumber);
-                editTextList.add(etState); editTextList.add(etCity); editTextList.add(etZipCode); editTextList.add(etAddress);
+                editTextList.add(etZipCode); //editTextList.add(etState); editTextList.add(etCity); editTextList.add(etAddress);
                 editTextList.add(etEmail); editTextList.add(etPassword); editTextList.add(etRepeatPassword);
                 //CheckInputDataUtils.fillAllFieldsSampleData(editTextList);
                 // Check if text is filled
@@ -299,8 +303,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             MessageUtils.toast(context, "NOW CREATING USER SERVER DATA", false);
                             UserBean userBean = new UserBean(mUserId, etFirstName.getText().toString(),
                                     etLastName.getText().toString(), etPhoneNumber.getText().toString(),
-                                    etState.getText().toString(), etCity.getText().toString(),
-                                    etZipCode.getText().toString(), etAddress.getText().toString(),
+                                    //etState.getText().toString(), etCity.getText().toString(), etAddress.getText().toString(),
+                                    etZipCode.getText().toString(),
                                     etEmail.getText().toString(), "0");
                             Map<String, Object> firebaseTrans = new HashMap<String, Object>();
                             firebaseTrans.put(CONSTANTS.FIREBASE_DOC_USER + File.separator + mUserId, userBean.getObjectMap());
@@ -470,6 +474,63 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mu.show();
     }
 
+    void attemptDeleteUser(){
+        if(!TextUtils.isEmpty(mEmailView.getText()) && !TextUtils.isEmpty(mPasswordView.getText())){
+            // Setup Firebase connection
+            Firebase.setAndroidContext(getApplicationContext());
+            final Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL);
+            // Get user unique ID
+            Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(AuthData authData) {
+                    // Authenticated successfully with payload authData
+                    //MessageUtils.toast(getApplicationContext(), "UserID: " + authData.getUid(), false);
+                    mUserId = authData.getUid();
+                    // Remove user data on Firebase
+                    Map<String, Object> firebaseTrans = new HashMap<String, Object>();
+                    firebaseTrans.put(CONSTANTS.FIREBASE_DOC_USER + File.separator + mUserId, null);
+                    firebaseTrans.put(CONSTANTS.FIREBASE_DOC_SETTINGS + File.separator + mUserId, null);
+                    firebaseTrans.put(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId, null);
+                    firebaseTrans.put(CONSTANTS.FIREBASE_DOC_CASES + File.separator + mUserId, null);
+                    firebaseTrans.put(CONSTANTS.FIREBASE_DOC_CONTACTS + File.separator + mUserId, null);
+                    fbRef.updateChildren(firebaseTrans, new Firebase.CompletionListener() {
+                        @Override
+                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                            if (firebaseError != null) {
+                                MessageUtils.toast(getApplicationContext(), firebaseError.getMessage(), false);
+                            } else {
+                                MessageUtils.toast(getApplicationContext(), getString(R.string.message_firebase_data_removed_successfully), false);
+                                // Remove Firebase user
+                                fbRef.removeUser(mEmailView.getText().toString(), mPasswordView.getText().toString(),
+                                        new Firebase.ResultHandler() {
+                                            @Override
+                                            public void onSuccess() {
+                                                // user removed
+                                                MessageUtils.toast(getApplicationContext(), getString(R.string.message_firebase_user_removed), true);
+                                            }
+
+                                            @Override
+                                            public void onError(FirebaseError firebaseError) {
+                                                // error encountered
+                                                MessageUtils.toast(getApplicationContext(), getString(R.string.error_firebase_connect) + firebaseError.getMessage(), true);
+                                            }
+                                        });
+                            }
+                        }
+                    });
+                }
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    // Authenticated failed with error firebaseError
+                    MessageUtils.toast(getApplicationContext(), firebaseError.getMessage(), true);
+                }
+            };
+            fbRef.authWithPassword(mEmailView.getText().toString(), mPasswordView.getText().toString(), authResultHandler);
+        } else {
+            MessageUtils.toast(getApplicationContext(), getString(R.string.error_all_fields_required), false);
+        }
+    }
+
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         //return email.contains("@");
@@ -596,7 +657,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             try {
                 // Simulate network access.
-                Thread.sleep(2000);
+                Thread.sleep(1);//2000);
             } catch (InterruptedException e) {
                 return false;
             }
@@ -651,7 +712,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     public void onAuthenticated(AuthData authData) {
                         // Authenticated successfully with payload authData
                         //MessageUtils.toast(getApplicationContext(), "UserID: " + authData.getUid(), false);
-                        finish();
+                        //finish();
+                        Intent intent = new Intent(getApplicationContext(), RecordingLogActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                         showProgress(false);
                     }
                     @Override

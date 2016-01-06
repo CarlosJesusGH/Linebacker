@@ -90,6 +90,15 @@
                 android:text="@string/action_password_recovery"
                 android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/delete_user"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/action_delete_user"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

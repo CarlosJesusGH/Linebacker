@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -25,7 +24,6 @@ import android.widget.ProgressBar;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.adapter.RecordingAdapter;
-import com.cmsys.linebacker.bean.LogBean;
 import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.gcm.GcmRegistrationAsyncTask;
@@ -34,7 +32,6 @@ import com.cmsys.linebacker.util.AppInitialSetupUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.GcmUtils;
 import com.cmsys.linebacker.util.MessageUtils;
-import com.cmsys.linebacker.util.PhoneCallUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
@@ -44,13 +41,10 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static com.cmsys.linebacker.util.LogUtils.makeLogTag;
 
@@ -268,35 +262,48 @@ public class RecordingLogActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.action_upload_contacts) {
-            //PhoneContactUtils.getPhoneContacts(getApplicationContext());
-            listView.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
-            MessageUtils.toast(getApplicationContext(), getString(R.string.uploading_contacts), false);
-            // New Thread
-            new Thread(new Runnable() {
+            final MessageUtils mu = new MessageUtils(this, getString(R.string.action_upload_contacts), getString(R.string.are_you_sure), 0, false);
+            mu.setOnClickListenerYes(new View.OnClickListener() {
                 @Override
-                public void run() {
-                    // Get phone contacts info
-                    HashMap<String, HashMap<String, Object>> hmContacts = PhoneContactUtils.getPhoneContactsHashMap(getApplicationContext());
-                    // Save contacts to Firebase
-                    final Context context = getApplicationContext();
-                    Firebase.setAndroidContext(context);
-                    Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL);
-                    fbRef = fbRef.child(CONSTANTS.FIREBASE_DOC_CASE_CONTACTS + File.separator + mUserId);
-                    fbRef.setValue(hmContacts, new Firebase.CompletionListener() {
+                public void onClick(View v) {
+                    listView.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.VISIBLE);
+                    MessageUtils.toast(getApplicationContext(), getString(R.string.uploading_contacts), false);
+                    // New Thread
+                    new Thread(new Runnable() {
                         @Override
-                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                            if (firebaseError != null) {
-                                MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
-                            } else {
-                                MessageUtils.toast(context, getString(R.string.upload_successful), false);
-                                listView.setVisibility(View.VISIBLE);
-                                progressBar.setVisibility(View.GONE);
-                            }
+                        public void run() {
+                            // Get phone contacts info
+                            HashMap<String, HashMap<String, Object>> hmContacts = PhoneContactUtils.getPhoneContactsHashMap(getApplicationContext());
+                            // Save contacts to Firebase
+                            final Context context = getApplicationContext();
+                            Firebase.setAndroidContext(context);
+                            Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL);
+                            fbRef = fbRef.child(CONSTANTS.FIREBASE_DOC_CONTACTS + File.separator + mUserId);
+                            fbRef.setValue(hmContacts, new Firebase.CompletionListener() {
+                                @Override
+                                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                    if (firebaseError != null) {
+                                        MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+                                    } else {
+                                        MessageUtils.toast(context, getString(R.string.upload_successful), false);
+                                        listView.setVisibility(View.VISIBLE);
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
                         }
-                    });
+                    }).start();
+                    mu.cancel();
                 }
-            }).start();
+            });
+            mu.setOnClickListenerNo(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mu.cancel();
+                }
+            });
+            mu.show();
         }
 
         return super.onOptionsItemSelected(item);

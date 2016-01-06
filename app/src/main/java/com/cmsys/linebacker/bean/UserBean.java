@@ -1,5 +1,7 @@
 package com.cmsys.linebacker.bean;
 
+import android.text.TextUtils;
+
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.DateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,15 +35,15 @@ public class UserBean implements Serializable {
         // empty default constructor, necessary for Firebase to be able to deserialize blog class
     }
 
-    public UserBean(String uId, String firstName, String lastName, String phoneNumber, String state, String city, String zipCode, String address, String email, String birthday) {
+    public UserBean(String uId, String firstName, String lastName, String phoneNumber, String zipCode, String email, String birthday) {
         this.key = uId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.state = state;
-        this.city = city;
+        //this.state = state;
+        //this.city = city;
         this.zipCode = zipCode;
-        this.address = address;
+        //this.address = address;
         this.email = email;
         this.birthday = birthday;
         this.creationDate = ServerValue.TIMESTAMP;
@@ -55,10 +57,13 @@ public class UserBean implements Serializable {
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERFIRSTNAME, this.getFirstName());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERLASTNAME, this.getLastName());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_PHONENUMBER, this.getPhoneNumber());
-        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERSTATE, this.getState());
-        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERCITY, this.getCity());
+        if(!TextUtils.isEmpty(this.getState()))
+            fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERSTATE, this.getState());
+        if(!TextUtils.isEmpty(this.getCity()))
+            fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERCITY, this.getCity());
+        if(!TextUtils.isEmpty(this.getAddress()))
+            fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERADDRESS, this.getAddress());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERZIPCODE, this.getZipCode());
-        fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERADDRESS, this.getAddress());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_EMAIL, this.getEmail());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERBIRTHDAY, this.getBirthday());
         fieldsMap.put(CONSTANTS.FIREBASE_FIELD_USERCREATIONDATE, this.getCreationDate());

@@ -11,6 +11,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -243,9 +244,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         SharedPreferencesUtils.putOrEditString(context, getString(R.string.pref_key_setting_delete_weeks), mSettings.getDeleteAudiosEveryWeeks());
                         //
                         addPreferencesFromResource(R.xml.pref_general);
-                        SwitchPreference blockCalls = (SwitchPreference) findPreference(getString(R.string.pref_key_setting_block_calls));
-                        SwitchPreference mobileNotification = (SwitchPreference) findPreference(getString(R.string.pref_key_setting_mobile_notification));
-                        SwitchPreference emailNotification = (SwitchPreference) findPreference(getString(R.string.pref_key_setting_email_notification));
+                        CheckBoxPreference blockCalls = (CheckBoxPreference) findPreference(getString(R.string.pref_key_setting_block_calls));
+                        CheckBoxPreference mobileNotification = (CheckBoxPreference) findPreference(getString(R.string.pref_key_setting_mobile_notification));
+                        CheckBoxPreference emailNotification = (CheckBoxPreference) findPreference(getString(R.string.pref_key_setting_email_notification));
                         ListPreference deleteAudiosEveryWeeks = (ListPreference) findPreference(getString(R.string.pref_key_setting_delete_weeks));
                         deleteAudiosEveryWeeks.setSummary(mSettings.getDeleteAudiosEveryWeeks() + " week" + (Integer.parseInt(mSettings.getDeleteAudiosEveryWeeks()) > 1 ? "s" : ""));
                         //
@@ -261,8 +262,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                                             if (preference instanceof SwitchPreference) {
                                                 SwitchPreference switchPref = (SwitchPreference) preference;
                                                 switchPref.setChecked((Boolean) newValue);
-                                            }
-                                            if (preference instanceof ListPreference) {
+                                            }else if (preference instanceof CheckBoxPreference) {
+                                                CheckBoxPreference checkBoxPref = (CheckBoxPreference) preference;
+                                                checkBoxPref.setChecked((Boolean) newValue);
+                                            }else if (preference instanceof ListPreference) {
                                                 ListPreference listPref = (ListPreference) preference;
                                                 listPref.setValue((String) newValue);
                                                 listPref.setSummary(listPref.getEntry());

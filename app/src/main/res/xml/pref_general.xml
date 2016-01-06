@@ -1,18 +1,18 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <SwitchPreference
+    <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/pref_key_setting_block_calls"
         android:summary="@string/pref_description_setting_block_calls"
         android:title="@string/pref_title_setting_block_calls" />
 
-    <SwitchPreference
+    <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/pref_key_setting_mobile_notification"
         android:summary="@string/pref_description_setting_mobile_notification"
         android:title="@string/pref_title_setting_mobile_notification" />
 
-    <SwitchPreference
+    <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/pref_key_setting_email_notification"
         android:summary="@string/pref_description_setting_email_notification"
