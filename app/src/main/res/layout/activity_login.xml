@@ -59,9 +59,10 @@
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
+                    android:fontFamily="sans-serif"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text=""/>
+                    android:text="" />
 
             </android.support.design.widget.TextInputLayout>
 

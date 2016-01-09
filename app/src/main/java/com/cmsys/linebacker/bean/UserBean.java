@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.DateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.firebase.client.ServerValue;
 
 import java.io.Serializable;
@@ -12,8 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by cj on 22/11/15.
+ * Created by CarlosJesusGH on 22/11/15.
  */
+@JsonIgnoreProperties(ignoreUnknown=true)    // Use if necessary
 public class UserBean implements Serializable {
     @JsonIgnore     // Ignore this field when converting to json object
     private String key;
@@ -40,10 +42,7 @@ public class UserBean implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        //this.state = state;
-        //this.city = city;
         this.zipCode = zipCode;
-        //this.address = address;
         this.email = email;
         this.birthday = birthday;
         this.creationDate = ServerValue.TIMESTAMP;
