@@ -23,6 +23,7 @@
     <string name="message_delete_register_confirmation">Do you really want to DELETE this register?</string>
     <string name="message_register_id">Register Id: </string>
     <string name="message_restored_values">Restored Values</string>
+    <string name="wait_still_loading">Wait, still loading</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="user_login_successful">User Login Successful</string>
     <string name="message_click_back_again_to_exit">Please click BACK again to exit</string>

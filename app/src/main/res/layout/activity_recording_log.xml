@@ -20,6 +20,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_audio_records"
-        app:menu="@menu/activity_audio_records_drawer" />
+        app:menu="@menu/activity_recording_log_drawer" />
 
 </android.support.v4.widget.DrawerLayout>

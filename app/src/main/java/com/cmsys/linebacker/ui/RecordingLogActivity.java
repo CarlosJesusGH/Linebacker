@@ -8,7 +8,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,9 +22,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.adapter.RecordingAdapter;
@@ -58,8 +67,11 @@ public class RecordingLogActivity extends AppCompatActivity
     private UserBean mUser;     // Check if necessary
     private String mUserId;
     private ListView listView;
+    private RecordingAdapter mRecordingAdapter;
     private ProgressBar progressBar;
     private boolean doubleBackToExitPressedOnce = false;
+    private MenuItem mSearchAction;
+    private Boolean isSearchOpened = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +125,9 @@ public class RecordingLogActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+        if(isSearchOpened){
+            isSearchOpened = ViewUtils.handleMenuSearch(this, mRecordingAdapter, isSearchOpened, mSearchAction);
+        }
         // Check if user is logged in --------------------------------------------------------------
         if(mUserId != null){
             // Get Firebase settings if SharedPreference doesn't exists
@@ -165,9 +180,9 @@ public class RecordingLogActivity extends AppCompatActivity
         // Firebase Setup --------------------------------------------------------------------------
         //
         // Create a new Adapter
-        final RecordingAdapter adapter = new RecordingAdapter(this, new ArrayList<RecordingBean>());
+        mRecordingAdapter = new RecordingAdapter(this, new ArrayList<RecordingBean>());
         // Assign adapter to ListView
-        listView.setAdapter(adapter);
+        listView.setAdapter(mRecordingAdapter);
         // Set Firebase Context.
         Firebase.setAndroidContext(this);
         // Get Firebase Reference
@@ -182,14 +197,14 @@ public class RecordingLogActivity extends AppCompatActivity
                 //System.out.println(snapshot.getValue());
                 RecordingBean newRecording = snapshot.getValue(RecordingBean.class);
                 newRecording.setKey(snapshot.getKey());
-                adapter.add(newRecording);
+                mRecordingAdapter.add(newRecording);
                 ViewUtils.hideProgressBar(progressBar);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 //adapter.remove((String) dataSnapshot.child("AudioId").getValue());
-                adapter.remove(dataSnapshot.getValue(RecordingBean.class));
+                mRecordingAdapter.remove(dataSnapshot.getValue(RecordingBean.class));
             }
             @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
             @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
@@ -240,6 +255,12 @@ public class RecordingLogActivity extends AppCompatActivity
         return true;
     }
 
+    /*@Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        mSearchAction = menu.findItem(R.id.action_search);
+        return super.onPrepareOptionsMenu(menu);
+    }*/
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -247,7 +268,14 @@ public class RecordingLogActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_search) {
+            if(progressBar.getVisibility() == View.VISIBLE) {
+                MessageUtils.toast(getApplicationContext(), getString(R.string.wait_still_loading), false);
+            } else {
+                mSearchAction = item;
+                isSearchOpened = ViewUtils.handleMenuSearch(this, mRecordingAdapter, isSearchOpened, mSearchAction);
+            }
+        }
         if (id == R.id.action_settings) {
             //MessageUtils mu = new MessageUtils(this, "Settings", "Go to settings activity", 0, true);
             //MessageUtils.toast(this, "Go to settings activity...", false);
@@ -308,6 +336,8 @@ public class RecordingLogActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
