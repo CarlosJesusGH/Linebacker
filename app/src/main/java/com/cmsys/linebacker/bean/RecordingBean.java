@@ -23,10 +23,11 @@ public class RecordingBean implements Serializable {
     private String phoneNumber;
     private Object datetime;
     private String duration;
-    private boolean isOnCase;
-    private boolean isContact;
     private String audioFileUrl;
     private String contactName;
+    private boolean isOnCase;
+    private boolean isContact;
+    private boolean wasAlreadyPlayed;
 
     public RecordingBean(){
         // empty default constructor, necessary for Firebase to be able to deserialize blog class
@@ -129,6 +130,22 @@ public class RecordingBean implements Serializable {
         this.duration = duration;
     }
 
+    public String getAudioFileUrl() {
+        return audioFileUrl;
+    }
+
+    public void setAudioFileUrl(String audioFileUrl) {
+        this.audioFileUrl = audioFileUrl;
+    }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
     public boolean isOnCase() {
         return isOnCase;
     }
@@ -145,19 +162,11 @@ public class RecordingBean implements Serializable {
         this.isContact = isContact;
     }
 
-    public String getAudioFileUrl() {
-        return audioFileUrl;
+    public boolean wasAlreadyPlayed() {
+        return wasAlreadyPlayed;
     }
 
-    public void setAudioFileUrl(String audioFileUrl) {
-        this.audioFileUrl = audioFileUrl;
-    }
-
-    public String getContactName() {
-        return contactName;
-    }
-
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
+    public void setWasAlreadyPlayed(boolean wasAlreadyPlayed) {
+        this.wasAlreadyPlayed = wasAlreadyPlayed;
     }
 }

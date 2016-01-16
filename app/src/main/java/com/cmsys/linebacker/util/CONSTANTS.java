@@ -67,6 +67,7 @@ public class CONSTANTS {
     //
     public static String FIREBASE_FIELD_ISONCASE = "isOnCase";
     public static String FIREBASE_FIELD_ISCONTACT = "isContact";
+    public static String FIREBASE_FIELD_WASALREADYPLAYED = "wasAlreadyPlayed";
     public static String FIREBASE_FIELD_DURATION = "duration";
     public static String FIREBASE_FIELD_AUDIOID = "audioId";
     public static String FIREBASE_FIELD_AUDIOFILEURL = "audioFileUrl";

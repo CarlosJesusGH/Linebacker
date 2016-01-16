@@ -6,4 +6,6 @@
     <color name="colorPrimaryDark">#004276</color>
     <!--<color name="colorAccent">#FF4081</color>-->
     <color name="colorAccent">#40c3ff</color>
+
+    <!--<color name="colorPlayedRecording">#eeeeee</color>-->
 </resources>

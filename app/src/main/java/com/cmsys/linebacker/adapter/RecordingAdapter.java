@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.RecordingBean;
@@ -54,6 +55,7 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Fil
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_recording_log_item, parent, false);
         }
         // Lookup view for data population
+        RelativeLayout rlRecordingItem = (RelativeLayout) convertView.findViewById(R.id.rlRecordingItem);
         TextView tvPhoneNumber = (TextView) convertView.findViewById(R.id.tvPhoneNumber);
         TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
         TextView tvTime = (TextView) convertView.findViewById(R.id.tvTime);
@@ -61,6 +63,10 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Fil
         ImageView ivCheck = (ImageView) convertView.findViewById(R.id.ivCheck);
 
         // Populate the data into the template view using the data object
+        if (recording.wasAlreadyPlayed())
+            rlRecordingItem.setBackgroundResource(0);//R.color.colorPlayedRecording);
+        else
+            rlRecordingItem.setBackgroundResource(android.R.color.white);
 
         tvPhoneNumber.setText(recording.getPhoneNumber());
         tvDate.setText(recording.getDateString());

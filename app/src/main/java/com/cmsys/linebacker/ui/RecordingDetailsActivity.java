@@ -129,12 +129,26 @@ public class RecordingDetailsActivity extends AppCompatActivity {
         bPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //AudioUtils.playAudioRaw(getApplicationContext(), R.raw.test_audio_file);
-                //AudioUtils.streamOnDefaultPlayer(activity, "http://www.hrupin.com/wp-content/uploads/mp3/testsong_20_sec.mp3");
-                // Stream player doesn't work using https, so we use replace
-                AudioUtils.streamOnDefaultPlayer(activity, mRecordingBean.getAudioFileUrl().replace("https", "http"));
-                //Show message with file url
-                //MessageUtils.toast(getApplicationContext(), mRecordingBean.getAudioFileUrl().replace("https", "http"), true);
+                if (mRecordingBean.wasAlreadyPlayed()) {
+                    AudioUtils.streamOnDefaultPlayer(activity, mRecordingBean.getAudioFileUrl().replace("https", "http"));
+                } else {
+                    bPlay.setEnabled(false);
+                    // Update wasAlreadyPlayed field
+                    Firebase.setAndroidContext(context);
+                    final Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId + File.separator + mRecordingBean.getKey() + File.separator + CONSTANTS.FIREBASE_FIELD_WASALREADYPLAYED);
+                    fbRef.setValue(true, new Firebase.CompletionListener() {
+                        @Override
+                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                            if (firebaseError != null) {
+                                MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+                            } else {
+                                AudioUtils.streamOnDefaultPlayer(activity, mRecordingBean.getAudioFileUrl().replace("https", "http"));
+                                mRecordingBean.setWasAlreadyPlayed(true);
+                            }
+                            bPlay.setEnabled(true);
+                        }
+                    });
+                }
             }
         });
     }
