@@ -32,6 +32,18 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
+
+        <!-- Add Facebook metadata and activity -->
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/app_name" />
+        <provider android:authorities="com.facebook.app.FacebookContentProvider1543906325933041"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true" />
+        <!-- __________________________________ -->
+
         <activity
             android:name=".ui.RecordingLogActivity"
             android:label="@string/app_name"

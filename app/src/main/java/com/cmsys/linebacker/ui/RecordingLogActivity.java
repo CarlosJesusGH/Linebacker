@@ -1,11 +1,15 @@
 package com.cmsys.linebacker.ui;
 
+import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -39,12 +43,18 @@ import com.cmsys.linebacker.gcm.GcmRegistrationAsyncTask;
 import com.cmsys.linebacker.io.DataIO;
 import com.cmsys.linebacker.util.AppInitialSetupUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.ExceptionUtils;
 import com.cmsys.linebacker.util.GcmUtils;
+import com.cmsys.linebacker.util.IntentUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
 import com.cmsys.linebacker.util.ViewUtils;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -62,9 +72,9 @@ public class RecordingLogActivity extends AppCompatActivity
 
     private static final String TAG = makeLogTag(RecordingLogActivity.class);
     private static final int REQUEST_CODE = 0;
-    private DevicePolicyManager mDPM;
-    private ComponentName mAdminName;
-    private UserBean mUser;     // Check if necessary
+    private static final int PICK_CONTACT = 1;
+    private NavigationView navigationView;
+    private UserBean mUserBean;     // Check if necessary
     private String mUserId;
     private ListView listView;
     private RecordingAdapter mRecordingAdapter;
@@ -72,10 +82,17 @@ public class RecordingLogActivity extends AppCompatActivity
     private boolean doubleBackToExitPressedOnce = false;
     private MenuItem mSearchAction;
     private Boolean isSearchOpened = false;
+    private boolean isFiltered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Initialize the SDK before executing any other operations,
+        // especially, if you're using Facebook UI elements.
+        // https://developers.facebook.com/docs/android/getting-started
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        //IntentUtils.generateFacebookKeyHash(this);
+        //
         setContentView(R.layout.activity_recording_log);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -96,8 +113,12 @@ public class RecordingLogActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        /*navigationView.getMenu().findItem(R.id.nav_show_all).setChecked(true);
+        navigationView.getMenu().findItem(R.id.nav_contacts_only).setChecked(false);
+        navigationView.getMenu().findItem(R.id.nav_in_case_only).setChecked(false);
+        navigationView.getMenu().findItem(R.id.nav_not_in_case_only).setChecked(false);*/
 
         // Initial App Setup -----------------------------------------------------------------------
         AppInitialSetupUtils.createAppFolders();
@@ -125,8 +146,11 @@ public class RecordingLogActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        if(isSearchOpened){
-            isSearchOpened = ViewUtils.handleMenuSearch(this, mRecordingAdapter, isSearchOpened, mSearchAction);
+        if(isSearchOpened || isFiltered){
+            isSearchOpened = ViewUtils.handleMenuSearch(this, mRecordingAdapter, true, mSearchAction);
+            if(isFiltered){
+                resetNavigationDrawerFilters();
+            }
         }
         // Check if user is logged in --------------------------------------------------------------
         if(mUserId != null){
@@ -134,11 +158,53 @@ public class RecordingLogActivity extends AppCompatActivity
             if(!SharedPreferencesUtils.checkIfContainsKey(this, getString(R.string.pref_key_setting_block_calls))){
                 DataIO.getFirebaseSettings(this, mUserId);
             }
+            if(mUserBean == null){
+                // Access Firebase user data
+                Firebase ref = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_USER + File.separator + mUserId);
+                // Reading Data Once
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            try {
+                                mUserBean = (UserBean) snapshot.getValue(UserBean.class);
+                                ((TextView) navigationView.getHeaderView(0).findViewById(R.id.tvNavHeaderTitle))
+                                        .setText(mUserBean.getFirstName() + " " + mUserBean.getLastName());
+                                ((TextView) navigationView.getHeaderView(0).findViewById(R.id.tvNavHeaderText1))
+                                        .setText(mUserBean.getPhoneNumber());
+                                ((TextView) navigationView.getHeaderView(0).findViewById(R.id.tvNavHeaderText2))
+                                        .setText(mUserBean.getUserLevel() == 0 ? "Free Account" : "Premium Account");
+                            } catch (Exception e) {
+                                ExceptionUtils.displayExceptionMessage(getApplicationContext(), e);
+                            }
+                        } else {
+                            MessageUtils.toast(getApplicationContext(), "USER DATA IS NOT CREATED\n" +
+                                    "PLEASE WRITE US AN EMAIL", true);
+                        }
+                    }
+
+                    @Override public void onCancelled(FirebaseError firebaseError) {}
+                });
+            }
             getDataFromFirebase();
         } else{
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Logs 'install' and 'app activate' App Events.
+        AppEventsLogger.activateApp(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Logs 'app deactivate' App Event.
+        AppEventsLogger.deactivateApp(this);
     }
 
     @Override
@@ -176,6 +242,14 @@ public class RecordingLogActivity extends AppCompatActivity
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
     }
 
+    private void resetNavigationDrawerFilters() {
+        navigationView.getMenu().findItem(R.id.nav_show_all).setChecked(false);
+        navigationView.getMenu().findItem(R.id.nav_contacts_only).setChecked(false);
+        navigationView.getMenu().findItem(R.id.nav_blocked_only).setChecked(false);
+        navigationView.getMenu().findItem(R.id.nav_in_case_only).setChecked(false);
+        navigationView.getMenu().findItem(R.id.nav_not_in_case_only).setChecked(false);
+    }
+
     private void getDataFromFirebase(){
         // Firebase Setup --------------------------------------------------------------------------
         //
@@ -199,6 +273,7 @@ public class RecordingLogActivity extends AppCompatActivity
                 newRecording.setKey(snapshot.getKey());
                 mRecordingAdapter.add(newRecording);
                 ViewUtils.hideProgressBar(progressBar);
+                resetNavigationDrawerFilters();
             }
 
             @Override
@@ -228,11 +303,18 @@ public class RecordingLogActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (REQUEST_CODE == requestCode ) {
-            Log.i(TAG, "Request code1 = " + requestCode);
-            //Intent intent = new Intent(AudioRecordsActivity.this, TService.class);
-            //startService(intent);
+        switch (requestCode) {
+            case (PICK_CONTACT):
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri contactData = data.getData();
+                    Cursor c = getContentResolver().query(contactData, null, null, null, null);
+                    if (c.moveToFirst()) {
+                        String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        // TODO Whatever you want to do with the selected contact name.
+                        MessageUtils.toast(getApplicationContext(), name, false);
+                    }
+                }
+                break;
         }
     }
 
@@ -255,11 +337,11 @@ public class RecordingLogActivity extends AppCompatActivity
         return true;
     }
 
-    /*@Override
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         mSearchAction = menu.findItem(R.id.action_search);
         return super.onPrepareOptionsMenu(menu);
-    }*/
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -269,10 +351,11 @@ public class RecordingLogActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_search) {
+            resetNavigationDrawerFilters();
             if(progressBar.getVisibility() == View.VISIBLE) {
                 MessageUtils.toast(getApplicationContext(), getString(R.string.wait_still_loading), false);
             } else {
-                mSearchAction = item;
+                //mSearchAction = item;
                 isSearchOpened = ViewUtils.handleMenuSearch(this, mRecordingAdapter, isSearchOpened, mSearchAction);
             }
         }
@@ -344,23 +427,64 @@ public class RecordingLogActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        /*if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_send) {
-
-        } else*/ if (id == R.id.nav_manage) {
-            MessageUtils.toast(this, "Go to settings activity...", false);
-        } else if (id == R.id.nav_share) {
-            MessageUtils.toast(this, "Go to share activity...", false);
+        // Compare id
+        // Filters ----------------------------------------------------------
+        if (id == R.id.nav_show_all){
+            newFilter(null);
+        } else if (id == R.id.nav_contacts_only) {
+            newFilter(CONSTANTS.FIREBASE_FIELD_ISCONTACT + "=true");
+        } else if (id == R.id.nav_blocked_only) {
+            newFilter(CONSTANTS.FIREBASE_FIELD_ISCONTACT + "=false");
+        } else if (id == R.id.nav_in_case_only) {
+            newFilter(CONSTANTS.FIREBASE_FIELD_ISONCASE + "=true");
+        } else if (id == R.id.nav_not_in_case_only) {
+            newFilter(CONSTANTS.FIREBASE_FIELD_ISONCASE + "=false");
+        }
+        // Options ----------------------------------------------------------
+        else if (id == R.id.nav_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_phone_contacts) {
+            //Intent intent= new Intent(Intent.ACTION_PICK,  Contacts.CONTENT_URI);
+            //startActivityForResult(intent, PICK_CONTACT);
+            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+            startActivityForResult(intent, PICK_CONTACT);
+        } else if (id == R.id.nav_upgrade) {
+            Uri uri = Uri.parse("http://clouditapp.com/dev/linebacker/en/index.html#"); // missing 'http://' will cause crashed
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        } else if (id == R.id.nav_help) {
+            Uri uri = Uri.parse("http://clouditapp.com/dev/linebacker/en/index.html#"); // missing 'http://' will cause crashed
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        }
+        // Share ------------------------------------------------------------
+        else if (id == R.id.nav_share_whatsapp) {
+            String message = getString(R.string.message_share_whatsapp) + "\n"
+                    + getString(R.string.message_share_url);
+            IntentUtils.shareMessageToWhatsapp(this, message);
+        } else if (id == R.id.nav_share_facebook) {
+            IntentUtils.shareMessageToFacebook(this, getString(R.string.app_name),
+                    getString(R.string.message_share_facebook),
+                    getString(R.string.message_share_url));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void newFilter(String filter){
+        if(progressBar.getVisibility() == View.VISIBLE) {
+            MessageUtils.toast(getApplicationContext(), getString(R.string.wait_still_loading), false);
+        } else {
+            isSearchOpened = ViewUtils.handleMenuSearch(this, mRecordingAdapter, true, mSearchAction);
+            if(filter != null) {
+                mRecordingAdapter.getFilter().filter(filter);
+                isFiltered = true;
+            }
+        }
+    }
+
+
 }

@@ -43,7 +43,11 @@ public class HashMapUtils {
         //while (cursor.moveToNext()) {
             HashMap<String, String> hashMap = new HashMap<>();
             for (int j = 0; j < cursor.getColumnCount(); j++) {
-                hashMap.put(cursor.getColumnName(j),cursor.getString(j));
+                try {
+                    hashMap.put(cursor.getColumnName(j), cursor.getString(j));
+                } catch (Exception e) {
+                    hashMap.put(cursor.getColumnName(j), e.getMessage());
+                }
             }
             list.add(hashMap);
             cursor.moveToNext();

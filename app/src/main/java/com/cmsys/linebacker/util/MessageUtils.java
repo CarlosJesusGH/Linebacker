@@ -183,6 +183,12 @@ public class MessageUtils extends AlertDialog{
 		return etInput;
 	}
 
+	public void showEditTextAndSoftKeyboard() {
+		getEtInput().setVisibility(View.VISIBLE);
+		getEtInput().requestFocus();
+		ViewUtils.showSoftKeyboardOnAlertDialog(this);
+	}
+
 	public TextInputLayout getTilInput() {
 		return tilInput;
 	}

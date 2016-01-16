@@ -10,6 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="text"
-        android:imeOptions="actionSearch" />
+        android:imeOptions="actionSearch"
+        android:hint="@string/action_search"
+        android:background="@null" />
 
 </LinearLayout>

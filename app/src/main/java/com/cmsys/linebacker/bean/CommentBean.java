@@ -3,15 +3,16 @@ package com.cmsys.linebacker.bean;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.DateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by cj on 04/12/15.
+ * Created by CarlosJesusGH on 04/12/15.
  */
-// @JsonIgnoreProperties(ignoreUnknown=true)    // Use if necessary
+@JsonIgnoreProperties(ignoreUnknown=true)    // Use if necessary
 public class CommentBean implements Serializable {
     @JsonIgnore     // Ignore this field when converting to json object
     private String key;

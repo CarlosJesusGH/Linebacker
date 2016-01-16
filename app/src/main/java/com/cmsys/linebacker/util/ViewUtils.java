@@ -1,6 +1,7 @@
 package com.cmsys.linebacker.util;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.view.inputmethod.InputMethodManager;
@@ -96,6 +98,11 @@ public class ViewUtils {
         editText.requestFocus();
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    public static void showSoftKeyboardOnAlertDialog(AlertDialog alertDialog) {
+
+        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
     public static Boolean handleMenuSearch(AppCompatActivity activity, final ArrayAdapter arrayAdapter, Boolean isSearchOpened, MenuItem menuItem){

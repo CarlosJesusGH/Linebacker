@@ -18,6 +18,14 @@ public class DateUtils {
 		String date = sdf.format(pDate);
 		return date;
 	}
+
+	public static String getDateString(Long pTimeStamp){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(pTimeStamp);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+		String date = sdf.format(calendar.getTime());
+		return date;
+	}
 	
 	public static String getDateTimeString(Date pDate){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -63,24 +71,6 @@ public class DateUtils {
 		}
 		return sdfStandard.format(parsed);		
 	}
-	
-	static public String customFormatCasagri(String pDate){
-		Date parsed = new Date();
-		SimpleDateFormat sdfStandard = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-		SimpleDateFormat sdfCasagri = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-		try{		    
-		    parsed = sdfStandard.parse(pDate);
-		}catch(ParseException pe){
-			Log.e("ERROR", "throw new IllegalArgumentException()");
-			return "";		    
-		}
-		return sdfCasagri.format(parsed);		
-	}
-	
-	static public String customFormatCasagri(Date pDate){
-		SimpleDateFormat sdfCasagri = new SimpleDateFormat("dd-MM-yyyy", Locale.US);		
-		return sdfCasagri.format(pDate);		
-	}
 
     static public String getCustomFormat(String pCurrentDate, String pCurrentFormat, String pNewFormat){
         Date parsed = new Date();
@@ -93,4 +83,12 @@ public class DateUtils {
         }
         return sdfStandard.format(parsed);
     }
+
+	public static String getTimeString(Long pTimeStamp){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(pTimeStamp);
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
+		String date = sdf.format(calendar.getTime());
+		return date;
+	}
 }

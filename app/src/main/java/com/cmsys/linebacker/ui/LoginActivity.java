@@ -637,7 +637,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * the user.
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
         private Context mContext;
         private final String mEmail;
         private final String mPassword;
@@ -653,32 +652,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(1);//2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            /*for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }*/
-
-            // TODO: register the new account here.
-            if(mUserExists) return true;
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            if(UserAuthUtils.AUTH_TYPE == UserAuthUtils.TYPE_CUSTOM) {
+            /*if(UserAuthUtils.AUTH_TYPE == UserAuthUtils.TYPE_CUSTOM) {
                 // Firebase access
                 Firebase.setAndroidContext(mContext);
                 Firebase ref = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_USER);
@@ -700,7 +675,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     @Override public void onCancelled(FirebaseError firebaseError) {}
                 });
-            }
+            }*/
             //
             if(UserAuthUtils.AUTH_TYPE == UserAuthUtils.TYPE_FIREBASE_EMAIL) {
                 // Firebase access
@@ -712,7 +687,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     public void onAuthenticated(AuthData authData) {
                         // Authenticated successfully with payload authData
                         //MessageUtils.toast(getApplicationContext(), "UserID: " + authData.getUid(), false);
-                        //finish();
                         Intent intent = new Intent(getApplicationContext(), RecordingLogActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
@@ -737,6 +711,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // Or with an email/password combination
                 ref.authWithPassword(mEmail, mPassword, authResultHandler);
             }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+
         }
 
         @Override

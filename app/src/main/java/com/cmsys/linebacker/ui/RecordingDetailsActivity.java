@@ -67,7 +67,10 @@ public class RecordingDetailsActivity extends AppCompatActivity {
 
         fillRecordingData();
 
-        if(mRecordingBean.isOnCase())
+        if (mRecordingBean.isContact())
+            bReport.setVisibility(View.GONE);
+
+        if (mRecordingBean.isOnCase())
             bReport.setText(getString(R.string.button_show_log));
 
         final Activity activity = this;
@@ -138,10 +141,13 @@ public class RecordingDetailsActivity extends AppCompatActivity {
 
     private void fillRecordingData(){
         llRecordingDetails.removeAllViews();
+        if(mRecordingBean.isContact())
+            addViewToLayout(getString(R.string.recording_contact_name), mRecordingBean.getContactName());
         addViewToLayout(getString(R.string.recording_phone_number), mRecordingBean.getPhoneNumber());
-        addViewToLayout(getString(R.string.recording_date), mRecordingBean.getDatetimeString().substring(0, mRecordingBean.getDatetimeString().indexOf(" ")));
-        addViewToLayout(getString(R.string.recording_time), mRecordingBean.getDatetimeString().substring(mRecordingBean.getDatetimeString().indexOf(" ")));
+        addViewToLayout(getString(R.string.recording_date), mRecordingBean.getDateString());
+        addViewToLayout(getString(R.string.recording_time), mRecordingBean.getTimeString());
         addViewToLayout(getString(R.string.recording_audio_duration), mRecordingBean.getDuration());
+        if(!mRecordingBean.isContact())
         addViewToLayout(getString(R.string.recording_is_audio_on_case), mRecordingBean.isOnCase() ? getString(R.string.yes) : getString(R.string.no));
     }
 

@@ -1,6 +1,9 @@
 package com.cmsys.linebacker.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.provider.ContactsContract;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.RecordingBean;
+import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.PhoneCallUtils;
+import com.cmsys.linebacker.util.PhoneContactUtils;
+
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -49,16 +57,42 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Fil
         TextView tvPhoneNumber = (TextView) convertView.findViewById(R.id.tvPhoneNumber);
         TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
         TextView tvTime = (TextView) convertView.findViewById(R.id.tvTime);
+        ImageView ivContact = (ImageView) convertView.findViewById(R.id.ivContact);
         ImageView ivCheck = (ImageView) convertView.findViewById(R.id.ivCheck);
 
         // Populate the data into the template view using the data object
+
         tvPhoneNumber.setText(recording.getPhoneNumber());
-        tvDate.setText(recording.getDatetimeString());
-        tvTime.setVisibility(View.GONE);
+        tvDate.setText(recording.getDateString());
+        tvTime.setText(recording.getTimeString() + " (" + recording.getDuration() + ")");
         if(recording.isOnCase())
             ivCheck.setImageResource(R.mipmap.ic_check_blue);
         else
             ivCheck.setImageResource(R.mipmap.ic_check_gray);
+        // Set contactt image if exists
+        if (recording.isContact()) {
+            // Hide check image
+            ivCheck.setVisibility(View.GONE);
+            // Load contact name and image
+            Long contactId = PhoneContactUtils.getContactIdByPhone(getContext(), recording.getPhoneNumber());
+            if (contactId != null) {
+                // Set contact name
+                String contactName = PhoneContactUtils.getDisplayNameById(getContext(), contactId);
+                if (!TextUtils.isEmpty(contactName)) {
+                    tvPhoneNumber.setText(contactName);
+                    recording.setContactName(contactName);
+                }
+                // Set contact image
+                InputStream inputStream = PhoneContactUtils.getThumbnailPhotoById(getContext(), contactId);
+                if (inputStream != null)
+                    ivContact.setImageDrawable(Drawable.createFromStream(inputStream, ""));
+                else
+                    ivContact.setImageResource(R.drawable.ic_help_24dp);
+            }
+        } else {
+            ivContact.setImageResource(R.mipmap.ic_launcher);
+            ivCheck.setVisibility(View.VISIBLE);
+        }
         // Return the completed view to render on screen
         return convertView;
     }
@@ -81,12 +115,26 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Fil
                 FilterResults results = new FilterResults();
                 ArrayList<RecordingBean> FilteredArrayNames = new ArrayList<RecordingBean>();
 
-                // perform your search here using the searchConstraint String.
+                // Perform your search here using the searchConstraint String.
 
-                constraint = constraint.toString().toLowerCase();
+                //boolean onlyContacts = false, onlyInCase = false, onlyNotInCase = false;
+                //if()
+                String lowerConstraint = constraint.toString().toLowerCase();
                 for (RecordingBean iterator : mRecordings) {
-                    if (iterator.getPhoneNumber().toLowerCase().contains(constraint.toString())
-                            || iterator.getDatetimeString().contains(constraint.toString())){
+                    if(constraint.equals(CONSTANTS.FIREBASE_FIELD_ISCONTACT + "=true")
+                            && iterator.isContact()){
+                        FilteredArrayNames.add(iterator);
+                    } else if(constraint.equals(CONSTANTS.FIREBASE_FIELD_ISCONTACT + "=false")
+                            && !iterator.isContact()){
+                        FilteredArrayNames.add(iterator);
+                    } else if(constraint.equals(CONSTANTS.FIREBASE_FIELD_ISONCASE + "=true")
+                            && iterator.isOnCase()){
+                        FilteredArrayNames.add(iterator);
+                    } else if(constraint.equals(CONSTANTS.FIREBASE_FIELD_ISONCASE + "=false")
+                            && !iterator.isOnCase()){
+                        FilteredArrayNames.add(iterator);
+                    } else if (iterator.getPhoneNumber().toLowerCase().contains(lowerConstraint.toString())
+                            || iterator.getDatetimeString().contains(lowerConstraint.toString())){
                         FilteredArrayNames.add(iterator);
                     }
                 }

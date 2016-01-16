@@ -1,35 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="Filters" android:id="@+id/group_filters">
+        <menu android:checkableBehavior="single" android:id="@+id/menu_filters">
+            <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/nav_show_all"
+                android:icon="@drawable/ic_all_inclusive_24px"
+                android:title="Show All" />
+            <item
+                android:id="@+id/nav_contacts_only"
+                android:icon="@drawable/ic_contacts_24dp"
+                android:title="Contacts Only" />
+            <item
+                android:id="@+id/nav_blocked_only"
+                android:icon="@mipmap/ic_helmet"
+                android:title="Blocked Calls Only" />
+            <item
+                android:id="@+id/nav_in_case_only"
+                android:icon="@mipmap/ic_check_blue"
+                android:title="In Case Only" />
+            <item
+                android:id="@+id/nav_not_in_case_only"
+                android:icon="@mipmap/ic_check_gray"
+                android:title="Not In Case Only" />
+            </group>
+        </menu>
+    </item>
 
-    <group android:checkableBehavior="single">
-        <!--<item-->
-            <!--android:id="@+id/nav_camera"-->
-            <!--android:icon="@drawable/ic_menu_camera"-->
-            <!--android:title="Import" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_gallery"-->
-            <!--android:icon="@drawable/ic_menu_gallery"-->
-            <!--android:title="Gallery" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_slideshow"-->
-            <!--android:icon="@drawable/ic_menu_slideshow"-->
-            <!--android:title="Slideshow" />-->
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
-    </group>
+    <item
+        android:title="Options" >
+        <menu >
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings_24dp"
+                android:title="Settings" />
+            <item
+                android:id="@+id/nav_phone_contacts"
+                android:icon="@drawable/ic_contacts_24dp"
+                android:title="Phone Contacts" />
+            <item
+                android:id="@+id/nav_upgrade"
+                android:icon="@drawable/ic_trending_up_24dp"
+                android:title="Upgrade" />
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@drawable/ic_help_24dp"
+                android:title="Help" />
+        </menu>
+    </item>
 
-    <item android:title="Communicate">
+    <item android:title="Share">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_share_whatsapp"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <!--<item-->
-                <!--android:id="@+id/nav_send"-->
-                <!--android:icon="@drawable/ic_menu_send"-->
-                <!--android:title="Send" />-->
+                android:title="Whatsapp" />
+            <item
+                android:id="@+id/nav_share_facebook"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Facebook" />
         </menu>
     </item>
 

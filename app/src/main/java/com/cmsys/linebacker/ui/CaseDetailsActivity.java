@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -80,8 +81,7 @@ public class CaseDetailsActivity extends AppCompatActivity {
             public void onClick(final View view) {
                 Snackbar.make(view, getString(R.string.add_new_comment), Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 final MessageUtils mu = new MessageUtils(activity, getString(R.string.add_new_comment), "", 0, false);
-                mu.getEtInput().setVisibility(View.VISIBLE);
-                //mu.getEtInput().setHint(getString(R.string.type_comment_here));
+                mu.showEditTextAndSoftKeyboard();
                 mu.getTilInput().setHint(getString(R.string.type_comment_here));
                 mu.setOnClickListenerAccept(new View.OnClickListener() {
                     @Override
@@ -107,7 +107,7 @@ public class CaseDetailsActivity extends AppCompatActivity {
                                         mu.getBCancel().setVisibility(View.VISIBLE);
                                     } else {
                                         MessageUtils.toast(context, getString(R.string.new_comment_added), false);
-                                        if(llCaseCommentsContent.getVisibility() == View.VISIBLE) {
+                                        if (llCaseCommentsContent.getVisibility() == View.VISIBLE) {
                                             ViewUtils.collapse(llCaseCommentsContent);
                                             ivCaseComments.setImageResource(android.R.drawable.arrow_down_float);
                                         }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="recording_contact_name">Contact Name:</string>
     <string name="recording_phone_number">Phone Number:</string>
     <string name="recording_date">Recording Date:</string>
     <string name="recording_time">Recording Time:</string>
