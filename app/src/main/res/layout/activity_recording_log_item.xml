@@ -1,5 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llSeparator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:paddingLeft="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvSeparator"
+            android:text="Separator"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="@color/colorPrimary"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp" />
+    </LinearLayout>
+
+
+    <RelativeLayout
     android:id="@+id/rlRecordingItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -66,3 +96,5 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
 </RelativeLayout>
+
+</LinearLayout>

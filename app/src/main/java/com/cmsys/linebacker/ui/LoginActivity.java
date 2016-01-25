@@ -114,7 +114,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                if (mEmailView.getText().toString().equals("root:delete_user")) {
+                    ((Button) findViewById(R.id.delete_user)).setVisibility(View.VISIBLE);
+                    MessageUtils.toast(getApplicationContext(), "DeleteUser button is now visible", false);
+                } else
+                    attemptLogin();
             }
         });
 
@@ -276,7 +280,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 final EditText etZipCode = (EditText) mu.getConvertView().findViewById(R.id.etInputZipCode);
                 //final EditText etAddress = (EditText) mu.getConvertView().findViewById(R.id.etInputAddress);
                 final EditText etEmail = (EditText) mu.getConvertView().findViewById(R.id.etInputEmail);
-                EditText etPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputPassword);
+                final EditText etPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputPassword);
                 EditText etRepeatPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputRepeatPassword);
                 //
                 List<EditText> editTextList = new ArrayList<EditText>();
@@ -288,52 +292,65 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (CheckInputDataUtils.areAllFieldsFilled(editTextList)
                         && etPassword.getText().toString().equals(etRepeatPassword.getText().toString())
                         && CheckInputDataUtils.isValidEmail(etEmail.getText())) {
-                    mu.getProgressBar().setVisibility(View.VISIBLE);
-                    mu.getBAccept().setVisibility(View.GONE);
-                    mu.getBCancel().setVisibility(View.GONE);
+                    MessageUtils.showProgressBarAndHideButtons(mu);
                     // Connect to Firebase
                     Firebase.setAndroidContext(context);
                     final Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL);
-                    fbRef.createUser(etEmail.getText().toString(), etPassword.getText().toString(), new Firebase.ValueResultHandler<Map<String, Object>>() {
-                        @Override
-                        public void onSuccess(Map<String, Object> result) {
-                            //System.out.println("Successfully created user account with uid: " + result.get("uid"));
-                            mUserId = (String) result.get("uid");
-                            MessageUtils.toast(context, getString(R.string.message_new_user_registered) + mUserId, false);
-                            MessageUtils.toast(context, "NOW CREATING USER SERVER DATA", false);
-                            UserBean userBean = new UserBean(mUserId, etFirstName.getText().toString(),
-                                    etLastName.getText().toString(), etPhoneNumber.getText().toString(),
-                                    //etState.getText().toString(), etCity.getText().toString(), etAddress.getText().toString(),
-                                    etZipCode.getText().toString(),
-                                    etEmail.getText().toString(), "0");
-                            Map<String, Object> firebaseTrans = new HashMap<String, Object>();
-                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_USER + File.separator + mUserId, userBean.getObjectMap());
-                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_SETTINGS + File.separator + mUserId, (new SettingsBean().setAllDefaults()).getObjectMap());
-                            // Add test recorded audios TODO remove this at the end
-                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId, RecordingBean.getTestRecordingsMap(mUserId));
-                            fbRef.updateChildren(firebaseTrans, new Firebase.CompletionListener() {
+                    // Check if zipCode exists
+                    fbRef.child(CONSTANTS.FIREBASE_DOC_ZIPCODE + File.separator + etZipCode.getText())
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                                    if (firebaseError != null) {
-                                        MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        fbRef.createUser(etEmail.getText().toString(), etPassword.getText().toString(), new Firebase.ValueResultHandler<Map<String, Object>>() {
+                                            @Override
+                                            public void onSuccess(Map<String, Object> result) {
+                                                //System.out.println("Successfully created user account with uid: " + result.get("uid"));
+                                                mUserId = (String) result.get("uid");
+                                                MessageUtils.toast(context, getString(R.string.message_new_user_registered) + mUserId, false);
+                                                MessageUtils.toast(context, "NOW CREATING USER SERVER DATA", false);
+                                                UserBean userBean = new UserBean(mUserId, etFirstName.getText().toString(),
+                                                        etLastName.getText().toString(), etPhoneNumber.getText().toString(),
+                                                        //etState.getText().toString(), etCity.getText().toString(), etAddress.getText().toString(),
+                                                        etZipCode.getText().toString(),
+                                                        etEmail.getText().toString(), "0");
+                                                Map<String, Object> firebaseTrans = new HashMap<String, Object>();
+                                                firebaseTrans.put(CONSTANTS.FIREBASE_DOC_USER + File.separator + mUserId, userBean.getObjectMap());
+                                                firebaseTrans.put(CONSTANTS.FIREBASE_DOC_SETTINGS + File.separator + mUserId, (new SettingsBean().setAllDefaults()).getObjectMap());
+                                                // Add test recorded audios TODO remove this at the end
+                                                firebaseTrans.put(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId, RecordingBean.getTestRecordingsMap(mUserId));
+                                                fbRef.updateChildren(firebaseTrans, new Firebase.CompletionListener() {
+                                                    @Override
+                                                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                                        if (firebaseError != null) {
+                                                            MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+                                                        } else {
+                                                            mEmailView.setText(etEmail.getText());
+                                                            mPasswordView.setText("");
+                                                            MessageUtils.toast(context, context.getString(R.string.message_firebase_data_created_successfully), false);
+                                                            mu.cancel();
+                                                        }
+                                                    }
+                                                });
+                                            }
+
+                                            @Override
+                                            public void onError(FirebaseError firebaseError) {
+                                                // there was an error
+                                                MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), true);
+                                                MessageUtils.hideProgressBarAndShowAcceptButtons(mu);
+                                            }
+                                        });
                                     } else {
-                                        mEmailView.setText(etEmail.getText());
-                                        mPasswordView.setText("");
-                                        MessageUtils.toast(context, context.getString(R.string.message_firebase_data_created_successfully), false);
-                                        mu.cancel();
+                                        MessageUtils.toast(context, "ZIP CODE NOT FOUND, PLEASE INSERT A VALID ONE", true);
+                                        MessageUtils.hideProgressBarAndShowAcceptButtons(mu);
                                     }
                                 }
+
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                }
                             });
-                        }
-                        @Override
-                        public void onError(FirebaseError firebaseError) {
-                            // there was an error
-                            MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), true);
-                            mu.getProgressBar().setVisibility(View.GONE);
-                            mu.getBAccept().setVisibility(View.VISIBLE);
-                            mu.getBCancel().setVisibility(View.VISIBLE);
-                        }
-                    });
                 } else {
                     if(!CheckInputDataUtils.areAllFieldsFilled(editTextList))
                         MessageUtils.toast(context, getString(R.string.error_all_fields_required), false);

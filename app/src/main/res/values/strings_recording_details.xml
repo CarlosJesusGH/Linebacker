@@ -11,5 +11,9 @@
     <string name="button_play_audio">PLAY AUDIO</string>
     <string name="report_this_event">Report this event</string>
     <string name="case_status">Case Status:</string>
-
+    <string name="type_address_here">Type address here</string>
+    <string name="add_new_address">NEW ADDRESS</string>
+    <string name="add_new_address_message">Please insert an address. This is necessary to legally report a case.</string>
+    <string name="new_address_added">New address added</string>
+    <string name="error_address_empty">Address field can\'t be empty</string>
 </resources>

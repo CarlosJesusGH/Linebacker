@@ -1,12 +1,16 @@
 package com.cmsys.linebacker.util;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -23,7 +27,7 @@ import static com.cmsys.linebacker.util.LogUtils.makeLogTag;
 public class PhoneCallUtils {
     private static final String TAG = makeLogTag(PhoneCallUtils.class);
 
-    public static void endCall(Context context){
+    public static void endCall(Context context) {
         TelephonyManager tm = (TelephonyManager) context
                 .getSystemService(Context.TELEPHONY_SERVICE);
         try {
@@ -44,33 +48,33 @@ public class PhoneCallUtils {
         }
     }
 
-    public static void rootBlockCall(){
+    public static void rootBlockCall() {
         try {
             Thread.sleep(800);
             Runtime.getRuntime().exec(new String[]{"su", "-c", "input keyevent 6"});
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void setSoundOffVibrateOn(Context context){
-      AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-      audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+    public static void setSoundOffVibrateOn(Context context) {
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
     }
 
-    public static void setSoundOnVibrateOff(Context context){
-        AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+    public static void setSoundOnVibrateOff(Context context) {
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
         //
         audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
         audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume, AudioManager.FLAG_SHOW_UI + AudioManager.FLAG_PLAY_SOUND);
     }
 
-    public static AudioManager muteRinging(Context context){
+    public static AudioManager muteRinging(Context context) {
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         // Change the stream to your stream of choice.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             audioManager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_MUTE, 0);
         } else {
             audioManager.setStreamMute(AudioManager.STREAM_RING, true);
@@ -78,13 +82,33 @@ public class PhoneCallUtils {
         return audioManager;
     }
 
-    public static void unMuteRinging(Context context, AudioManager audioManagerX){
+    public static void unMuteRinging(Context context, AudioManager audioManagerX) {
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         // Change the stream to your stream of choice.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             audioManager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_UNMUTE, 0);
         } else {
             audioManager.setStreamMute(AudioManager.STREAM_RING, false);
         }
     }
+
+    public static void callNumber(Context context, String phoneNumber) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent(Intent.ACTION_CALL);
+            intent.setData(Uri.parse("tel:" + phoneNumber));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+            return;
+        } else {
+            MessageUtils.toast(context, "NOT ALLOWED", false);
+        }
+    }
+
+    public static void dialNumber(Context context, String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
 }

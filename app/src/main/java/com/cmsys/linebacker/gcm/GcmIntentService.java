@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.cmsys.linebacker.ui.RecordingLogActivity;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,11 +51,9 @@ public class GcmIntentService extends IntentService {
             @Override
             public void run() {
                 //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                // Show notification
-                Date now = new Date();
                 // Use date to generate an unique id to differentiate the notifications.
-                int mNotificationId = (int) now.getTime();
-                MessageUtils.notification(getApplicationContext(), "LINEBACKER", message, mNotificationId, RecordingLogActivity.class);
+                int mNotificationId = (int) Calendar.getInstance().getTimeInMillis();
+                MessageUtils.notification(getApplicationContext(), "LINEBACKER-GCM", message, mNotificationId, RecordingLogActivity.class, new ArrayList<NotificationCompat.Action>(), true);
             }
         });
     }

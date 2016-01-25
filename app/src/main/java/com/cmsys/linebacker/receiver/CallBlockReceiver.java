@@ -1,21 +1,27 @@
 package com.cmsys.linebacker.receiver;
 
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.ui.RecordingLogActivity;
+import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.LogUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneCallUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import static com.cmsys.linebacker.util.LogUtils.makeLogTag;
@@ -60,11 +66,26 @@ public class CallBlockReceiver extends BroadcastReceiver {
             // End phone call if number doesn't exists and blockCalls is enabled
             if(!phoneNumberExists && blockCalls) {
                 PhoneCallUtils.endCall(context);
-                // Show notification
-                Date now = new Date();
-                // Use date to generate an unique id to differentiate the notifications.
-                int mNotificationId = (int) now.getTime();
-                MessageUtils.notification(context, "LINEBACKER Handled Call", "Incoming Number: " + mPhoneNumber, mNotificationId, RecordingLogActivity.class);
+                // Show notification ---------
+                // Create unique id
+                int notificationId = (int) Calendar.getInstance().getTimeInMillis();
+                ArrayList<NotificationCompat.Action> actions = new ArrayList<>();
+                //
+                // Create Intent
+                Intent callBackIntent = new Intent(context, NotificationButtonReceiver.class);
+                callBackIntent.putExtra(CONSTANTS.NOTIFICATION_ID, notificationId);
+                callBackIntent.putExtra(CONSTANTS.ACTION_ID, CONSTANTS.ACTION_CALL_BACK);
+                callBackIntent.putExtra(CONSTANTS.PHONE_NUMBER_ID, mPhoneNumber);
+                // Create PendingIntent
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId + 0,  // Id must be different for every action button
+                        callBackIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                // Create Notification Action
+                NotificationCompat.Action action = new NotificationCompat.Action
+                        .Builder(R.drawable.ic_call_24dp, "Call Back", pendingIntent).build();
+                // Add Action to array
+                actions.add(action);
+                // Show Notification
+                MessageUtils.notification(context, "LINEBACKER Handled Call", "Incoming Number: " + mPhoneNumber, notificationId, RecordingLogActivity.class, actions, true);
                 //PhoneCallUtils.setSoundOnVibrateOff(context);
             }
             // Un-mute incoming calls

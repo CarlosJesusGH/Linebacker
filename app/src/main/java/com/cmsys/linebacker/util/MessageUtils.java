@@ -3,6 +3,7 @@ package com.cmsys.linebacker.util;
 
 //import com.carrental.cj.androidcarrental.ManageContractsActivity;
 import com.cmsys.linebacker.R;
+import com.cmsys.linebacker.receiver.NotificationButtonReceiver;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,6 +12,11 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
@@ -22,6 +28,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+
 public class MessageUtils extends AlertDialog{
 	public static Toast sToast;
 	private Context mContext;
@@ -32,7 +41,8 @@ public class MessageUtils extends AlertDialog{
 	private TextInputLayout tilInput;
 	private Button bYes, bNo, bAccept, bCancel, bOk;
 	private ProgressBar progressBar;
-	private View convertView;
+    private ProgressBar progressBarHorizontal;
+    private View convertView;
 
 	public MessageUtils(Context pContext){
 		super(pContext);
@@ -54,20 +64,20 @@ public class MessageUtils extends AlertDialog{
 
 	public void setAsFinishingActivityAlert(final Activity pActivity){
 		this.setOnClickListenerYes(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				cancel();
-				pActivity.finish();
-			}
-		});
+            @Override
+            public void onClick(View v) {
+                cancel();
+                pActivity.finish();
+            }
+        });
 
 		this.setOnClickListenerNo(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				cancel();
-			}
-		});
-	}
+            @Override
+            public void onClick(View v) {
+                cancel();
+            }
+        });
+    }
 
 	private void setupViews(Context pContext, String pTitle, String pMessage, int pContentView){
 		mContext = pContext;
@@ -85,6 +95,7 @@ public class MessageUtils extends AlertDialog{
 		bCancel = (Button) convertView.findViewById(R.id.bCancel);
 		bOk = (Button) convertView.findViewById(R.id.bOk);
 		progressBar = (ProgressBar) convertView.findViewById(R.id.progressBar);
+        progressBarHorizontal = (ProgressBar) convertView.findViewById(R.id.progressBarHorizontal);
 
 		tvTitle.setText(pTitle);
 		tvMessage.setText(pMessage);
@@ -155,8 +166,8 @@ public class MessageUtils extends AlertDialog{
 		builder.setNegativeButton("No", pNegativeClickListenter);
 		AlertDialog alert = builder.create();
 		alert.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-				WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
-		alert.show();
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+        alert.show();
 	}
 
 	public Button getBYes() {
@@ -197,20 +208,65 @@ public class MessageUtils extends AlertDialog{
 		return progressBar;
 	}
 
+    public ProgressBar getProgressBarHorizontal() {
+        return progressBarHorizontal;
+    }
+
+    public void setProgressBarHorizontalProgress(final int progress) {
+        /*new Thread(new Runnable() {
+            @Override
+            public void run() {
+                progressBarHorizontal.setProgress(progress);
+            }
+        }).start();*/
+        progressBarHorizontal.setProgress(progress);
+    }
+
+    public TextView getTvMessage() {
+        return tvMessage;
+    }
+
 	public View getConvertView(){
 		return convertView;
 	}
 	// Notifications section -----------------------------------------------------------------------
 
 	public static void notification(Context pContext, String pTitle, String pText, int pNotificationId,
-									Class<?> pClassToStart){
+                                    Class<?> pClassToStart, ArrayList<NotificationCompat.Action> actions,
+                                    boolean addDismissButton) {
 
 		try {
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(pContext)
-					.setSmallIcon(R.mipmap.ic_launcher)
-					.setContentTitle(pTitle)
+                    .setSmallIcon(R.mipmap.ic_helmet)
+                    .setContentTitle(pTitle)
 					.setContentText(pText)
 					.setAutoCancel(true);
+
+            int actionCounter = 0;
+            for (NotificationCompat.Action action : actions) {
+                mBuilder.addAction(action);
+                actionCounter++;
+            }
+
+            if (addDismissButton) {
+                // Create Intent
+                Intent dismissIntent = new Intent(pContext, NotificationButtonReceiver.class);
+                dismissIntent.putExtra(CONSTANTS.NOTIFICATION_ID, pNotificationId);
+                dismissIntent.putExtra(CONSTANTS.ACTION_ID, CONSTANTS.ACTION_DISMISS);
+                // Create PendingIntent
+                PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(pContext, pNotificationId + actionCounter,
+                        dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                // Create Notification Action
+                NotificationCompat.Action dismissAction = new NotificationCompat
+                        .Action(android.R.drawable.ic_menu_close_clear_cancel, "Dismiss", dismissPendingIntent);
+                // Add action to builder
+                mBuilder.addAction(dismissAction);
+            }
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mBuilder.setColor(Color.alpha(R.color.colorPrimary));
+            }
 
 			// Creates an explicit intent for an Activity in your app
 			Intent resultIntent = new Intent();
@@ -225,8 +281,8 @@ public class MessageUtils extends AlertDialog{
 				// This ensures that navigating backward from the Activity leads out of
 				// your application to the Home screen.
 				TaskStackBuilder stackBuilder;
-				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-					stackBuilder = TaskStackBuilder.create(pContext);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    stackBuilder = TaskStackBuilder.create(pContext);
 
 					// Adds the back stack for the Intent (but not the Intent itself)
 					stackBuilder.addParentStack(pClassToStart);
@@ -242,9 +298,32 @@ public class MessageUtils extends AlertDialog{
 			// mId allows you to update the notification later on.
 //        mNotificationManager.notify(mId, mBuilder.build());
 			mNotificationManager.notify(pNotificationId, mBuilder.build());
-		} catch (Exception e){
+            //mNotificationManager.cancel(pNotificationId);
+        } catch (Exception e){
 			ExceptionUtils.displayExceptionMessage(pContext, e);
 			ExceptionUtils.printExceptionToFile(pContext, e);
 		}
-	}//
+    }
+
+    public static void dismissNotification(Context context, int notificationId) {
+        //NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        //manager.cancel(notificationId);
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(notificationId);
+    }
+
+    public static void showProgressBarAndHideButtons(MessageUtils mu) {
+        mu.getProgressBar().setVisibility(View.VISIBLE);
+        mu.getBAccept().setVisibility(View.GONE);
+        mu.getBCancel().setVisibility(View.GONE);
+        mu.getBYes().setVisibility(View.GONE);
+        mu.getBNo().setVisibility(View.GONE);
+        mu.getBOk().setVisibility(View.GONE);
+    }
+
+    public static void hideProgressBarAndShowAcceptButtons(MessageUtils mu) {
+        mu.getProgressBar().setVisibility(View.GONE);
+        mu.getBAccept().setVisibility(View.VISIBLE);
+        mu.getBCancel().setVisibility(View.VISIBLE);
+    }
 }

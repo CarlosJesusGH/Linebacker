@@ -1,6 +1,7 @@
 package com.cmsys.linebacker.util;
 
 import java.security.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -90,5 +91,55 @@ public class DateUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
 		String date = sdf.format(calendar.getTime());
 		return date;
+	}
+
+	public static Calendar resetTime(Calendar calendar) {
+		calendar.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
+		calendar.clear(Calendar.MINUTE);
+		calendar.clear(Calendar.SECOND);
+		calendar.clear(Calendar.MILLISECOND);
+		return calendar;
+	}
+
+	public static Date getTodayAt0000() {
+		Calendar calendar = Calendar.getInstance();
+		calendar = resetTime(calendar);
+		return calendar.getTime();
+	}
+
+	public static Date getYesterdayAt0000() {
+		Calendar calendar = Calendar.getInstance();
+		calendar = resetTime(calendar);
+		calendar.add(Calendar.DATE, -1);
+		return calendar.getTime();
+	}
+
+	public static Date getThisWeekStart() {
+		Calendar calendar = Calendar.getInstance();
+		calendar = resetTime(calendar);
+		//calendar.getFirstDayOfWeek();
+		calendar.set(Calendar.DAY_OF_WEEK, 1);
+		return calendar.getTime();
+	}
+
+	public static Date getThisMonthStart() {
+		Calendar calendar = Calendar.getInstance();
+		calendar = resetTime(calendar);
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		return calendar.getTime();
+	}
+
+	public static boolean isDateToday(Date testDate) {
+		return isDateInRange(testDate, getTodayAt0000(), getNow());
+	}
+
+	public static boolean isDateYesterday(Date testDate) {
+		return isDateInRange(testDate, getYesterdayAt0000(), getTodayAt0000());
+	}
+
+	public static boolean isDateInRange(Date testDate, Date startDate, Date endDate) {
+		//return startDate.compareTo(testDate) * testDate.compareTo(endDate) > 0;
+		//return testDate.after(startDate) && testDate.before(endDate);     // This way doesn't include limits
+		return !(testDate.before(startDate) || testDate.after(endDate));
 	}
 }

@@ -8,6 +8,7 @@ import android.preference.SwitchPreference;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,13 +18,16 @@ import android.widget.TextView;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.CaseBean;
+import com.cmsys.linebacker.bean.CommentBean;
 import com.cmsys.linebacker.bean.LogBean;
 import com.cmsys.linebacker.bean.RecordingBean;
+import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.util.AudioUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
+import com.cmsys.linebacker.util.ViewUtils;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ServerValue;
@@ -35,6 +39,7 @@ import java.util.Map;
 public class RecordingDetailsActivity extends AppCompatActivity {
     private LinearLayout llRecordingDetails;
     private RecordingBean mRecordingBean;
+    private UserBean mUserBean;
     private Button bReport, bPlay;
     private String mUserId;
 
@@ -46,6 +51,7 @@ public class RecordingDetailsActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             mRecordingBean = (RecordingBean) bundle.getSerializable(CONSTANTS.BUNDLE_EXTRA_RECORDING);
+            mUserBean = (UserBean) bundle.getSerializable(CONSTANTS.BUNDLE_EXTRA_USER);
         }
         // Check if user is logged in
         mUserId = UserAuthUtils.getUserId(this);
@@ -79,44 +85,76 @@ public class RecordingDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(((Button) v).getText().equals(getString(R.string.button_report))) {
-                    final MessageUtils mu = new MessageUtils(activity, getString(R.string.report_this_event), getString(R.string.are_you_sure), 0, false);
-                    mu.setOnClickListenerYes(new View.OnClickListener() {
+                    final MessageUtils mu1 = new MessageUtils(activity, getString(R.string.report_this_event), getString(R.string.are_you_sure), 0, false);
+                    mu1.setOnClickListenerYes(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            // Create new case object
-                            CaseBean caseBean = new CaseBean(mRecordingBean);
-                            // Get save changes to Firebase
-                            Firebase.setAndroidContext(context);
-                            final Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL);
-                            //fbRef.child(CONSTANTS.FIREBASE_DOC_CASES + File.separator + mUserId + File.separator + caseBean.getKey())
-                            String logUniqueId = fbRef.push().getKey();
-                            Map<String, Object> firebaseTrans = new HashMap<String, Object>();
-                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_CASES + File.separator + mUserId + File.separator + caseBean.getKey(), caseBean.getObjectMap());
-                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId + File.separator + mRecordingBean.getKey() + File.separator + CONSTANTS.FIREBASE_FIELD_ISONCASE, true);
-                            firebaseTrans.put(CONSTANTS.FIREBASE_DOC_CASE_LOGS + File.separator + mRecordingBean.getKey() + File.separator + logUniqueId, new LogBean(ServerValue.TIMESTAMP, 0).getObjectMap());
-                            fbRef.updateChildren(firebaseTrans, new Firebase.CompletionListener() {
-                                @Override
-                                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                                    if (firebaseError != null) {
-                                        MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
-                                    } else {
-                                        bReport.setText(getString(R.string.button_show_log));
-                                        mRecordingBean.setIsOnCase(true);
-                                        fillRecordingData();
+                            // Check if user has specific address assigned
+                            if (TextUtils.isEmpty(mUserBean.getAddress())) {
+                                final MessageUtils mu2 = new MessageUtils(activity, getString(R.string.add_new_address),
+                                        getString(R.string.add_new_address_message), 0, false);
+                                mu2.showEditTextAndSoftKeyboard();
+                                mu2.getTilInput().setHint(getString(R.string.type_address_here));
+                                mu2.setOnClickListenerAccept(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        final Context context = v.getContext();
+                                        // Check if text is filled
+                                        if (!mu2.getEtInput().getText().toString().equals("")) {
+                                            mu2.getProgressBar().setVisibility(View.VISIBLE);
+                                            mu2.getBAccept().setVisibility(View.GONE);
+                                            mu2.getBCancel().setVisibility(View.GONE);
+                                            // Get address string
+                                            final String addressString = mu2.getEtInput().getText().toString();
+                                            // Connect to Firebase
+                                            Firebase.setAndroidContext(context);
+                                            final Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_USER +
+                                                    File.separator + mUserId + File.separator + CONSTANTS.FIREBASE_FIELD_USERADDRESS);
+                                            fbRef.setValue(addressString, new Firebase.CompletionListener() {
+                                                @Override
+                                                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                                    if (firebaseError != null) {
+                                                        MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+                                                        mu2.getProgressBar().setVisibility(View.GONE);
+                                                        mu2.getBAccept().setVisibility(View.VISIBLE);
+                                                        mu2.getBCancel().setVisibility(View.VISIBLE);
+                                                    } else {
+                                                        MessageUtils.toast(context, getString(R.string.new_address_added), false);
+                                                        mUserBean.setAddress(addressString);
+                                                        reportCase(context);
+                                                        mu1.cancel();
+                                                        mu2.cancel();
+                                                    }
+                                                }
+                                            });
+                                        } else {
+                                            MessageUtils.toast(context, getString(R.string.error_address_empty), false);
+                                        }
                                     }
-                                }
-                            });
-                            mu.cancel();
+                                });
+                                mu2.setOnClickListenerCancel(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        mu2.cancel();
+                                        mu1.cancel();
+                                    }
+                                });
+                                mu2.show();
+                                //------------------------------------------------------------------
+                            } else {    // User has already an specific address
+                                reportCase(context);
+                                mu1.cancel();
+                            }
                         }
                     });
-                    mu.setOnClickListenerNo(new View.OnClickListener() {
+                    mu1.setOnClickListenerNo(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mu.cancel();
+                            mu1.cancel();
                         }
                     });
-                    mu.getBAccept().setVisibility(View.GONE);
-                    mu.show();
+                    mu1.getBAccept().setVisibility(View.GONE);
+                    mu1.show();
                 } else{
                     //MessageUtils.toast(v.getContext(), "Go to case logger activity...", false);
                     Intent intent = new Intent(v.getContext(), CaseDetailsActivity.class);
@@ -148,6 +186,32 @@ public class RecordingDetailsActivity extends AppCompatActivity {
                             bPlay.setEnabled(true);
                         }
                     });
+                }
+            }
+        });
+    }
+
+    private void reportCase(final Context context) {
+        // Create new case object
+        CaseBean caseBean = new CaseBean(mRecordingBean);
+        // Get save changes to Firebase
+        Firebase.setAndroidContext(context);
+        final Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL);
+        //fbRef.child(CONSTANTS.FIREBASE_DOC_CASES + File.separator + mUserId + File.separator + caseBean.getKey())
+        String logUniqueId = fbRef.push().getKey();
+        Map<String, Object> firebaseTrans = new HashMap<String, Object>();
+        firebaseTrans.put(CONSTANTS.FIREBASE_DOC_CASES + File.separator + mUserId + File.separator + caseBean.getKey(), caseBean.getObjectMap());
+        firebaseTrans.put(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId + File.separator + mRecordingBean.getKey() + File.separator + CONSTANTS.FIREBASE_FIELD_ISONCASE, true);
+        firebaseTrans.put(CONSTANTS.FIREBASE_DOC_CASE_LOGS + File.separator + mRecordingBean.getKey() + File.separator + logUniqueId, new LogBean(ServerValue.TIMESTAMP, 0).getObjectMap());
+        fbRef.updateChildren(firebaseTrans, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+                } else {
+                    bReport.setText(getString(R.string.button_show_log));
+                    mRecordingBean.setIsOnCase(true);
+                    fillRecordingData();
                 }
             }
         });

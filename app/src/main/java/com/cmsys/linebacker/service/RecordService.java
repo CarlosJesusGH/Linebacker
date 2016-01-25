@@ -19,11 +19,13 @@ package com.cmsys.linebacker.service;
     along with Call recorder For Android.  If not, see <http://www.gnu.org/licenses/>
  */
 
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
         import java.io.File;
 import java.io.IOException;
-        import java.util.Date;
+import java.util.ArrayList;
+import java.util.Date;
 
 import android.app.NotificationManager;
 import android.app.Service;
@@ -194,7 +196,8 @@ public class RecordService extends Service {
                     // Show notification
                     Date now = new Date();
                     int mNotificationId = (int) now.getTime();//use date to generate an unique id to differentiate the notifications.
-                    MessageUtils.notification(this, this.getString(R.string.notification_new_audio_recorded), myFileName, mNotificationId, RecordingLogActivity.class);
+                    MessageUtils.notification(this, this.getString(R.string.notification_new_audio_recorded),
+                            myFileName, mNotificationId, RecordingLogActivity.class, new ArrayList<NotificationCompat.Action>(), false);
                 }
                 recorder = null;
                 wasRinging = false;

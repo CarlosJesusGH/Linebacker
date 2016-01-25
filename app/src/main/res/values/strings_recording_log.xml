@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="uploading_contacts">Uploading contacts</string>
+    <string name="reading_contacts">Reading phone...</string>
+    <string name="number_contacts">Total: %1$d items</string>
     <string name="upload_successful">Phone Contacts Saved Successfully</string>
     <string name="no_recordings">No recordings to show</string>
     <string name="message_share_whatsapp">Hey, you should try using Linebacker</string>
     <string name="message_share_facebook">Hey, you should try using Linebacker</string>
     <string name="message_share_url">http://clouditapp.com/dev/linebacker/en/index.html#</string>
 
+    <!-- Separators -->
+    <string name="separator_today">TODAY</string>
+    <string name="separator_yesterday">YESTERDAY</string>
+    <string name="separator_this_week">THIS WEEK</string>
+    <string name="separator_this_month">THIS MONTH</string>
+    <string name="separator_older">OLDER</string>
 </resources>

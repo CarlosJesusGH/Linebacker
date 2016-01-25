@@ -1,6 +1,7 @@
 package com.cmsys.linebacker.ui;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -41,6 +43,7 @@ import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.gcm.GcmRegistrationAsyncTask;
 import com.cmsys.linebacker.io.DataIO;
+import com.cmsys.linebacker.receiver.NotificationButtonReceiver;
 import com.cmsys.linebacker.util.AppInitialSetupUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.ExceptionUtils;
@@ -63,6 +66,7 @@ import com.firebase.client.ValueEventListener;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import static com.cmsys.linebacker.util.LogUtils.makeLogTag;
@@ -74,7 +78,7 @@ public class RecordingLogActivity extends AppCompatActivity
     private static final int REQUEST_CODE = 0;
     private static final int PICK_CONTACT = 1;
     private NavigationView navigationView;
-    private UserBean mUserBean;     // Check if necessary
+    private UserBean mUserBean;
     private String mUserId;
     private ListView listView;
     private RecordingAdapter mRecordingAdapter;
@@ -115,10 +119,6 @@ public class RecordingLogActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        /*navigationView.getMenu().findItem(R.id.nav_show_all).setChecked(true);
-        navigationView.getMenu().findItem(R.id.nav_contacts_only).setChecked(false);
-        navigationView.getMenu().findItem(R.id.nav_in_case_only).setChecked(false);
-        navigationView.getMenu().findItem(R.id.nav_not_in_case_only).setChecked(false);*/
 
         // Initial App Setup -----------------------------------------------------------------------
         AppInitialSetupUtils.createAppFolders();
@@ -232,11 +232,15 @@ public class RecordingLogActivity extends AppCompatActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //String selectedFromList =(String) (listView.getItemAtPosition(position));
-                RecordingBean recording = (RecordingBean) listView.getItemAtPosition(position);
-                Intent intent = new Intent(view.getContext(), RecordingDetailsActivity.class);
-                intent.putExtra(CONSTANTS.BUNDLE_EXTRA_RECORDING, recording);
-                startActivity(intent);
+                if (mUserBean != null) {
+                    RecordingBean recording = (RecordingBean) listView.getItemAtPosition(position);
+                    Intent intent = new Intent(view.getContext(), RecordingDetailsActivity.class);
+                    intent.putExtra(CONSTANTS.BUNDLE_EXTRA_RECORDING, recording);
+                    intent.putExtra(CONSTANTS.BUNDLE_EXTRA_USER, mUserBean);
+                    startActivity(intent);
+                } else {
+                    MessageUtils.toast(getApplicationContext(), getString(R.string.wait_still_loading), false);
+                }
             }
         });
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -298,8 +302,6 @@ public class RecordingLogActivity extends AppCompatActivity
         });
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -310,7 +312,6 @@ public class RecordingLogActivity extends AppCompatActivity
                     Cursor c = getContentResolver().query(contactData, null, null, null, null);
                     if (c.moveToFirst()) {
                         String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        // TODO Whatever you want to do with the selected contact name.
                         MessageUtils.toast(getApplicationContext(), name, false);
                     }
                 }
@@ -370,6 +371,24 @@ public class RecordingLogActivity extends AppCompatActivity
             UserAuthUtils.logUserOut(this);
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
+            /*int notificationId = (int) Calendar.getInstance().getTimeInMillis();
+            ArrayList<NotificationCompat.Action> actions = new ArrayList<>();
+            //
+            // Create Intent
+            Intent intent = new Intent(this, NotificationButtonReceiver.class);
+            intent.putExtra(CONSTANTS.NOTIFICATION_ID, notificationId);
+            intent.putExtra(CONSTANTS.ACTION_ID, CONSTANTS.ACTION_CALL_BACK);
+            intent.putExtra(CONSTANTS.PHONE_NUMBER_ID, "123456789");
+            // Create PendingIntent
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, notificationId + 0,  // Id must be different for every action button
+                    intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            // Create Notification Action
+            NotificationCompat.Action action = new NotificationCompat.Action
+                    .Builder(R.drawable.ic_call_24dp, "Call Back", pendingIntent).build();
+            // Add Action to array
+            actions.add(action);
+            //
+            MessageUtils.notification(getApplicationContext(), "LINEBACKER Handled Call", "Incoming Number: 123456789", notificationId, null, actions, true);*/
             return true;
         }
         if (id == R.id.action_upload_contacts) {
@@ -379,13 +398,30 @@ public class RecordingLogActivity extends AppCompatActivity
                 public void onClick(View v) {
                     listView.setVisibility(View.GONE);
                     progressBar.setVisibility(View.VISIBLE);
-                    MessageUtils.toast(getApplicationContext(), getString(R.string.uploading_contacts), false);
+                    mu.getProgressBarHorizontal().setVisibility(View.VISIBLE);
+                    mu.getBYes().setVisibility(View.GONE);
+                    mu.getBNo().setVisibility(View.GONE);
+                    mu.getTvMessage().setText(getString(R.string.uploading_contacts) + "\n"
+                            + getString(R.string.reading_contacts));
+                    //MessageUtils.toast(getApplicationContext(), getString(R.string.uploading_contacts), false);
+                    mu.setProgressBarHorizontalProgress(10);
                     // New Thread
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            mu.setProgressBarHorizontalProgress(30);
                             // Get phone contacts info
                             HashMap<String, HashMap<String, Object>> hmContacts = PhoneContactUtils.getPhoneContactsHashMap(getApplicationContext());
+                            final int hmSize = hmContacts.size();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mu.getTvMessage().setText(getString(R.string.uploading_contacts)
+                                            + "\n" + String.format(getString(R.string.number_contacts), hmSize));
+                                }
+                            });
+
+                            mu.setProgressBarHorizontalProgress(60);
                             // Save contacts to Firebase
                             final Context context = getApplicationContext();
                             Firebase.setAndroidContext(context);
@@ -394,6 +430,7 @@ public class RecordingLogActivity extends AppCompatActivity
                             fbRef.setValue(hmContacts, new Firebase.CompletionListener() {
                                 @Override
                                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                    mu.setProgressBarHorizontalProgress(90);
                                     if (firebaseError != null) {
                                         MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
                                     } else {
@@ -401,11 +438,11 @@ public class RecordingLogActivity extends AppCompatActivity
                                         listView.setVisibility(View.VISIBLE);
                                         progressBar.setVisibility(View.GONE);
                                     }
+                                    mu.cancel();
                                 }
                             });
                         }
                     }).start();
-                    mu.cancel();
                 }
             });
             mu.setOnClickListenerNo(new View.OnClickListener() {

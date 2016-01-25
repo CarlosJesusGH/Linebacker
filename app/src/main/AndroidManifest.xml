@@ -33,7 +33,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
 
-        <!-- Add Facebook metadata and activity -->
+        <!-- Add Facebook metadata and activity _________________________________________________-->
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -42,24 +42,9 @@
         <provider android:authorities="com.facebook.app.FacebookContentProvider1543906325933041"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true" />
-        <!-- __________________________________ -->
 
-        <activity
-            android:name=".ui.RecordingLogActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <!-- <receiver android:name=".receiver.MyPhoneReceiver"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.PHONE_STATE" /> -->
-        <!-- <action android:name="android.intent.action.NEW_OUTGOING_CALL" /> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
+        <!-- Receivers __________________________________________________________________________-->
+        <receiver android:name=".receiver.NotificationButtonReceiver" />
 
         <receiver android:name=".receiver.CallBlockReceiver" >
             <intent-filter>
@@ -76,9 +61,21 @@
             </intent-filter>
         </receiver>
 
+        <!-- Services ___________________________________________________________________________-->
         <service android:name=".gcm.GcmIntentService" />
 
         <service android:name=".service.PhoneStateService" />
+
+        <!-- Activities _________________________________________________________________________-->
+        <activity
+            android:name=".ui.RecordingLogActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".ui.LoginActivity"

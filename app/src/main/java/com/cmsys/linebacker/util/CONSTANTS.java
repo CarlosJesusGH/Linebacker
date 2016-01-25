@@ -23,6 +23,13 @@ public class CONSTANTS {
     //---Shared Preferences------
     public static String PREFS_NAME = "MyPrefsFile";
 
+    //--- Notification Ids -----
+    public static final String NOTIFICATION_ID = "notificationId";
+    public static final String ACTION_ID = "actionId";
+    public static final String PHONE_NUMBER_ID = "phoneNumber";
+    public static final int ACTION_DISMISS = 101;
+    public static final int ACTION_CALL_BACK = 102;
+
     //---Bundle Extras ----------
     public static final String BUNDLE_EXTRA_USER = "user";
     public static final String BUNDLE_EXTRA_RECORDING = "recording";
@@ -44,6 +51,7 @@ public class CONSTANTS {
     public static String FIREBASE_DOC_CASE_LOGS = "logsByCase";
     public static String FIREBASE_DOC_CASE_COMMENTS = "commentsByCase";
     public static String FIREBASE_DOC_CONTACTS = "contactsByUser";
+    public static String FIREBASE_DOC_ZIPCODE = "zipCode";
 
     public static String FIREBASE_FIELD_USERID = "userId";
     public static String FIREBASE_FIELD_GCM_REGISTRATION_ID = "gcmRegistrationId";
