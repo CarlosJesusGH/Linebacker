@@ -47,6 +47,15 @@ dependencies {
     // Facebook SDK
     compile 'com.facebook.android:facebook-android-sdk:4.+'
 
+    // WebRTC
+    // Check WebRTC versions in here -> http://mvnrepository.com/artifact/io.pristine/libjingle
+    //compile 'io.pristine:libjingle:11139@aar'     // last version today 20150131
+    //compile 'io.pristine:libjingle:8871@aar'      // used on AndroidRTC sample app
+    compile 'io.pristine:libjingle:9127@aar'        // library version on WebRTC tutorial
+
+    // Socket.io
+    compile 'com.github.nkzawa:socket.io-client:0.4.2'
+
     // Avoid using multidex if possible
     // Enabling multidex support. http://developer.android.com/tools/building/multidex.html
     //compile 'com.android.support:multidex:1.0.0'

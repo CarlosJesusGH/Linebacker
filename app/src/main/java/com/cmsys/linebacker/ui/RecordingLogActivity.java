@@ -1,9 +1,6 @@
 package com.cmsys.linebacker.ui;
 
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,12 +10,7 @@ import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.ActionBar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -28,11 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -43,7 +31,6 @@ import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.gcm.GcmRegistrationAsyncTask;
 import com.cmsys.linebacker.io.DataIO;
-import com.cmsys.linebacker.receiver.NotificationButtonReceiver;
 import com.cmsys.linebacker.util.AppInitialSetupUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.ExceptionUtils;
@@ -54,10 +41,10 @@ import com.cmsys.linebacker.util.PhoneContactUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
 import com.cmsys.linebacker.util.ViewUtils;
+import com.cmsys.linebacker.webrtc.SampleRtcActivity;
+import com.cmsys.linebacker.webrtc.WebRtcActivity;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -66,7 +53,6 @@ import com.firebase.client.ValueEventListener;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import static com.cmsys.linebacker.util.LogUtils.makeLogTag;
@@ -368,9 +354,14 @@ public class RecordingLogActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.action_logout) {
-            UserAuthUtils.logUserOut(this);
+            /*UserAuthUtils.logUserOut(this);
             Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);*/
+            //
+            //Intent intent = new Intent(this, WebRtcActivity.class);
+            Intent intent = new Intent(this, SampleRtcActivity.class);
             startActivity(intent);
+            //
             /*int notificationId = (int) Calendar.getInstance().getTimeInMillis();
             ArrayList<NotificationCompat.Action> actions = new ArrayList<>();
             //
