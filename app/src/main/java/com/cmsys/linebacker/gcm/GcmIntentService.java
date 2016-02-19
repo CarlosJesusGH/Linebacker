@@ -53,7 +53,7 @@ public class GcmIntentService extends IntentService {
                 //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                 // Use date to generate an unique id to differentiate the notifications.
                 int mNotificationId = (int) Calendar.getInstance().getTimeInMillis();
-                MessageUtils.notification(getApplicationContext(), "LINEBACKER-GCM", message, mNotificationId, RecordingLogActivity.class, new ArrayList<NotificationCompat.Action>(), true);
+                MessageUtils.notification(getApplicationContext(), "LINEBACKER-GCM", message, mNotificationId, RecordingLogActivity.class, new ArrayList<NotificationCompat.Action>(), true, null, true);
             }
         });
     }

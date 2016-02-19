@@ -1,1 +1,1 @@
-include ':app', ':linebacker-backend'
+include ':app', ':linebacker-backend', ':android-ngn-stack'

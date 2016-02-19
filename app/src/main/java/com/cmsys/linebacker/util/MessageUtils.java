@@ -4,6 +4,7 @@ package com.cmsys.linebacker.util;
 //import com.carrental.cj.androidcarrental.ManageContractsActivity;
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.receiver.NotificationButtonReceiver;
+import com.cmsys.linebacker.ui.SettingsActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -231,22 +232,25 @@ public class MessageUtils extends AlertDialog{
 	}
 	// Notifications section -----------------------------------------------------------------------
 
-	public static void notification(Context pContext, String pTitle, String pText, int pNotificationId,
-                                    Class<?> pClassToStart, ArrayList<NotificationCompat.Action> actions,
-                                    boolean addDismissButton) {
+	public static NotificationCompat.Builder notification(Context pContext, String pTitle, String pText, int pNotificationId,
+														  Class<?> pClassToStart, ArrayList<NotificationCompat.Action> actions,
+														  boolean addDismissButton, Integer iconDrawableId, boolean showNotification) {
 
 		try {
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(pContext)
-                    .setSmallIcon(R.mipmap.ic_helmet)
-                    .setContentTitle(pTitle)
+					.setSmallIcon(iconDrawableId == null ? R.mipmap.ic_helmet : iconDrawableId)
+					.setContentTitle(pTitle)
 					.setContentText(pText)
 					.setAutoCancel(true);
 
-            int actionCounter = 0;
-            for (NotificationCompat.Action action : actions) {
-                mBuilder.addAction(action);
-                actionCounter++;
-            }
+			// Add action buttons
+			int actionCounter = 0;
+			if (actions != null && actions.size() > 0) {
+				for (NotificationCompat.Action action : actions) {
+					mBuilder.addAction(action);
+					actionCounter++;
+				}
+			}
 
             if (addDismissButton) {
                 // Create Intent
@@ -295,15 +299,17 @@ public class MessageUtils extends AlertDialog{
 			mBuilder.setContentIntent(resultPendingIntent);
 			NotificationManager mNotificationManager = (NotificationManager) pContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-			// mId allows you to update the notification later on.
-//        mNotificationManager.notify(mId, mBuilder.build());
-			mNotificationManager.notify(pNotificationId, mBuilder.build());
-            //mNotificationManager.cancel(pNotificationId);
-        } catch (Exception e){
+			if (showNotification) {
+				// pNotificationId allows you to update the notification later on.
+				mNotificationManager.notify(pNotificationId, mBuilder.build());
+			}
+			return mBuilder;
+		} catch (Exception e){
 			ExceptionUtils.displayExceptionMessage(pContext, e);
 			ExceptionUtils.printExceptionToFile(pContext, e);
 		}
-    }
+		return null;
+	}
 
     public static void dismissNotification(Context context, int notificationId) {
         //NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

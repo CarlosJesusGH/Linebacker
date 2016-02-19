@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.cmsys.linebacker">
+
+    <uses-sdk tools:overrideLibrary="org.doubango.ngn" />
 
     <!-- Features ______________________________________________________________________________ -->
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature
         android:glEsVersion="0x00020000"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sip.voip"
+        android:required="true" />
+    <uses-feature
+        android:name="android.software.sip"
         android:required="true" />
 
     <!-- Permissions ___________________________________________________________________________ -->
@@ -25,6 +34,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.STORAGE" />
     <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
+    <!--  -->
+    <uses-permission android:name="android.permission.USE_SIP" />
+    <!--  -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <permission
         android:name="com.example.gcm.permission.C2D_MESSAGE"
@@ -34,6 +47,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
     <!-- _______________________________________________________________________________________ -->
     <!-- Application ___________________________________________________________________________ -->
     <application
@@ -71,14 +85,20 @@
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
                 <category android:name="com.cmsys.linebacker" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 
         <!-- Services ___________________________________________________________________________ -->
         <service android:name=".gcm.GcmIntentService" />
         <service android:name=".service.PhoneStateService" />
+        <service android:name=".voip_doubango.NativeService" />
 
         <!-- Activities _________________________________________________________________________ -->
         <activity
@@ -111,10 +131,14 @@
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".webrtc.WebRtcActivity"></activity>
+        <activity android:name=".voip_webrtc.WebRtcActivity" />
         <!-- _______________________________ -->
-        <activity android:name=".webrtc.SampleRtcActivity" />
+        <activity android:name=".voip_webrtc.SampleRtcActivity" />
         <!-- _______________________________ -->
+        <activity android:name=".voip_siprtc.SipRtcActivity" />
+        <activity android:name=".voip_pjsip.SipActivity" />
+        <activity android:name=".voip_doubango.SipDoubangoActivity" />
+        <activity android:name=".voip_doubango.CallScreenActivity"></activity>
     </application>
 
 </manifest>

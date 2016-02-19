@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Linebacker.iml" filepath="$PROJECT_DIR$/Linebacker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-ngn-stack/android-ngn-stack.iml" filepath="$PROJECT_DIR$/android-ngn-stack/android-ngn-stack.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/linebacker-backend/linebacker-backend.iml" filepath="$PROJECT_DIR$/linebacker-backend/linebacker-backend.iml" />
     </modules>

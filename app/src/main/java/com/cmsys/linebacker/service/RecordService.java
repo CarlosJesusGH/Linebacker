@@ -197,7 +197,7 @@ public class RecordService extends Service {
                     Date now = new Date();
                     int mNotificationId = (int) now.getTime();//use date to generate an unique id to differentiate the notifications.
                     MessageUtils.notification(this, this.getString(R.string.notification_new_audio_recorded),
-                            myFileName, mNotificationId, RecordingLogActivity.class, new ArrayList<NotificationCompat.Action>(), false);
+                            myFileName, mNotificationId, RecordingLogActivity.class, new ArrayList<NotificationCompat.Action>(), false, null, true);
                 }
                 recorder = null;
                 wasRinging = false;

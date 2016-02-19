@@ -1,11 +1,15 @@
-package com.cmsys.linebacker.webrtc;
+package com.cmsys.linebacker.voip_webrtc;
 
 import android.opengl.EGLContext;
 import android.util.Log;
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
+//import com.github.nkzawa.emitter.Emitter;
+//import com.github.nkzawa.socketio.client.IO;
+//import com.github.nkzawa.socketio.client.Socket;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 import org.json.JSONException;
 import org.json.JSONObject;

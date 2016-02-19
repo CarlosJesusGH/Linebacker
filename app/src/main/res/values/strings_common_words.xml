@@ -47,5 +47,8 @@
     <string name="error_login">Login Error</string>
     <string name="error_firebase_save">Data could not be saved.\n</string>
     <string name="error_firebase_connect">Error connecting to Firebase.\n</string>
+    <string name="string_call_incoming">Incoming call</string>
+    <string name="string_call_outgoing">Outgoing call</string>
+    <string name="string_incall">In call</string>
 
 </resources>

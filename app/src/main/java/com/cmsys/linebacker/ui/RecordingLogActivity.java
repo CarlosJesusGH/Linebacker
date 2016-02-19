@@ -41,8 +41,7 @@ import com.cmsys.linebacker.util.PhoneContactUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
 import com.cmsys.linebacker.util.ViewUtils;
-import com.cmsys.linebacker.webrtc.SampleRtcActivity;
-import com.cmsys.linebacker.webrtc.WebRtcActivity;
+import com.cmsys.linebacker.voip_doubango.SipDoubangoActivity;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.firebase.client.ChildEventListener;
@@ -353,35 +352,6 @@ public class RecordingLogActivity extends AppCompatActivity
             startActivity(intent);
             return true;
         }
-        if (id == R.id.action_logout) {
-            /*UserAuthUtils.logUserOut(this);
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);*/
-            //
-            //Intent intent = new Intent(this, WebRtcActivity.class);
-            Intent intent = new Intent(this, SampleRtcActivity.class);
-            startActivity(intent);
-            //
-            /*int notificationId = (int) Calendar.getInstance().getTimeInMillis();
-            ArrayList<NotificationCompat.Action> actions = new ArrayList<>();
-            //
-            // Create Intent
-            Intent intent = new Intent(this, NotificationButtonReceiver.class);
-            intent.putExtra(CONSTANTS.NOTIFICATION_ID, notificationId);
-            intent.putExtra(CONSTANTS.ACTION_ID, CONSTANTS.ACTION_CALL_BACK);
-            intent.putExtra(CONSTANTS.PHONE_NUMBER_ID, "123456789");
-            // Create PendingIntent
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, notificationId + 0,  // Id must be different for every action button
-                    intent, PendingIntent.FLAG_CANCEL_CURRENT);
-            // Create Notification Action
-            NotificationCompat.Action action = new NotificationCompat.Action
-                    .Builder(R.drawable.ic_call_24dp, "Call Back", pendingIntent).build();
-            // Add Action to array
-            actions.add(action);
-            //
-            MessageUtils.notification(getApplicationContext(), "LINEBACKER Handled Call", "Incoming Number: 123456789", notificationId, null, actions, true);*/
-            return true;
-        }
         if (id == R.id.action_upload_contacts) {
             final MessageUtils mu = new MessageUtils(this, getString(R.string.action_upload_contacts), getString(R.string.are_you_sure), 0, false);
             mu.setOnClickListenerYes(new View.OnClickListener() {
@@ -443,6 +413,36 @@ public class RecordingLogActivity extends AppCompatActivity
                 }
             });
             mu.show();
+        }
+        if (id == R.id.action_logout) {
+            UserAuthUtils.logUserOut(this);
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            //
+            /*int notificationId = (int) Calendar.getInstance().getTimeInMillis();
+            ArrayList<NotificationCompat.Action> actions = new ArrayList<>();
+            //
+            // Create Intent
+            Intent intent = new Intent(this, NotificationButtonReceiver.class);
+            intent.putExtra(CONSTANTS.NOTIFICATION_ID, notificationId);
+            intent.putExtra(CONSTANTS.ACTION_ID, CONSTANTS.ACTION_CALL_BACK);
+            intent.putExtra(CONSTANTS.PHONE_NUMBER_ID, "123456789");
+            // Create PendingIntent
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, notificationId + 0,  // Id must be different for every action button
+                    intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            // Create Notification Action
+            NotificationCompat.Action action = new NotificationCompat.Action
+                    .Builder(R.drawable.ic_call_24dp, "Call Back", pendingIntent).build();
+            // Add Action to array
+            actions.add(action);
+            //
+            MessageUtils.notification(getApplicationContext(), "LINEBACKER Handled Call", "Incoming Number: 123456789", notificationId, null, actions, true);*/
+            return true;
+        }
+        if (id == R.id.action_voip) {
+            Intent intent = new Intent(this, SipDoubangoActivity.class);
+            startActivity(intent);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

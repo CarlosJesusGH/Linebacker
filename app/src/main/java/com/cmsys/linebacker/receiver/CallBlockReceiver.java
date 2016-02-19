@@ -19,6 +19,9 @@ import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneCallUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
+import com.cmsys.linebacker.voip_doubango.NativeService;
+
+import org.doubango.ngn.utils.NgnConfigurationEntry;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -85,8 +88,16 @@ public class CallBlockReceiver extends BroadcastReceiver {
                 // Add Action to array
                 actions.add(action);
                 // Show Notification
-                MessageUtils.notification(context, "LINEBACKER Handled Call", "Incoming Number: " + mPhoneNumber, notificationId, RecordingLogActivity.class, actions, true);
+                MessageUtils.notification(context, "LINEBACKER Handled Call", "Incoming Number: " + mPhoneNumber, notificationId, RecordingLogActivity.class, actions, true, null, true);
                 //PhoneCallUtils.setSoundOnVibrateOff(context);
+
+                // Reconnect to Sip server in case it isn't
+                SharedPreferences settingsNGN = context.getSharedPreferences(NgnConfigurationEntry.SHARED_PREF_NAME, 0);
+                if (settingsNGN != null && settingsNGN.getBoolean(NgnConfigurationEntry.GENERAL_AUTOSTART.toString(), NgnConfigurationEntry.DEFAULT_GENERAL_AUTOSTART)) {
+                    Intent i = new Intent(context, NativeService.class);
+                    i.putExtra("autostarted", true);
+                    context.startService(i);
+                }
             }
             // Un-mute incoming calls
             PhoneCallUtils.unMuteRinging(context, audioManager);

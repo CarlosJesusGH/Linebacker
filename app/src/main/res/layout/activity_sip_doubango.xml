@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.cmsys.linebacker.voip_doubango.SipDoubangoActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvInfo" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Automatic Extension"
+        android:id="@+id/btGetExtension"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvInfo" />
+
+    <EditText
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:hint="Extension Nr"
+        android:id="@+id/etSignInOut"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btGetExtension" />
+
+    <EditText
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:hint="Password"
+        android:id="@+id/etPassword"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/etSignInOut" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign in/out"
+        android:id="@+id/btSignInOut"
+        android:layout_alignBaseline="@id/etPassword"
+        android:layout_toRightOf="@+id/etPassword" />
+
+    <EditText
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="751"
+        android:id="@+id/etCall"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/etPassword"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Call"
+        android:id="@+id/btCall"
+        android:layout_alignBaseline="@id/etCall"
+        android:layout_toRightOf="@+id/etCall" />
+
+</RelativeLayout>

@@ -1,4 +1,4 @@
-package com.cmsys.linebacker.webrtc;
+package com.cmsys.linebacker.voip_webrtc;
 
 import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;

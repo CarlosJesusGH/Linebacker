@@ -17,4 +17,7 @@
     <string name="pref_key_setting_mobile_notification">mobileNotification</string>
     <string name="pref_title_setting_mobile_notification">Mobile Notifications</string>
     <string name="pref_description_setting_mobile_notification">Receive mobile important notifications</string>
+
+    <string name="pref_key_voip_extension">voipExtension</string>
+    <string name="pref_key_voip_password">voipPassword</string>
 </resources>

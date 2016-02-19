@@ -1,4 +1,4 @@
-package com.cmsys.linebacker.webrtc;
+package com.cmsys.linebacker.voip_webrtc;
 
 public class PeerConnectionParameters {
     public final boolean videoCallEnabled;
