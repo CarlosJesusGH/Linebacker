@@ -2,22 +2,42 @@
 *  Copyright (C) 2011, Doubango Telecom.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango(dot)org>
-*	
+*
 * This file is part of imsdroid Project (http://code.google.com/p/imsdroid)
 *
-* imsdroid is free software: you can redistribute it and/or modify it under the terms of 
-* the GNU General Public License as published by the Free Software Foundation, either version 3 
+* imsdroid is free software: you can redistribute it and/or modify it under the terms of
+* the GNU General Public License as published by the Free Software Foundation, either version 3
 * of the License, or (at your option) any later version.
-*	
+*
 * imsdroid is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 * See the GNU General Public License for more details.
-*	
-* You should have received a copy of the GNU General Public License along 
-* with this program; if not, write to the Free Software Foundation, Inc., 
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
 * 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 package com.cmsys.linebacker.voip_doubango;
+
+//import org.doubango.imsdroid.Screens.ScreenAV;
+
+import org.doubango.ngn.NgnApplication;
+import org.doubango.ngn.NgnNativeService;
+import org.doubango.ngn.events.NgnEventArgs;
+import org.doubango.ngn.events.NgnInviteEventArgs;
+import org.doubango.ngn.events.NgnMessagingEventArgs;
+import org.doubango.ngn.events.NgnMsrpEventArgs;
+import org.doubango.ngn.events.NgnRegistrationEventArgs;
+import org.doubango.ngn.events.NgnRegistrationEventTypes;
+import org.doubango.ngn.media.NgnMediaType;
+import org.doubango.ngn.model.NgnHistorySMSEvent;
+import org.doubango.ngn.model.NgnHistoryEvent.StatusType;
+import org.doubango.ngn.sip.NgnAVSession;
+import org.doubango.ngn.sip.NgnMsrpSession;
+import org.doubango.ngn.utils.NgnConfigurationEntry;
+import org.doubango.ngn.utils.NgnDateTimeUtils;
+import org.doubango.ngn.utils.NgnStringUtils;
+import org.doubango.ngn.utils.NgnUriUtils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,23 +50,8 @@ import android.util.Log;
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.util.DateUtils;
 import com.cmsys.linebacker.util.MessageUtils;
-//import org.doubango.imsdroid.Screens.ScreenAV;
-import org.doubango.ngn.NgnEngine;
-import org.doubango.ngn.NgnNativeService;
-import org.doubango.ngn.events.NgnEventArgs;
-import org.doubango.ngn.events.NgnInviteEventArgs;
-import org.doubango.ngn.events.NgnMessagingEventArgs;
-import org.doubango.ngn.events.NgnMsrpEventArgs;
-import org.doubango.ngn.events.NgnRegistrationEventArgs;
-import org.doubango.ngn.events.NgnRegistrationEventTypes;
-import org.doubango.ngn.media.NgnMediaType;
-import org.doubango.ngn.model.NgnHistoryEvent.StatusType;
-import org.doubango.ngn.model.NgnHistorySMSEvent;
-import org.doubango.ngn.sip.NgnAVSession;
-import org.doubango.ngn.sip.NgnMsrpSession;
-import org.doubango.ngn.utils.NgnDateTimeUtils;
-import org.doubango.ngn.utils.NgnStringUtils;
-import org.doubango.ngn.utils.NgnUriUtils;
+import com.cmsys.linebacker.voip_doubango.Engine;
+import com.cmsys.linebacker.voip_doubango.IMSDroid;
 
 public class NativeService extends NgnNativeService {
     private final static String TAG = NativeService.class.getCanonicalName();
@@ -55,12 +60,10 @@ public class NativeService extends NgnNativeService {
     private PowerManager.WakeLock mWakeLock;
     private BroadcastReceiver mBroadcastReceiver;
     private Engine mEngine;
-    //private NgnEngine mEngine;
 
     public NativeService() {
         super();
         mEngine = (Engine) Engine.getInstance();
-        //mEngine = (NgnEngine) Engine.getInstance();
     }
 
     @Override
@@ -107,12 +110,10 @@ public class NativeService extends NgnNativeService {
                         default:
                             final boolean bTrying = (type == NgnRegistrationEventTypes.REGISTRATION_INPROGRESS || type == NgnRegistrationEventTypes.UNREGISTRATION_INPROGRESS);
                             if (mEngine.getSipService().isRegistered()) {
-                                //mEngine.showAppNotif(bTrying ?R.drawable.bullet_ball_glass_grey_16 : R.drawable.bullet_ball_glass_green_16, null);
-                                mEngine.showAppNotif(bTrying ? R.drawable.icon : R.drawable.icon, "Voip - Registered");
+                                mEngine.showAppNotif(bTrying ? R.drawable.icon : R.drawable.icon, null);
                                 IMSDroid.acquirePowerLock();
                             } else {
-                                //mEngine.showAppNotif(bTrying ?R.drawable.bullet_ball_glass_grey_16 : R.drawable.bullet_ball_glass_red_16, null);
-                                mEngine.showAppNotif(bTrying ? R.drawable.icon : R.drawable.icon, "Voip - Unregistered");
+                                mEngine.showAppNotif(bTrying ? R.drawable.icon : R.drawable.icon, null);
                                 IMSDroid.releasePowerLock();
                             }
                             break;
@@ -138,7 +139,6 @@ public class NativeService extends NgnNativeService {
                             event.setContent(new String(args.getPayload()));
                             event.setStartTime(NgnDateTimeUtils.parseDate(dateString).getTime());
                             mEngine.getHistoryService().addEvent(event);
-                            //mEngine.showSMSNotif(R.drawable.sms_25, "New message");
                             mEngine.showSMSNotif(R.drawable.icon, "New message");
                             break;
                     }
@@ -163,7 +163,6 @@ public class NativeService extends NgnNativeService {
                             NgnHistorySMSEvent event = new NgnHistorySMSEvent(NgnUriUtils.getUserName(session.getRemotePartyUri()), StatusType.Incoming);
                             event.setContent(content == null ? NgnStringUtils.nullValue() : new String(content));
                             mEngine.getHistoryService().addEvent(event);
-                            //mEngine.showSMSNotif(R.drawable.sms_25, "New message");
                             mEngine.showSMSNotif(R.drawable.icon, "New message");
                             break;
                     }
@@ -183,15 +182,12 @@ public class NativeService extends NgnNativeService {
                         case TERMWAIT:
                         case TERMINATED:
                             if (NgnMediaType.isAudioVideoType(mediaType)) {
-                                //mEngine.refreshAVCallNotif(R.drawable.phone_call_25);
                                 mEngine.refreshAVCallNotif(R.drawable.icon);
                                 mEngine.getSoundService().stopRingBackTone();
                                 mEngine.getSoundService().stopRingTone();
                             } else if (NgnMediaType.isFileTransfer(mediaType)) {
-                                //mEngine.refreshContentShareNotif(R.drawable.image_gallery_25);
                                 mEngine.refreshContentShareNotif(R.drawable.icon);
                             } else if (NgnMediaType.isChat(mediaType)) {
-                                //mEngine.refreshChatNotif(R.drawable.chat_25);
                                 mEngine.refreshChatNotif(R.drawable.icon);
                             }
                             break;
@@ -200,9 +196,8 @@ public class NativeService extends NgnNativeService {
                             if (NgnMediaType.isAudioVideoType(mediaType)) {
                                 final NgnAVSession avSession = NgnAVSession.getSession(args.getSessionId());
                                 if (avSession != null) {
-                                    //mEngine.showAVCallNotif(R.drawable.phone_call_25, getString(R.string.string_call_incoming));
                                     mEngine.showAVCallNotif(R.drawable.icon, getString(R.string.string_call_incoming));
-                                    //*ScreenAV.receiveCall(avSession);
+                                    //ScreenAV.receiveCall(avSession);
                                     DoubangoUtils.receiveCall(avSession);
                                     if (mWakeLock != null && !mWakeLock.isHeld()) {
                                         mWakeLock.acquire(10);
@@ -212,13 +207,11 @@ public class NativeService extends NgnNativeService {
                                     Log.e(TAG, String.format("Failed to find session with id=%ld", args.getSessionId()));
                                 }
                             } else if (NgnMediaType.isFileTransfer(mediaType)) {
-                                //mEngine.refreshContentShareNotif(R.drawable.image_gallery_25);
                                 mEngine.refreshContentShareNotif(R.drawable.icon);
                                 if (mWakeLock != null && !mWakeLock.isHeld()) {
                                     mWakeLock.acquire(10);
                                 }
                             } else if (NgnMediaType.isChat(mediaType)) {
-                                //mEngine.refreshChatNotif(R.drawable.chat_25);
                                 mEngine.refreshChatNotif(R.drawable.icon);
                                 if (mWakeLock != null && !mWakeLock.isHeld()) {
                                     mWakeLock.acquire(10);
@@ -228,13 +221,10 @@ public class NativeService extends NgnNativeService {
 
                         case INPROGRESS:
                             if (NgnMediaType.isAudioVideoType(mediaType)) {
-                                //mEngine.showAVCallNotif(R.drawable.phone_call_25, getString(R.string.string_call_outgoing));
                                 mEngine.showAVCallNotif(R.drawable.icon, getString(R.string.string_call_outgoing));
                             } else if (NgnMediaType.isFileTransfer(mediaType)) {
-                                //mEngine.refreshContentShareNotif(R.drawable.image_gallery_25);
                                 mEngine.refreshContentShareNotif(R.drawable.icon);
                             } else if (NgnMediaType.isChat(mediaType)) {
-                                //mEngine.refreshChatNotif(R.drawable.chat_25);
                                 mEngine.refreshChatNotif(R.drawable.icon);
                             }
                             break;
@@ -243,10 +233,8 @@ public class NativeService extends NgnNativeService {
                             if (NgnMediaType.isAudioVideoType(mediaType)) {
                                 mEngine.getSoundService().startRingBackTone();
                             } else if (NgnMediaType.isFileTransfer(mediaType)) {
-                                //mEngine.refreshContentShareNotif(R.drawable.image_gallery_25);
                                 mEngine.refreshContentShareNotif(R.drawable.icon);
                             } else if (NgnMediaType.isChat(mediaType)) {
-                                //mEngine.refreshChatNotif(R.drawable.chat_25);
                                 mEngine.refreshChatNotif(R.drawable.icon);
                             }
                             break;
@@ -254,15 +242,12 @@ public class NativeService extends NgnNativeService {
                         case CONNECTED:
                         case EARLY_MEDIA:
                             if (NgnMediaType.isAudioVideoType(mediaType)) {
-                                //mEngine.showAVCallNotif(R.drawable.phone_call_25, getString(R.string.string_incall));
                                 mEngine.showAVCallNotif(R.drawable.icon, getString(R.string.string_incall));
                                 mEngine.getSoundService().stopRingBackTone();
                                 mEngine.getSoundService().stopRingTone();
                             } else if (NgnMediaType.isFileTransfer(mediaType)) {
-                                //mEngine.refreshContentShareNotif(R.drawable.image_gallery_25);
                                 mEngine.refreshContentShareNotif(R.drawable.icon);
                             } else if (NgnMediaType.isChat(mediaType)) {
-                                //mEngine.refreshChatNotif(R.drawable.chat_25);
                                 mEngine.refreshChatNotif(R.drawable.icon);
                             }
                             break;
@@ -281,10 +266,15 @@ public class NativeService extends NgnNativeService {
 
         if (intent != null) {
             Bundle bundle = intent.getExtras();
-            if (bundle != null && bundle.getBoolean("autostarted")) {
+            //if (bundle != null && bundle.getBoolean("autostarted")) {
+            if (bundle != null && bundle.getBoolean(NgnConfigurationEntry.GENERAL_AUTOSTART.toString(), NgnConfigurationEntry.DEFAULT_GENERAL_AUTOSTART)) {
                 if (mEngine.start()) {
-                    mEngine.getSipService().register(null);
-                }
+                    if (mEngine.getSipService().register(null))
+                        MessageUtils.notification(getApplicationContext(), "NativeService - Sip service registered succeed", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                    else
+                        MessageUtils.notification(getApplicationContext(), "NativeService - Problem while sip registering", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                } else
+                    MessageUtils.notification(getApplicationContext(), "NativeService - Problem while Engine start", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
             }
         }
 
@@ -297,8 +287,6 @@ public class NativeService extends NgnNativeService {
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy()");
-        MessageUtils.notification(getApplicationContext(), "NativeService - Destroyed", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
-
         if (mBroadcastReceiver != null) {
             unregisterReceiver(mBroadcastReceiver);
             mBroadcastReceiver = null;

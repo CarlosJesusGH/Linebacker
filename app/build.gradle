@@ -74,9 +74,9 @@ dependencies {
 
     // Socket.io
     //compile 'com.github.nkzawa:socket.io-client:0.4.2'
-    compile('io.socket:socket.io-client:0.6.3') {
-        exclude group: 'org.json', module: 'json'
-    }
+//    compile('io.socket:socket.io-client:0.6.3') {
+//        exclude group: 'org.json', module: 'json'
+//    }
 
     // Respoke SDK for Android (Digium SDK for Android+Asterisk Development)
     // https://www.digium.com/company/news/digium-releases-respoke-ios-and-android-sdks-webrtc-and-messaging

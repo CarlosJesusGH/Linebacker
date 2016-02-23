@@ -131,12 +131,12 @@ public class DoubangoUtils {
 
                 //CarlosJesusGH
                 mConfigurationService.putBoolean(NgnConfigurationEntry.NETWORK_USE_3G, true);
-                //mConfigurationService.putBoolean(NgnConfigurationEntry.GENERAL_AUTOSTART, true);
+                mConfigurationService.putBoolean(NgnConfigurationEntry.GENERAL_AUTOSTART, true);
                 //mConfigurationService.putString(NgnConfigurationEntry.QOS_SIP_CALLS_TIMEOUT, "10");
                 //mConfigurationService.putString(NgnConfigurationEntry.QOS_SIP_SESSIONS_TIMEOUT, "10");
                 // You may want to leave the registration timeout to the default 1700 seconds
                 //mConfigurationService.putInt(NgnConfigurationEntry.NETWORK_REGISTRATION_TIMEOUT, 10);
-                mConfigurationService.putString(NgnConfigurationEntry.QOS_REFRESHER, "uas"); // "uac");
+                mConfigurationService.putString(NgnConfigurationEntry.QOS_REFRESHER, "uas"); //"uac");
 
                 // VERY IMPORTANT: Commit changes
                 mConfigurationService.commit();
