@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_screen_answer">Answer Call</string>
+    <string name="call_screen_end">End Call</string>
+    <string name="call_screen_option1">Accept Call</string>
+    <string name="call_screen_option2">Voice Mail</string>
+    <string name="call_screen_option3">Reject</string>
+</resources>

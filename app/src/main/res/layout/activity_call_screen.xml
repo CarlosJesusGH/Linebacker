@@ -20,39 +20,42 @@
         android:text="TextView" />
 
     <Button
-        android:id="@+id/callscreen_button_hangup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="End Call" />
-
-    <Button
         android:id="@+id/callscreen_button_pickup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pick Up" />
+        android:text="@string/call_screen_answer" />
 
-    <LinearLayout
+    <Button
+        android:id="@+id/callscreen_button_hangup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:text="@string/call_screen_end" />
+
+    <LinearLayout
+        android:id="@+id/callscreen_ll_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_marginTop="20dp">
 
         <Button
             android:id="@+id/view_dialer_buttons_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Option 1" />
+            android:text="@string/call_screen_option1" />
 
         <Button
             android:id="@+id/view_dialer_buttons_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Option 2" />
+            android:text="@string/call_screen_option2" />
 
         <Button
             android:id="@+id/view_dialer_buttons_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Option 3" />
+            android:text="@string/call_screen_option3" />
 
     </LinearLayout>
 </LinearLayout>

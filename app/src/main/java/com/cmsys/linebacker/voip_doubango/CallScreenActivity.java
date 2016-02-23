@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cmsys.linebacker.R;
@@ -37,6 +38,7 @@ public class CallScreenActivity extends AppCompatActivity {
     private TextView mTvRemote;
     private Button mBtHangUp;
     private Button mBtPickUp;
+    private LinearLayout mLlOptions;
 
     private NgnAVSession mSession;
     private BroadcastReceiver mSipBroadCastRecv;
@@ -107,12 +109,14 @@ public class CallScreenActivity extends AppCompatActivity {
         mTvRemote = (TextView) findViewById(R.id.callscreen_textView_remote);
         mBtHangUp = (Button) findViewById(R.id.callscreen_button_hangup);
         mBtPickUp = (Button) findViewById(R.id.callscreen_button_pickup);
+        mLlOptions = (LinearLayout) findViewById(R.id.callscreen_ll_options);
 
         mBtHangUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mSession != null) {
                     mSession.hangUpCall();
+                    mLlOptions.setVisibility(View.GONE);
                 }
             }
         });
@@ -122,6 +126,7 @@ public class CallScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mSession != null) {
                     mSession.acceptCall();
+                    mLlOptions.setVisibility(View.VISIBLE);
                 }
             }
         });
