@@ -52,6 +52,7 @@ public class CONSTANTS {
     public static String FIREBASE_DOC_CASE_COMMENTS = "commentsByCase";
     public static String FIREBASE_DOC_CONTACTS = "contactsByUser";
     public static String FIREBASE_DOC_ZIPCODE = "zipCode";
+    public static String FIREBASE_DOC_PHONECOMPANY = "phoneCompany";
 
     public static String FIREBASE_FIELD_USERID = "userId";
     public static String FIREBASE_FIELD_GCM_REGISTRATION_ID = "gcmRegistrationId";

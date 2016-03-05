@@ -3,9 +3,7 @@ package com.cmsys.linebacker.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.preference.ListPreference;
-import android.preference.SwitchPreference;
-import android.provider.MediaStore;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,16 +16,13 @@ import android.widget.TextView;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.CaseBean;
-import com.cmsys.linebacker.bean.CommentBean;
 import com.cmsys.linebacker.bean.LogBean;
 import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.util.AudioUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
-import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
-import com.cmsys.linebacker.util.ViewUtils;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ServerValue;
@@ -142,7 +137,14 @@ public class RecordingDetailsActivity extends AppCompatActivity {
                                 mu2.show();
                                 //------------------------------------------------------------------
                             } else {    // User has already an specific address
-                                reportCase(context);
+                                // Check if user has premium account
+                                if (mUserBean.isUserLevelPremium()) {
+                                    reportCase(context);
+                                } else {
+                                    Uri uri = Uri.parse(getString(R.string.web_link_upgrade)); // missing 'http://' will cause crashed
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    startActivity(intent);
+                                }
                                 mu1.cancel();
                             }
                         }

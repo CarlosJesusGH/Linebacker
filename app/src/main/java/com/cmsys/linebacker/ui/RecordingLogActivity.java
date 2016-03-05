@@ -249,10 +249,10 @@ public class RecordingLogActivity extends AppCompatActivity
         // Set Firebase Context.
         Firebase.setAndroidContext(this);
         // Get Firebase Reference
-        Firebase firebaseRef = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS
-                + File.separator + mUserId);
-        //Firebase ref = new Firebase("https://docs-examples.firebaseio.com/web/saving-data/fireblog/posts");
-        firebaseRef.addChildEventListener(new ChildEventListener() {
+        Firebase firebaseRef = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId);
+        //firebaseRef.orderByKey().limitToLast(100)
+        firebaseRef
+                .addChildEventListener(new ChildEventListener() {
             // Retrieve new posts as they are added to the database
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
@@ -416,6 +416,7 @@ public class RecordingLogActivity extends AppCompatActivity
         }
         if (id == R.id.action_logout) {
             UserAuthUtils.logUserOut(this);
+            SharedPreferencesUtils.removeAll(this);
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             //
@@ -439,7 +440,7 @@ public class RecordingLogActivity extends AppCompatActivity
             MessageUtils.notification(getApplicationContext(), "LINEBACKER Handled Call", "Incoming Number: 123456789", notificationId, null, actions, true);*/
             return true;
         }
-        if (id == R.id.action_voip) {
+        if (id == R.id.action_registration_status) {
             Intent intent = new Intent(this, SipDoubangoActivity.class);
             startActivity(intent);
             return true;
@@ -478,11 +479,11 @@ public class RecordingLogActivity extends AppCompatActivity
             Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
             startActivityForResult(intent, PICK_CONTACT);
         } else if (id == R.id.nav_upgrade) {
-            Uri uri = Uri.parse("http://clouditapp.com/dev/linebacker/en/index.html#"); // missing 'http://' will cause crashed
+            Uri uri = Uri.parse(getString(R.string.web_link_upgrade)); // missing 'http://' will cause crashed
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         } else if (id == R.id.nav_help) {
-            Uri uri = Uri.parse("http://clouditapp.com/dev/linebacker/en/index.html#"); // missing 'http://' will cause crashed
+            Uri uri = Uri.parse(getString(R.string.web_link_help)); // missing 'http://' will cause crashed
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         }

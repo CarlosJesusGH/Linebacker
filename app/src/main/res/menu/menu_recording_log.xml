@@ -23,8 +23,8 @@
         android:title="@string/action_logout"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_voip"
+        android:id="@+id/action_registration_status"
         android:orderInCategory="101"
-        android:title="Voip"
+        android:title="@string/action_registration_status"
         app:showAsAction="never" />
 </menu>

@@ -9,18 +9,23 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.ui.RecordingLogActivity;
 import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.DateUtils;
 import com.cmsys.linebacker.util.LogUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneCallUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
+import com.cmsys.linebacker.voip_doubango.Engine;
 import com.cmsys.linebacker.voip_doubango.NativeService;
 
+import org.doubango.ngn.services.INgnConfigurationService;
+import org.doubango.ngn.services.INgnSipService;
 import org.doubango.ngn.utils.NgnConfigurationEntry;
 
 import java.util.ArrayList;
@@ -98,9 +103,20 @@ public class CallBlockReceiver extends BroadcastReceiver {
                     i.putExtra("autostarted", true);
                     context.startService(i);
                 }
+            } else { // Phone does exist or blockCalls disabled
+                Engine mEngine = (Engine) Engine.getInstance();
+                INgnConfigurationService mConfigurationService = mEngine.getConfigurationService();
+                INgnSipService mSipService = mEngine.getSipService();
+                //
+                if (mEngine.isStarted())
+                    if (mSipService.isRegistered()) {
+                        if (mSipService.unRegister())
+                            //MessageUtils.notification(context, "Unregistered: Linebacker", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                            Log.i(TAG, "Sip session unregister successful");
+                    }
+                // Un-mute incoming calls
+                PhoneCallUtils.unMuteRinging(context, audioManager);     // TODO: place this line again
             }
-            // Un-mute incoming calls
-            PhoneCallUtils.unMuteRinging(context, audioManager);
         }
     }
 }

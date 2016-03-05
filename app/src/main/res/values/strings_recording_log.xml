@@ -15,4 +15,9 @@
     <string name="separator_this_week">THIS WEEK</string>
     <string name="separator_this_month">THIS MONTH</string>
     <string name="separator_older">OLDER</string>
+
+    <!-- Web links-->
+    <string name="web_link_upgrade">http://clouditapp.com/dev/linebacker/en/index.html#</string>
+    <string name="web_link_help">http://clouditapp.com/dev/linebacker/en/index.html#</string>
+
 </resources>

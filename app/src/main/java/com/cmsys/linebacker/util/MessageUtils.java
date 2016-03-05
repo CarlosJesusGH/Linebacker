@@ -20,17 +20,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MessageUtils extends AlertDialog{
 	public static Toast sToast;
@@ -43,7 +46,8 @@ public class MessageUtils extends AlertDialog{
 	private Button bYes, bNo, bAccept, bCancel, bOk;
 	private ProgressBar progressBar;
     private ProgressBar progressBarHorizontal;
-    private View convertView;
+	private ListView listView;
+	private View convertView;
 
 	public MessageUtils(Context pContext){
 		super(pContext);
@@ -90,6 +94,7 @@ public class MessageUtils extends AlertDialog{
 		tvMessage = (TextView) convertView.findViewById(R.id.tvMessage);
 		etInput = (EditText) convertView.findViewById(R.id.etInput);
 		tilInput = (TextInputLayout) convertView.findViewById(R.id.tilInput);
+		listView = (ListView) convertView.findViewById(R.id.listView);
 		bYes = (Button) convertView.findViewById(R.id.bYes);
 		bNo = (Button) convertView.findViewById(R.id.bNo);
 		bAccept = (Button) convertView.findViewById(R.id.bAccept);
@@ -98,8 +103,12 @@ public class MessageUtils extends AlertDialog{
 		progressBar = (ProgressBar) convertView.findViewById(R.id.progressBar);
         progressBarHorizontal = (ProgressBar) convertView.findViewById(R.id.progressBarHorizontal);
 
+		// Set Title and Message text
 		tvTitle.setText(pTitle);
-		tvMessage.setText(pMessage);
+		if (!TextUtils.isEmpty(pMessage))
+			tvMessage.setText(pMessage);
+		else
+			tvMessage.setVisibility(View.GONE);
 
 		View.OnClickListener defaultOCL = new View.OnClickListener() {
 			@Override
@@ -225,7 +234,11 @@ public class MessageUtils extends AlertDialog{
 
     public TextView getTvMessage() {
         return tvMessage;
-    }
+	}
+
+	public ListView getListView() {
+		return listView;
+	}
 
 	public View getConvertView(){
 		return convertView;

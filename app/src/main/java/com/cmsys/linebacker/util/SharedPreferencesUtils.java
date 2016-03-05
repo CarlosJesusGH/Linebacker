@@ -62,6 +62,15 @@ public class SharedPreferencesUtils {
         return true;
     }
 
+    public static boolean removeAll(Context pContext) {
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
+        preferencesEditor = sharedPref.edit();
+        preferencesEditor.clear();
+        preferencesEditor.commit();
+        //
+        return true;
+    }
+
     public static String getUserIdFromPreferences(Context pContext, String pKey){
         String userId = SharedPreferencesUtils.getString(pContext, pKey, null);
         //

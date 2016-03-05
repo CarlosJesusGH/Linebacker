@@ -27,6 +27,7 @@ public class BootCompletedReceiver extends BroadcastReceiver {
         //Intent startServiceIntent = new Intent(context, MyService.class);
         //context.startService(startServiceIntent);
 
+        // TestCJ - show logs as notifications
         /*MessageUtils.toast(context, "BootCompletedReceiver", true);
         MessageUtils.notification(context, "Linebacker - Boot", "", 1, null, null, false, null, true);
         if(SharedPreferencesUtils.checkIfContainsKey(context, context.getString(R.string.pref_key_voip_extension))){
@@ -35,11 +36,12 @@ public class BootCompletedReceiver extends BroadcastReceiver {
             MessageUtils.toast(context, "No sip extension saved", true);
         }*/
 
-        SharedPreferences settings = context.getSharedPreferences(NgnConfigurationEntry.SHARED_PREF_NAME, 0);
+        // TestCJ - Not necessary to register after boot
+        /*SharedPreferences settings = context.getSharedPreferences(NgnConfigurationEntry.SHARED_PREF_NAME, 0);
         if (settings != null && settings.getBoolean(NgnConfigurationEntry.GENERAL_AUTOSTART.toString(), NgnConfigurationEntry.DEFAULT_GENERAL_AUTOSTART)) {
             Intent i = new Intent(context, NativeService.class);
             i.putExtra("autostarted", true);
             context.startService(i);
-        }
+        }*/
     }
 }

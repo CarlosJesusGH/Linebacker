@@ -50,6 +50,7 @@ import android.util.Log;
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.util.DateUtils;
 import com.cmsys.linebacker.util.MessageUtils;
+import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.voip_doubango.Engine;
 import com.cmsys.linebacker.voip_doubango.IMSDroid;
 
@@ -266,8 +267,30 @@ public class NativeService extends NgnNativeService {
 
         if (intent != null) {
             Bundle bundle = intent.getExtras();
-            //if (bundle != null && bundle.getBoolean("autostarted")) {
-            if (bundle != null && bundle.getBoolean(NgnConfigurationEntry.GENERAL_AUTOSTART.toString(), NgnConfigurationEntry.DEFAULT_GENERAL_AUTOSTART)) {
+            if (bundle != null && bundle.getBoolean("autostarted")) {
+                // TestCJ (not necessary) //if (bundle != null && bundle.getBoolean(NgnConfigurationEntry.GENERAL_AUTOSTART.toString(), NgnConfigurationEntry.DEFAULT_GENERAL_AUTOSTART)) {
+                if (mEngine.start()) {
+                    if (mEngine.getSipService().register(null))
+                        MessageUtils.notification(getApplicationContext(), "NativeService - Sip service registered succeed", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                    else
+                        MessageUtils.notification(getApplicationContext(), "NativeService - Problem while sip registering", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                } else
+                    MessageUtils.notification(getApplicationContext(), "NativeService - Problem while Engine start", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+            } /*else { // bundle == null // TestCJ (always reconnecting battery drops)
+                MessageUtils.notification(getApplicationContext(), "NativeService - Bundle==null or without autostart", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                if(SharedPreferencesUtils.checkIfContainsKey(getApplicationContext(), getString(R.string.pref_key_voip_extension))){
+                    if (mEngine.start()) {
+                        if (mEngine.getSipService().register(null))
+                            MessageUtils.notification(getApplicationContext(), "NativeService - Sip service registered succeed", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                        else
+                            MessageUtils.notification(getApplicationContext(), "NativeService - Problem while sip registering", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                    } else
+                        MessageUtils.notification(getApplicationContext(), "NativeService - Problem while Engine start", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                }
+            }*/
+        } /*else { // intent == null
+            MessageUtils.notification(getApplicationContext(), "NativeService - Intent==null", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+            if(SharedPreferencesUtils.checkIfContainsKey(getApplicationContext(), getString(R.string.pref_key_voip_extension))){
                 if (mEngine.start()) {
                     if (mEngine.getSipService().register(null))
                         MessageUtils.notification(getApplicationContext(), "NativeService - Sip service registered succeed", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
@@ -276,7 +299,7 @@ public class NativeService extends NgnNativeService {
                 } else
                     MessageUtils.notification(getApplicationContext(), "NativeService - Problem while Engine start", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
             }
-        }
+        }*/
 
         // alert()
         final Intent i = new Intent(ACTION_STATE_EVENT);

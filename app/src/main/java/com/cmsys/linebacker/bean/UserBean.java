@@ -30,7 +30,7 @@ public class UserBean implements Serializable {
     private String lastName;
     private String phoneNumber;
     private String state;
-    private int userLevel;
+    private int userLevel;  // 0=Free, 1=Premium
     private String zipCode;
 
     public UserBean(){
@@ -164,8 +164,17 @@ public class UserBean implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
+    /**
+     * @return 0=Free, 1=Premium
+     */
     public int getUserLevel() {
         return userLevel;
+    }
+
+    public boolean isUserLevelPremium() {
+        if (userLevel == 1)
+            return true;
+        return false;
     }
 
     public void setUserLevel(int userLevel) {

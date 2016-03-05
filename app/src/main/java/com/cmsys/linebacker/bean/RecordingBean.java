@@ -91,9 +91,22 @@ public class RecordingBean implements Serializable {
         return datetime;
     }
 
+    public long getDatetimeLong() {
+        if (datetime instanceof Double)
+            return (long) ((double) datetime);
+        if (datetime instanceof String)
+            return (long) Double.parseDouble((String) datetime);
+        if (datetime instanceof Long)
+            return (long) datetime;
+        return (long) datetime;
+    }
+
     public String getDatetimeString() {
         try {
-            return DateUtils.getDateTimeString((Long) datetime);
+            if (datetime instanceof Long)
+                return DateUtils.getDateTimeString((long) datetime);
+            if (datetime instanceof Double)
+                return DateUtils.getDateTimeString((long) ((double) datetime));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,7 +115,10 @@ public class RecordingBean implements Serializable {
 
     public String getDateString() {
         try {
-            return DateUtils.getDateString((Long) datetime);
+            if (datetime instanceof Long)
+                return DateUtils.getDateString((long) datetime);
+            if (datetime instanceof Double)
+                return DateUtils.getDateString((long) ((double) datetime));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -111,7 +127,10 @@ public class RecordingBean implements Serializable {
 
     public String getTimeString() {
         try {
-            return DateUtils.getTimeString((Long) datetime);
+            if (datetime instanceof Long)
+                return DateUtils.getTimeString((long) datetime);
+            if (datetime instanceof Double)
+                return DateUtils.getTimeString((long) ((double) datetime));
         } catch (Exception e) {
             e.printStackTrace();
         }

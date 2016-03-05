@@ -97,7 +97,10 @@ public class CaseDetailsActivity extends AppCompatActivity {
                             // Connect to Firebase
                             Firebase.setAndroidContext(context);
                             final Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_CASE_COMMENTS + File.separator + mRecordingBean.getKey());
-                            fbRef.push().setValue(commentBean.getObjectMap(), new Firebase.CompletionListener() {
+                            //fbRef.setPriority(0 - System.currentTimeMillis());  //TODO comment this line
+                            fbRef.push()
+                                    //fbRef.child(Long.toString((long) 99999999999999.0 - System.currentTimeMillis()))
+                                    .setValue(commentBean.getObjectMap(), new Firebase.CompletionListener() {
                                 @Override
                                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                                     if (firebaseError != null) {
@@ -255,6 +258,7 @@ public class CaseDetailsActivity extends AppCompatActivity {
                     pbCaseComments.setVisibility(View.VISIBLE);
                     // Reading Data Once
                     ref = new Firebase(CONSTANTS.FIREBASE_APP_URL);
+                    //ref.orderByPriority();  //TODO comment this line
                     ref.child(CONSTANTS.FIREBASE_DOC_CASE_COMMENTS + File.separator + mRecordingBean.getKey())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

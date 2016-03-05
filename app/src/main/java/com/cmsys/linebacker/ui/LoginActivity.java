@@ -314,11 +314,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                                         //etState.getText().toString(), etCity.getText().toString(), etAddress.getText().toString(),
                                                         etZipCode.getText().toString(),
                                                         etEmail.getText().toString(), "0");
+
                                                 Map<String, Object> firebaseTrans = new HashMap<String, Object>();
                                                 firebaseTrans.put(CONSTANTS.FIREBASE_DOC_USER + File.separator + mUserId, userBean.getObjectMap());
                                                 firebaseTrans.put(CONSTANTS.FIREBASE_DOC_SETTINGS + File.separator + mUserId, (new SettingsBean().setAllDefaults()).getObjectMap());
-                                                // Add test recorded audios TODO remove this at the end
-                                                firebaseTrans.put(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId, RecordingBean.getTestRecordingsMap(mUserId));
+                                                // Add test recorded audios TODO remove next line at the end
+                                                //firebaseTrans.put(CONSTANTS.FIREBASE_DOC_RECORDED_AUDIOS + File.separator + mUserId, RecordingBean.getTestRecordingsMap(mUserId));
+
                                                 fbRef.updateChildren(firebaseTrans, new Firebase.CompletionListener() {
                                                     @Override
                                                     public void onComplete(FirebaseError firebaseError, Firebase firebase) {

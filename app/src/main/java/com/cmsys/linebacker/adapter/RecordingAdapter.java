@@ -73,7 +73,8 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Fil
         ImageView ivContact = (ImageView) convertView.findViewById(R.id.ivContact);
         ImageView ivCheck = (ImageView) convertView.findViewById(R.id.ivCheck);
 
-        setupSeparatorView(llSeparator, tvSeparator, (long) recording.getDatetime(), position);
+        //long datetime = (recording.getDatetime() instanceof Long ? (long) recording.getDatetime() : (long) ((double) recording.getDatetime()));
+        setupSeparatorView(llSeparator, tvSeparator, recording.getDatetimeLong(), position);
 
         // Populate the data into the template view using the data object
         if (recording.wasAlreadyPlayed())
@@ -120,6 +121,10 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Fil
 
     private void setupSeparatorView(LinearLayout lvSeparator, TextView tvSeparator, long datetime, int position) {
         lvSeparator.setVisibility(View.GONE);
+        // Transform datetime from seconds to milliseconds if it is the case
+        if (datetime < 9999999999.0)
+            datetime *= 1000;
+
         // Get item position for every separator
         if (mTodaySeparatorDisplayed == null && DateUtils.isDateToday(new Date(datetime))) {
             mTodaySeparatorDisplayed = position;
@@ -201,6 +206,9 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Fil
                         FilteredArrayNames.add(iterator);
                     } else if (iterator.getPhoneNumber().toLowerCase().contains(lowerConstraint.toString())
                             || iterator.getDatetimeString().contains(lowerConstraint.toString())){
+                        FilteredArrayNames.add(iterator);
+                    } else if (!TextUtils.isEmpty(iterator.getContactName())
+                            && iterator.getContactName().toLowerCase().contains(lowerConstraint.toString())) {
                         FilteredArrayNames.add(iterator);
                     }
                 }

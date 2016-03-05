@@ -22,6 +22,8 @@ public class DateUtils {
 
 	public static String getDateString(Long pTimeStamp){
 		Calendar calendar = Calendar.getInstance();
+		if (pTimeStamp < 9999999999.0)
+			pTimeStamp *= 1000;
 		calendar.setTimeInMillis(pTimeStamp);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 		String date = sdf.format(calendar.getTime());
@@ -36,6 +38,8 @@ public class DateUtils {
 
 	public static String getDateTimeString(Long pTimeStamp){
 		Calendar calendar = Calendar.getInstance();
+		if (pTimeStamp < 9999999999.0)
+			pTimeStamp *= 1000;
 		calendar.setTimeInMillis(pTimeStamp);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 		String date = sdf.format(calendar.getTime());
@@ -87,6 +91,8 @@ public class DateUtils {
 
 	public static String getTimeString(Long pTimeStamp){
 		Calendar calendar = Calendar.getInstance();
+		if (pTimeStamp < 9999999999.0)
+			pTimeStamp *= 1000;
 		calendar.setTimeInMillis(pTimeStamp);
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
 		String date = sdf.format(calendar.getTime());
