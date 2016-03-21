@@ -28,9 +28,11 @@ import android.widget.TextView;
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.adapter.RecordingAdapter;
 import com.cmsys.linebacker.bean.RecordingBean;
+import com.cmsys.linebacker.bean.RestMessageBean;
 import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.gcm.GcmRegistrationAsyncTask;
 import com.cmsys.linebacker.io.DataIO;
+import com.cmsys.linebacker.observer.PhoneContactsObserver;
 import com.cmsys.linebacker.util.AppInitialSetupUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.ExceptionUtils;
@@ -38,6 +40,7 @@ import com.cmsys.linebacker.util.GcmUtils;
 import com.cmsys.linebacker.util.IntentUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
+import com.cmsys.linebacker.util.RestfulUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
 import com.cmsys.linebacker.util.ViewUtils;
@@ -51,6 +54,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -126,6 +130,9 @@ public class RecordingLogActivity extends AppCompatActivity
         } else {
             Log.i(TAG, "No valid Google Play Services APK found.");
         }
+        // Register PhoneContactObserver
+        PhoneContactsObserver contentObserver = new PhoneContactsObserver(this, mUserId);
+        this.getApplicationContext().getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, contentObserver);
     }
 
     @Override
@@ -396,9 +403,16 @@ public class RecordingLogActivity extends AppCompatActivity
                                         MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
                                     } else {
                                         MessageUtils.toast(context, getString(R.string.upload_successful), false);
-                                        listView.setVisibility(View.VISIBLE);
-                                        progressBar.setVisibility(View.GONE);
+                                        RestMessageBean restMessageBean = null;
+                                        try {
+                                            restMessageBean = RestfulUtils.readRestfulAndParseToObject
+                                                    (CONSTANTS.SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER, RestMessageBean.class);
+                                        } catch (Exception e) {
+                                            ExceptionUtils.printExceptionToFile(e);
+                                        }
                                     }
+                                    listView.setVisibility(View.VISIBLE);
+                                    progressBar.setVisibility(View.GONE);
                                     mu.cancel();
                                 }
                             });
@@ -479,11 +493,11 @@ public class RecordingLogActivity extends AppCompatActivity
             Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
             startActivityForResult(intent, PICK_CONTACT);
         } else if (id == R.id.nav_upgrade) {
-            Uri uri = Uri.parse(getString(R.string.web_link_upgrade)); // missing 'http://' will cause crashed
+            Uri uri = Uri.parse(getString(R.string.web_link_upgrade)); // missing 'http://' will cause crashing
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         } else if (id == R.id.nav_help) {
-            Uri uri = Uri.parse(getString(R.string.web_link_help)); // missing 'http://' will cause crashed
+            Uri uri = Uri.parse(getString(R.string.web_link_help)); // missing 'http://' will cause crashing
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         }

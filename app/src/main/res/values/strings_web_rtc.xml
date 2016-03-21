@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!--<string name="host">ns37269.ip-91-121-3.eu</string>-->
-    <string name="host">192.168.2.104</string>
-    <string name="port">3000</string>
-</resources>

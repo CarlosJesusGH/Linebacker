@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_marginTop="20dp"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:orientation="vertical">
 
     <TextView
@@ -19,24 +19,43 @@
         android:layout_margin="20px"
         android:text="TextView" />
 
-    <Button
-        android:id="@+id/callscreen_button_pickup"
+    <LinearLayout
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+        android:id="@+id/callscreen_button_pickup"
+            android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="@string/call_screen_answer" />
 
     <Button
         android:id="@+id/callscreen_button_hangup"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="@string/call_screen_end" />
 
+    </LinearLayout>
+
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
         android:id="@+id/callscreen_ll_options"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/callscreen_button_speaker"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="@string/speaker" />
+
+        <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:visibility="visible"
         android:layout_marginTop="20dp">
 
         <Button
@@ -134,6 +153,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="#" />
+
+    </LinearLayout>
 
     </LinearLayout>
 

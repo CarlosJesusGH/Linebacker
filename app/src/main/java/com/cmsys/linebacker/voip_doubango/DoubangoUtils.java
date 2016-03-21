@@ -84,14 +84,14 @@ public class DoubangoUtils {
                             break;
                         case UNREGISTRATION_OK:
                             MessageUtils.toast(mContext, "You are now unregistered", false);
-                            MessageUtils.notification(mContext, "Unregistered: " + SIP_USERNAME, DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                            //MessageUtils.notification(mContext, "Unregistered: " + SIP_USERNAME, DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
                             // Save SharedPreferences
                             SharedPreferencesUtils.removeKey(mContext, context.getString(R.string.pref_key_voip_extension));
                             SharedPreferencesUtils.removeKey(mContext, context.getString(R.string.pref_key_voip_password));
                             break;
                         case REGISTRATION_OK:
                             MessageUtils.toast(mContext, "You are now registered", false);
-                            MessageUtils.notification(mContext, "Registered: " + SIP_USERNAME, DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                            //MessageUtils.notification(mContext, "Registered: " + SIP_USERNAME, DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
                             // Save SharedPreferences
                             SharedPreferencesUtils.putOrEditString(mContext, context.getString(R.string.pref_key_voip_extension), SIP_USERNAME);
                             SharedPreferencesUtils.putOrEditString(mContext, context.getString(R.string.pref_key_voip_password), SIP_PASSWORD);

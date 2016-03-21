@@ -5,4 +5,6 @@
     <string name="call_screen_option1">Accept Call</string>
     <string name="call_screen_option2">Voice Mail</string>
     <string name="call_screen_option3">Reject</string>
+
+    <string name="phone_company">PHONE COMPANY</string>
 </resources>

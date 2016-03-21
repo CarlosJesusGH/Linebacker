@@ -84,8 +84,7 @@ public class NativeService extends NgnNativeService {
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
         Log.d(TAG, "onStart()");
-        MessageUtils.notification(getApplicationContext(), "NativeService - Started", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
-
+        //MessageUtils.notification(getApplicationContext(), "NativeService - Started", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
         // register()
         mBroadcastReceiver = new BroadcastReceiver() {
             @SuppressWarnings("incomplete-switch")
@@ -271,7 +270,8 @@ public class NativeService extends NgnNativeService {
                 // TestCJ (not necessary) //if (bundle != null && bundle.getBoolean(NgnConfigurationEntry.GENERAL_AUTOSTART.toString(), NgnConfigurationEntry.DEFAULT_GENERAL_AUTOSTART)) {
                 if (mEngine.start()) {
                     if (mEngine.getSipService().register(null))
-                        MessageUtils.notification(getApplicationContext(), "NativeService - Sip service registered succeed", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                        //MessageUtils.notification(getApplicationContext(), "NativeService - Sip service registered succeed", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
+                        MessageUtils.toast(getApplicationContext(), "NativeService - Sip service registered succeed", false);
                     else
                         MessageUtils.notification(getApplicationContext(), "NativeService - Problem while sip registering", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
                 } else

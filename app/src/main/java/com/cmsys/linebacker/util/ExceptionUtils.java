@@ -23,10 +23,10 @@ public class ExceptionUtils {
     public static void displayExceptionMessage(Activity pActivity, Exception pE){
         try{
             LogUtils.LOGD("TAG", "MSG", pE);
-            MessageUtils um = new MessageUtils(pActivity, "Exception Message", pE.getMessage(), 0, true);
+            MessageUtils um = new MessageUtils(pActivity, "Exception Message", pE.toString(), 0, true);
         } catch (Exception e){
             LogUtils.LOGD("TAG", "MSG", pE);
-            MessageUtils um = new MessageUtils(pActivity, "CAN'T Show Exception", e.getMessage(), 0, true);
+            MessageUtils um = new MessageUtils(pActivity, "CAN'T Show Exception", e.toString(), 0, true);
         }
     }
 
@@ -34,15 +34,15 @@ public class ExceptionUtils {
     public static void displayExceptionMessage(Context pContext, Exception pE){
         try{
             LogUtils.LOGD("TAG", "MSG", pE);
-            MessageUtils.toast(pContext, pE.getMessage(), true);
+            MessageUtils.toast(pContext, pE.toString(), true);
         } catch (Exception e){
             LogUtils.LOGD("TAG", "MSG", pE);
-            MessageUtils.toast(pContext, e.getMessage(), true);
+            MessageUtils.toast(pContext, e.toString(), true);
         }
     }
 
     // Print to file
-    public static void printExceptionToFile(Context pContext, Exception pE){
+    public static void printExceptionToFile(Exception pE) {
         PrintStream ps = null;
         try{
             File file = new File(CONSTANTS.PATH_ROOT_APP_FOLDER + File.separator + CONSTANTS.FOLDER_NAME_LOGS + File.separator + CONSTANTS.LOG_FILE_NAME);

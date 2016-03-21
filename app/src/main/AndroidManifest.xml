@@ -107,7 +107,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -138,7 +137,7 @@
         <activity android:name=".voip_siprtc.SipRtcActivity" />
         <activity android:name=".voip_pjsip.SipActivity" />
         <activity android:name=".voip_doubango.SipDoubangoActivity" />
-        <activity android:name=".voip_doubango.CallScreenActivity"></activity>
+        <activity android:name=".voip_doubango.CallScreenActivity" />
     </application>
 
 </manifest>

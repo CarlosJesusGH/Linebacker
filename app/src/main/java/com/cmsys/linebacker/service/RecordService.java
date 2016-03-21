@@ -111,12 +111,12 @@ public class RecordService extends Service {
             catch (IllegalStateException e) {
                 //Log.e("Call recorder IllegalStateException: ", "");
                 terminateAndEraseFile();
-                ExceptionUtils.printExceptionToFile(this, e);
+                ExceptionUtils.printExceptionToFile(e);
             }
             catch (Exception e) {
                 //Log.e("Call recorder Exception: ", "");
                 terminateAndEraseFile();
-                ExceptionUtils.printExceptionToFile(this, e);
+                ExceptionUtils.printExceptionToFile(e);
             }
 
             /*OnErrorListener errorListener = new OnErrorListener() {
@@ -153,18 +153,18 @@ public class RecordService extends Service {
                 //Log.e("Call recorder IllegalStateException: ", "");
                 terminateAndEraseFile();
                 e.printStackTrace();
-                ExceptionUtils.printExceptionToFile(this, e);
+                ExceptionUtils.printExceptionToFile(e);
             } catch (IOException e) {
                 //Log.e("Call recorder IOException: ", "");
                 terminateAndEraseFile();
                 e.printStackTrace();
-                ExceptionUtils.printExceptionToFile(this, e);
+                ExceptionUtils.printExceptionToFile(e);
             }
             catch (Exception e) {
                 //Log.e("Call recorder Exception: ", "");
                 terminateAndEraseFile();
                 e.printStackTrace();
-                ExceptionUtils.printExceptionToFile(this, e);
+                ExceptionUtils.printExceptionToFile(e);
             }
 
             try {
@@ -173,7 +173,7 @@ public class RecordService extends Service {
                 Toast.makeText(this, this.getString(R.string.receiver_start_call), Toast.LENGTH_LONG).show();
             } catch (IllegalStateException e) {
                 e.printStackTrace();
-                ExceptionUtils.printExceptionToFile(this, e);
+                ExceptionUtils.printExceptionToFile(e);
             }
         }
         else if (commandType == STATE_CALL_END)
@@ -204,7 +204,7 @@ public class RecordService extends Service {
             } catch (IllegalStateException e) {
                 e.printStackTrace();
                 ExceptionUtils.displayExceptionMessage(this, e);
-                ExceptionUtils.printExceptionToFile(this, e);
+                ExceptionUtils.printExceptionToFile(e);
             }
 
             try {
@@ -214,7 +214,7 @@ public class RecordService extends Service {
                 this.stopSelf();
             } catch (Exception e) {
                 ExceptionUtils.displayExceptionMessage(this, e);
-                ExceptionUtils.printExceptionToFile(this, e);
+                ExceptionUtils.printExceptionToFile(e);
             }
         }
 

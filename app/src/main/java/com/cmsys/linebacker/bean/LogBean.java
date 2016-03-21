@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by CarlosJesusGH on 04/12/15.
+ * Created by @CarlosJesusGH on 04/12/15.
  */
 @JsonIgnoreProperties(ignoreUnknown=true)    // Use if necessary
 public class LogBean implements Serializable {

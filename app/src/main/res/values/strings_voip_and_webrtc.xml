@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<string name="host">ns37269.ip-91-121-3.eu</string>-->
+    <string name="host">192.168.2.104</string>
+    <string name="port">3000</string>
+
+    <string name="test_voicemail_successful">Successful VoiceMail Setup</string>
+    <string name="get_extension_successful">Successful Get Extension Data</string>
+</resources>

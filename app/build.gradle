@@ -63,7 +63,8 @@ dependencies {
     // Compile Doubango library project for SIP voip communication
     // Adding <uses-sdk tools:overrideLibrary="org.doubango.ngn" /> to app manifest might be necessary
     compile project(':android-ngn-stack')
-
+    // Gson Library
+    compile 'com.google.code.gson:gson:2.2.+'
     //----------------------------------------------------------------------------
     // TESTED not useful libraries
 

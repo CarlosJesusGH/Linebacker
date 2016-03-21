@@ -37,8 +37,11 @@ public class CONSTANTS {
     //---WS Sync-----------------
     public static String SYNC_WS_IP = "cj-website.ddns.net";
     public static String SYNC_WS_PORT = "8080";
-    public static String SYNC_WS_COMMON_PATH = "http://" + SYNC_WS_IP + ":" + SYNC_WS_PORT + "/HelloWorld/jaxrs/";
-    public static String SYNC_WS_METHOD_UPLOAD = "CmsysUploadFile/upload";
+    public static String SYNC_WS_DNS = "linebacker.firebaseio.com";
+    public static String SYNC_WS_COMMON_PATH = "https://" + SYNC_WS_DNS + "/sampleRestfulWS/";
+    public static String SYNC_WS_ASTERISk_GET_USER_DATA = SYNC_WS_COMMON_PATH + "asteriskGetNewUserData.json";
+    public static String SYNC_WS_ASTERISk_TEST_VOICE_MAIL = SYNC_WS_COMMON_PATH + "asteriskTestVoicemailSetup.json";
+    public static String SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER = SYNC_WS_COMMON_PATH + "asteriskUpdateContactsTrigger.json";
 
     //---Firebase------------------
     public static String FIREBASE_APP_NAME = "linebacker";

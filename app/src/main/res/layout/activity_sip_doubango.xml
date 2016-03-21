@@ -1,78 +1,293 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.cmsys.linebacker.voip_doubango.SipDoubangoActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show VoiceMail Configuration Numbers"
-        android:id="@+id/btVoiceMailConfigNumbers"
-        android:layout_alignParentLeft="true" />
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.cmsys.linebacker.voip_doubango.SipDoubangoActivity"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="New Text"
-        android:id="@+id/tvInfo"
-        android:layout_below="@+id/btVoiceMailConfigNumbers" />
+        <View
+            android:id="@+id/vSeparatorGetServerData"
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/colorPrimary" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get Automatic Extension"
-        android:id="@+id/btGetExtension"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tvInfo" />
+        <TextView
+            android:id="@+id/tvInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/vSeparatorGetServerData"
+            android:text="Connection Status" />
 
-    <EditText
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:hint="Extension Nr"
-        android:id="@+id/etSignInOut"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/btGetExtension" />
+        <Button
+            android:id="@+id/btGetExtension"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tvInfo"
+            android:text="Get Automatic Extension" />
 
-    <EditText
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:hint="Password"
-        android:id="@+id/etPassword"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/etSignInOut" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btGetExtension"
+            android:id="@+id/rlExtensionData"
+            android:visibility="gone">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign in/out"
-        android:id="@+id/btSignInOut"
-        android:layout_alignBaseline="@id/etPassword"
-        android:layout_toRightOf="@+id/etPassword" />
+            <EditText
+                android:id="@+id/etSignInOut"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:hint="Extension Nr"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <EditText
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="751"
-        android:id="@+id/etCall"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/etPassword"
-        android:layout_marginTop="20dp" />
+            <EditText
+                android:id="@+id/etExternalPhoneNr"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/etSignInOut"
+                android:hint="External Phone"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Call"
-        android:id="@+id/btCall"
-        android:layout_alignBaseline="@id/etCall"
-        android:layout_toRightOf="@+id/etCall" />
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/etSignInOut"
+                android:hint="Password"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:singleLine="true" />
 
-</RelativeLayout>
+            <Button
+                android:id="@+id/btSignInOut"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignBaseline="@id/etPassword"
+                android:layout_toRightOf="@+id/etPassword"
+                android:text="Sign in/out"
+                style="?android:attr/buttonStyleSmall"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/vSeparatorCall"
+                android:layout_width="match_parent"
+                android:layout_height="2px"
+                android:layout_below="@+id/etPassword"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="5dp"
+                android:background="@color/colorPrimary" />
+
+            <EditText
+                android:id="@+id/etCall"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/vSeparatorCall"
+                android:text=""
+                android:hint="Phone To Call"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <Button
+                android:id="@+id/btCall"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignBaseline="@id/etCall"
+                android:layout_toRightOf="@+id/etCall"
+                android:text="Call"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/vSeparatorPhoneCompany"
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_below="@+id/rlExtensionData"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/btVoiceMailConfigNumbers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/vSeparatorPhoneCompany"
+            android:text="Show VoiceMail Configuration Numbers"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/llCallingNumbers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btVoiceMailConfigNumbers"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvCompanyName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Company Name"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/llActivate1">
+
+                <TextView
+                    android:id="@+id/tvActivate1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Activate 1" />
+
+                <Button
+                    android:id="@+id/btActivate1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Activate 1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/llActivate2">
+
+                <TextView
+                    android:id="@+id/tvActivate2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Activate 2" />
+
+                <Button
+                    android:id="@+id/btActivate2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Activate 2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/llActivate3">
+
+                <TextView
+                    android:id="@+id/tvActivate3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Activate 3" />
+
+                <Button
+                    android:id="@+id/btActivate3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Activate 3" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/llDeactivate1">
+
+                <TextView
+                    android:id="@+id/tvDeactivate1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deactivate 1" />
+
+                <Button
+                    android:id="@+id/btDeactivate1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Deactivate 1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/llDeactivate2">
+
+                <TextView
+                    android:id="@+id/tvDeactivate2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deactivate 2" />
+
+                <Button
+                    android:id="@+id/btDeactivate2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Deactivate 2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/llSpecialInstructions">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Special Instructions: "
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvSpecialInstructions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="...Instructions..." />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/vSeparatorTestVoiceMail"
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_below="@+id/llCallingNumbers"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/btTestVoiceMailSetup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/vSeparatorTestVoiceMail"
+            android:text="Test VoiceMail Setup" />
+
+    </RelativeLayout>
+</ScrollView>

@@ -15,6 +15,7 @@ public class PhoneCompanyBean implements Serializable {
     private String activationPrefix;
     private String activationPrefix2;
     private String activationPrefix3;
+    private String activationSuffix;
     private String companyName;
     private String deactivationNumber;
     private String deactivationNumber2;
@@ -54,6 +55,14 @@ public class PhoneCompanyBean implements Serializable {
 
     public void setActivationPrefix3(String activationPrefix3) {
         this.activationPrefix3 = activationPrefix3;
+    }
+
+    public String getActivationSuffix() {
+        return activationSuffix;
+    }
+
+    public void setActivationSuffix(String activationSuffix) {
+        this.activationSuffix = activationSuffix;
     }
 
     public String getCompanyName() {

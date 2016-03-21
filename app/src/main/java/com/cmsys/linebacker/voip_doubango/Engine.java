@@ -149,7 +149,7 @@ public class Engine extends NgnEngine {
         builder.setAutoCancel(false);
         builder.setContentIntent(contentIntent);
         NotificationManager mNotificationManager = (NotificationManager) IMSDroid.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(notifId, builder.build());
+        //mNotificationManager.notify(notifId, builder.build());
     }
 
     public void showAppNotif(int drawableId, String tickerText) {

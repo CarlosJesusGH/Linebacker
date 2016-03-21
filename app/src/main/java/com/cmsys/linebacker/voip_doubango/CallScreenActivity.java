@@ -4,9 +4,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import org.doubango.ngn.events.NgnInviteEventArgs;
+import org.doubango.ngn.model.NgnPhoneNumber;
 import org.doubango.ngn.sip.NgnAVSession;
 import org.doubango.ngn.sip.NgnInviteSession.InviteState;
+import org.doubango.ngn.utils.NgnGraphicsUtils;
+import org.doubango.ngn.utils.NgnListUtils;
 import org.doubango.ngn.utils.NgnStringUtils;
+import org.doubango.ngn.utils.NgnUriUtils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -38,6 +42,7 @@ public class CallScreenActivity extends AppCompatActivity {
     private TextView mTvRemote;
     private Button mBtHangUp;
     private Button mBtPickUp;
+    private Button mBtSpeaker;
     private LinearLayout mLlOptions;
 
     private NgnAVSession mSession;
@@ -109,6 +114,8 @@ public class CallScreenActivity extends AppCompatActivity {
         mTvRemote = (TextView) findViewById(R.id.callscreen_textView_remote);
         mBtHangUp = (Button) findViewById(R.id.callscreen_button_hangup);
         mBtPickUp = (Button) findViewById(R.id.callscreen_button_pickup);
+        mBtSpeaker = (Button) findViewById(R.id.callscreen_button_speaker);
+        mBtSpeaker.setText(getString(R.string.speaker) + " " + getString(R.string.on));
         mLlOptions = (LinearLayout) findViewById(R.id.callscreen_ll_options);
 
         mBtHangUp.setOnClickListener(new View.OnClickListener() {
@@ -126,12 +133,26 @@ public class CallScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mSession != null) {
                     mSession.acceptCall();
+                    mBtPickUp.setVisibility(View.GONE);
                     mLlOptions.setVisibility(View.VISIBLE);
                 }
             }
         });
 
-        mTvRemote.setText(mSession.getRemotePartyDisplayName());
+        mBtSpeaker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mSession != null) {
+                    mSession.setSpeakerphoneOn(!mSession.isSpeakerOn());
+                    mBtSpeaker.setText(getString(R.string.speaker) + " " + (mSession.isSpeakerOn() ? getString(R.string.off) : getString(R.string.on)));
+                }
+            }
+        });
+
+        mTvRemote.setText(mSession.getRemotePartyDisplayName()
+                + " \nURI: " + mSession.getRemotePartyUri()
+                + " \nINFO: " + mSession.getRemoteDeviceInfo().toString()
+                + " \nExtra: " + mSession.getRemoteDeviceInfo().getDate());
         mTvInfo.setText(getStateDesc(mSession.getState()));
 
         // Setup DTMF buttons

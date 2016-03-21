@@ -319,7 +319,7 @@ public class MessageUtils extends AlertDialog{
 			return mBuilder;
 		} catch (Exception e){
 			ExceptionUtils.displayExceptionMessage(pContext, e);
-			ExceptionUtils.printExceptionToFile(pContext, e);
+			ExceptionUtils.printExceptionToFile(e);
 		}
 		return null;
 	}
