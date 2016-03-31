@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="call_screen_answer">Answer Call</string>
-    <string name="call_screen_end">End Call</string>
-    <string name="call_screen_option1">Accept Call</string>
-    <string name="call_screen_option2">Voice Mail</string>
-    <string name="call_screen_option3">Reject</string>
+    <string name="call_screen_answer">Answer</string>
+    <string name="call_screen_end">End</string>
+    <string name="call_screen_option_accept">Accept</string>
+    <string name="call_screen_option_mail">VoiceMail</string>
+    <string name="call_screen_option_reject">Reject</string>
+    <string name="call_screen_show_keyboard">Show Keyboard</string>
+    <string name="call_screen_hide_keyboard">Hide Keyboard</string>
+    <string name="call_screen_info_default">LINEBACKER INTERCEPT FROM</string>
+    <string name="call_screen_info_when_known">LINEBACKER FUMBLE RECOVERY</string>
 
     <string name="phone_company">PHONE COMPANY</string>
 </resources>

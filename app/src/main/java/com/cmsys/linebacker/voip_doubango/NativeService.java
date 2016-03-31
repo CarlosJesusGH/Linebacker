@@ -110,10 +110,10 @@ public class NativeService extends NgnNativeService {
                         default:
                             final boolean bTrying = (type == NgnRegistrationEventTypes.REGISTRATION_INPROGRESS || type == NgnRegistrationEventTypes.UNREGISTRATION_INPROGRESS);
                             if (mEngine.getSipService().isRegistered()) {
-                                mEngine.showAppNotif(bTrying ? R.drawable.icon : R.drawable.icon, null);
+                                //mEngine.showAppNotif(bTrying ? R.drawable.icon : R.drawable.icon, null);
                                 IMSDroid.acquirePowerLock();
                             } else {
-                                mEngine.showAppNotif(bTrying ? R.drawable.icon : R.drawable.icon, null);
+                                //mEngine.showAppNotif(bTrying ? R.drawable.icon : R.drawable.icon, null);
                                 IMSDroid.releasePowerLock();
                             }
                             break;

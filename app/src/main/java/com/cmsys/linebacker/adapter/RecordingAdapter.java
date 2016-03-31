@@ -1,8 +1,10 @@
 package com.cmsys.linebacker.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.provider.ContactsContract;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,13 +20,13 @@ import android.widget.TextView;
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.ColorUtils;
 import com.cmsys.linebacker.util.DateUtils;
-import com.cmsys.linebacker.util.PhoneCallUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
+import com.cmsys.linebacker.util.RoundedImageView;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -70,7 +72,9 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Fil
         TextView tvPhoneNumber = (TextView) convertView.findViewById(R.id.tvPhoneNumber);
         TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
         TextView tvTime = (TextView) convertView.findViewById(R.id.tvTime);
-        ImageView ivContact = (ImageView) convertView.findViewById(R.id.ivContact);
+        //ImageView ivContact = (ImageView) convertView.findViewById(R.id.ivContact);
+        RoundedImageView ivContact = (RoundedImageView) convertView.findViewById(R.id.ivContact);
+        //ImageView ivContact = (ImageView) convertView.findViewById(R.id.ivContact);
         ImageView ivCheck = (ImageView) convertView.findViewById(R.id.ivCheck);
 
         //long datetime = (recording.getDatetime() instanceof Long ? (long) recording.getDatetime() : (long) ((double) recording.getDatetime()));
@@ -89,12 +93,12 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Fil
             ivCheck.setImageResource(R.mipmap.ic_check_blue);
         else
             ivCheck.setImageResource(R.mipmap.ic_check_gray);
-        // Set contactt image if exists
-        if (recording.isContact()) {
+        // Set contact image if exists
+        Long contactId = PhoneContactUtils.getContactIdByPhone(getContext(), recording.getPhoneNumber());
+        if (recording.isContact() || contactId != null) {
             // Hide check image
             ivCheck.setVisibility(View.GONE);
             // Load contact name and image
-            Long contactId = PhoneContactUtils.getContactIdByPhone(getContext(), recording.getPhoneNumber());
             if (contactId != null) {
                 // Set contact name
                 String contactName = PhoneContactUtils.getDisplayNameById(getContext(), contactId);
@@ -104,14 +108,21 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Fil
                 }
                 // Set contact image
                 InputStream inputStream = PhoneContactUtils.getThumbnailPhotoById(getContext(), contactId);
-                if (inputStream != null)
+                if (inputStream != null) {
+                    ivContact.setRoundedDisabled(false);
                     ivContact.setImageDrawable(Drawable.createFromStream(inputStream, ""));
-                else
-                    ivContact.setImageResource(R.drawable.ic_help_24dp);
+                } else {
+                    ivContact.setRoundedDisabled(true);
+                    ivContact.setImageResource(R.drawable.ic_account_circle_24dp);
+                    ivContact.setColorFilter(ColorUtils.RandomColor.getRandomColor());
+                }
             } else {
-                ivContact.setImageResource(R.drawable.ic_help_24dp);
+                ivContact.setRoundedDisabled(true);
+                ivContact.setImageResource(R.drawable.ic_account_circle_24dp);
+                ivContact.setColorFilter(ColorUtils.RandomColor.getRandomColor());
             }
         } else {
+            ivContact.setRoundedDisabled(false);
             ivContact.setImageResource(R.mipmap.ic_launcher);
             ivCheck.setVisibility(View.VISIBLE);
         }

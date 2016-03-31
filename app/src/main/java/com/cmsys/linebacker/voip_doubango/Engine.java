@@ -92,7 +92,7 @@ public class Engine extends NgnEngine {
 
 //        final NotificationCompat.Builder notification = new NotificationCompat.Builder(IMSDroid.getContext());
 //
-        Intent intent = new Intent(IMSDroid.getContext(), SipDoubangoActivity.class);
+        Intent intent = new Intent(IMSDroid.getContext(), CallScreenActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
         switch (notifId) {
@@ -114,7 +114,7 @@ public class Engine extends NgnEngine {
                 break;
 
             case NOTIF_AVCALL_ID:
-                tickerText = String.format("%s (%d)", tickerText, NgnAVSession.getSize());
+                //tickerText = String.format("%s (%d)", tickerText, NgnAVSession.getSize());
                 intent.putExtra("action", CallScreenActivity.ACTION_SHOW_AVSCREEN);
                 break;
 
@@ -149,7 +149,7 @@ public class Engine extends NgnEngine {
         builder.setAutoCancel(false);
         builder.setContentIntent(contentIntent);
         NotificationManager mNotificationManager = (NotificationManager) IMSDroid.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        //mNotificationManager.notify(notifId, builder.build());
+        mNotificationManager.notify(notifId, builder.build());
     }
 
     public void showAppNotif(int drawableId, String tickerText) {

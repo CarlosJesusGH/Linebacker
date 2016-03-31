@@ -14,4 +14,7 @@
     <dimen name="button_play_width">200dp</dimen>
     <dimen name="activity_vertical_margin_long">50dp</dimen>
 
+    <!-- Call Screen-->
+    <dimen name="call_screen_keyboard_text">20dp</dimen>
+
 </resources>

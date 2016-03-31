@@ -1,30 +1,41 @@
 package com.cmsys.linebacker.voip_doubango;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import org.doubango.ngn.events.NgnInviteEventArgs;
-import org.doubango.ngn.model.NgnPhoneNumber;
 import org.doubango.ngn.sip.NgnAVSession;
 import org.doubango.ngn.sip.NgnInviteSession.InviteState;
-import org.doubango.ngn.utils.NgnGraphicsUtils;
-import org.doubango.ngn.utils.NgnListUtils;
 import org.doubango.ngn.utils.NgnStringUtils;
-import org.doubango.ngn.utils.NgnUriUtils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cmsys.linebacker.R;
-import com.cmsys.linebacker.util.MessageUtils;
+import com.cmsys.linebacker.anim.IncomingCallAnimation;
+import com.cmsys.linebacker.util.ColorUtils;
+import com.cmsys.linebacker.util.PhoneContactUtils;
+import com.cmsys.linebacker.util.RoundedImageView;
+
+import java.io.InputStream;
 
 public class CallScreenActivity extends AppCompatActivity {
     private static final String TAG = CallScreenActivity.class.getCanonicalName();
@@ -38,12 +49,18 @@ public class CallScreenActivity extends AppCompatActivity {
 
     //private final NgnEngine mEngine;
     private final Engine mEngine;
+    private String mRemoteCallerId;
     private TextView mTvInfo;
     private TextView mTvRemote;
-    private Button mBtHangUp;
-    private Button mBtPickUp;
-    private Button mBtSpeaker;
-    private LinearLayout mLlOptions;
+    private ImageButton mBtSpeaker, mBtShowKeyboard;
+    private Button mBtHangUp, mBtPickUp;
+    private Button mBtOptionsAccept, mBtOptionsMail, mBtOptionsReject;
+    private LinearLayout mLlOptions, mLlKeyboard;
+    private RoundedImageView mRivCallerImage;
+    private EditText mEtKeyboardText;
+    private ImageButton mBtKeyboardBackspace;
+    private ImageView mIvAnimCircle1, mIvAnimCircle2;
+    private IncomingCallAnimation mIncomingCallAnimation1, mIncomingCallAnimation2;
 
     private NgnAVSession mSession;
     private BroadcastReceiver mSipBroadCastRecv;
@@ -110,14 +127,48 @@ public class CallScreenActivity extends AppCompatActivity {
     }
 
     private void setupViews() {
-        mTvInfo = (TextView) findViewById(R.id.call_screen_textView_info);
+        mTvInfo = (TextView) findViewById(R.id.callscreen_textView_info);
         mTvRemote = (TextView) findViewById(R.id.callscreen_textView_remote);
         mBtHangUp = (Button) findViewById(R.id.callscreen_button_hangup);
         mBtPickUp = (Button) findViewById(R.id.callscreen_button_pickup);
-        mBtSpeaker = (Button) findViewById(R.id.callscreen_button_speaker);
-        mBtSpeaker.setText(getString(R.string.speaker) + " " + getString(R.string.on));
+        mBtSpeaker = (ImageButton) findViewById(R.id.callscreen_button_speaker);
+        //mBtSpeaker.setText(getString(R.string.speaker) + " " + getString(R.string.on));
         mLlOptions = (LinearLayout) findViewById(R.id.callscreen_ll_options);
+        mLlKeyboard = (LinearLayout) findViewById(R.id.callscreen_ll_keyboard);
+        mBtKeyboardBackspace = (ImageButton) findViewById(R.id.call_screen_keyboard_backspace);
+        mBtShowKeyboard = (ImageButton) findViewById(R.id.callscreen_show_keyboard);
+        mRivCallerImage = (RoundedImageView) findViewById(R.id.callscreen_caller_image);
+        mEtKeyboardText = (EditText) findViewById(R.id.callscreen_keyboard_edittext);
+        mBtOptionsAccept = (Button) findViewById(R.id.view_dialer_buttons_accept);
+        mBtOptionsMail = (Button) findViewById(R.id.view_dialer_buttons_mail);
+        mBtOptionsReject = (Button) findViewById(R.id.view_dialer_buttons_reject);
+        mIvAnimCircle1 = (ImageView) findViewById(R.id.iv_anim_circle_1);
+        mIvAnimCircle2 = (ImageView) findViewById(R.id.iv_anim_circle_2);
+        // Animation 1
+        mIncomingCallAnimation1 = new IncomingCallAnimation(
+                mIvAnimCircle1,
+                300,
+                150
+        );
+        mIncomingCallAnimation1.setDuration(6000);
+        mIncomingCallAnimation1.setRepeatCount(Animation.INFINITE);
+        mIvAnimCircle1.startAnimation(mIncomingCallAnimation1);
+        // Animation 2
+        mIncomingCallAnimation2 = new IncomingCallAnimation(
+                mIvAnimCircle2,
+                300,
+                150
+        );
+        mIncomingCallAnimation2.setDuration(4000);
+        mIncomingCallAnimation2.setRepeatCount(Animation.INFINITE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mIvAnimCircle2.startAnimation(mIncomingCallAnimation2);
+            }
+        }, 2000);
 
+        // Set listeners
         mBtHangUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,6 +186,17 @@ public class CallScreenActivity extends AppCompatActivity {
                     mSession.acceptCall();
                     mBtPickUp.setVisibility(View.GONE);
                     mLlOptions.setVisibility(View.VISIBLE);
+                    mBtHangUp.setText(getString(R.string.call_screen_end));
+                    // Shrink contact's image
+                    mRivCallerImage.getLayoutParams().width /= 2;
+                    mRivCallerImage.getLayoutParams().height /= 2;
+                    // Remove animation
+                    mIvAnimCircle1.clearAnimation();
+                    mIvAnimCircle1.setVisibility(View.GONE);
+                    mIvAnimCircle2.clearAnimation();
+                    mIvAnimCircle2.setVisibility(View.GONE);
+                    ((FrameLayout) findViewById(R.id.call_screen_frame_layout))
+                            .getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 }
             }
         });
@@ -144,17 +206,73 @@ public class CallScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mSession != null) {
                     mSession.setSpeakerphoneOn(!mSession.isSpeakerOn());
-                    mBtSpeaker.setText(getString(R.string.speaker) + " " + (mSession.isSpeakerOn() ? getString(R.string.off) : getString(R.string.on)));
+                    //mBtSpeaker.setText(getString(R.string.speaker) + " " + (mSession.isSpeakerOn() ? getString(R.string.off) : getString(R.string.on)));
+                    if (mSession.isSpeakerOn())
+                        //mBtSpeaker.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        mBtSpeaker.setColorFilter(Color.GREEN);
+                    else
+                        //mBtSpeaker.setBackgroundResource(R.drawable.util_button_pressed_action_transp);
+                        mBtSpeaker.setColorFilter(Color.BLACK);
                 }
             }
         });
 
-        mTvRemote.setText(mSession.getRemotePartyDisplayName()
-                + " \nURI: " + mSession.getRemotePartyUri()
-                + " \nINFO: " + mSession.getRemoteDeviceInfo().toString()
-                + " \nExtra: " + mSession.getRemoteDeviceInfo().getDate());
-        mTvInfo.setText(getStateDesc(mSession.getState()));
+        mBtShowKeyboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mLlKeyboard.getVisibility() == View.VISIBLE) {
+                    mLlKeyboard.setVisibility(View.GONE);
+                    //mBtShowKeyboard.setText(getString(R.string.call_screen_show_keyboard));
+                    mBtShowKeyboard.setImageResource(R.drawable.ic_expand_more_24dp);
+                    mBtOptionsAccept.setVisibility(View.VISIBLE);
+                    mBtOptionsMail.setVisibility(View.VISIBLE);
+                    mBtOptionsReject.setVisibility(View.VISIBLE);
+                } else {
+                    mLlKeyboard.setVisibility(View.VISIBLE);
+                    //mBtShowKeyboard.setText(getString(R.string.call_screen_hide_keyboard));
+                    mBtShowKeyboard.setImageResource(R.drawable.ic_expand_less_24dp);
+                    mEtKeyboardText.setText("");
+                    mBtOptionsAccept.setVisibility(View.GONE);
+                    mBtOptionsMail.setVisibility(View.GONE);
+                    mBtOptionsReject.setVisibility(View.GONE);
+                }
+            }
+        });
 
+        mBtKeyboardBackspace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String currentText = mEtKeyboardText.getText().toString();
+                if (currentText.length() > 0)
+                    mEtKeyboardText.setText(currentText.substring(0, currentText.length() - 1));
+            }
+        });
+
+        mRemoteCallerId = mSession.getRemotePartyDisplayName();
+        if (mRemoteCallerId != null) {
+            mTvRemote.setText(mRemoteCallerId);
+            // Get contact id if exists
+            Long contactId = PhoneContactUtils.getContactIdByPhone(getApplicationContext(), mRemoteCallerId);
+            // Load contact name and image if exists
+            if (contactId != null) {
+                mTvInfo.setText(getString(R.string.call_screen_info_when_known));
+                // Set contact name
+                String contactName = PhoneContactUtils.getDisplayNameById(getApplicationContext(), contactId);
+                if (!TextUtils.isEmpty(contactName)) {
+                    mTvRemote.setText(contactName);
+                }
+                // Set contact image
+                InputStream inputStream = PhoneContactUtils.getThumbnailPhotoById(getApplicationContext(), contactId);
+                if (inputStream != null) {
+                    mRivCallerImage.setRoundedDisabled(false);
+                    mRivCallerImage.setImageDrawable(Drawable.createFromStream(inputStream, ""));
+                } else {
+                    mRivCallerImage.setRoundedDisabled(true);
+                    mRivCallerImage.setImageResource(R.drawable.ic_account_circle_24dp);
+                    mRivCallerImage.setColorFilter(ColorUtils.RandomColor.getRandomColor());
+                }
+            }
+        }
         // Setup DTMF buttons
         loadKeyboard();
     }
@@ -165,7 +283,7 @@ public class CallScreenActivity extends AppCompatActivity {
         Log.d(TAG, "onResume()");
         if (mSession != null) {
             final InviteState callState = mSession.getState();
-            mTvInfo.setText(getStateDesc(callState));
+            //mTvInfo.setText(getStateDesc(callState));
             if (callState == InviteState.TERMINATING || callState == InviteState.TERMINATED) {
                 finish();
             }
@@ -226,7 +344,7 @@ public class CallScreenActivity extends AppCompatActivity {
             }
 
             final InviteState callState = mSession.getState();
-            mTvInfo.setText(getStateDesc(callState));
+            //mTvInfo.setText(getStateDesc(callState));
             switch (callState) {
                 case REMOTE_RINGING:
                     mEngine.getSoundService().startRingBackTone();
@@ -256,13 +374,19 @@ public class CallScreenActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             if (mSession != null) {
-                mSession.sendDTMF(NgnStringUtils.parseInt(v.getTag().toString(), -1));
-                MessageUtils.toast(v.getContext(), "DTMF pulse sent", false);
+                String pressedKey = v.getTag().toString();
+                mSession.sendDTMF(NgnStringUtils.parseInt(pressedKey, -1));
+                //MessageUtils.toast(v.getContext(), "DTMF pulse sent - " + pressedKey, false);
+                mEtKeyboardText.setText(mEtKeyboardText.getText() + pressedKey);
             }
         }
     };
 
     private void loadKeyboard() {
+        DialerUtils.setDialerTextButton(findViewById(R.id.view_dialer_buttons_accept), "1", "", DialerUtils.TAG_1, mOnKeyboardClickListener);
+        DialerUtils.setDialerTextButton(findViewById(R.id.view_dialer_buttons_mail), "2", "ABC", DialerUtils.TAG_2, mOnKeyboardClickListener);
+        DialerUtils.setDialerTextButton(findViewById(R.id.view_dialer_buttons_reject), "3", "DEF", DialerUtils.TAG_3, mOnKeyboardClickListener);
+        //
         DialerUtils.setDialerTextButton(findViewById(R.id.view_dialer_buttons_0), "0", "+", DialerUtils.TAG_0, mOnKeyboardClickListener);
         DialerUtils.setDialerTextButton(findViewById(R.id.view_dialer_buttons_1), "1", "", DialerUtils.TAG_1, mOnKeyboardClickListener);
         DialerUtils.setDialerTextButton(findViewById(R.id.view_dialer_buttons_2), "2", "ABC", DialerUtils.TAG_2, mOnKeyboardClickListener);

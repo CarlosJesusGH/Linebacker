@@ -91,31 +91,32 @@ public class CallBlockReceiver extends BroadcastReceiver {
             MessageUtils.toast(context, mPhoneNumber + "\nPhone Number " + (phoneNumberExists ? "" : "DOESN'T ")
                     + "Exists. \nCallBlock is " + (blockCalls ? "Enabled" : "Disabled"), true);
             // End phone call if number doesn't exists and blockCalls is enabled
-            if(!phoneNumberExists && blockCalls) {
-                PhoneCallUtils.endCall(context);
-                //PhoneCallUtils.disconnectCall(context);
-                // Show notification ---------
-                // Create unique id
-                int notificationId = (int) Calendar.getInstance().getTimeInMillis();
-                ArrayList<NotificationCompat.Action> actions = new ArrayList<>();
-                //
-                // Create Intent for notification
-                Intent callBackIntent = new Intent(context, NotificationButtonReceiver.class);
-                callBackIntent.putExtra(CONSTANTS.NOTIFICATION_ID, notificationId);
-                callBackIntent.putExtra(CONSTANTS.ACTION_ID, CONSTANTS.ACTION_CALL_BACK);
-                callBackIntent.putExtra(CONSTANTS.PHONE_NUMBER_ID, mPhoneNumber);
-                // Create PendingIntent for notification
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId + 0,  // Id must be different for every action button
-                        callBackIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                // Create Notification Action
-                NotificationCompat.Action action = new NotificationCompat.Action
-                        .Builder(R.drawable.ic_call_24dp, "Call Back", pendingIntent).build();
-                // Add Action to array
-                actions.add(action);
-                // Show Notification
-                MessageUtils.notification(context, "LINEBACKER Handled Call", "Incoming Number: " + mPhoneNumber, notificationId, RecordingLogActivity.class, actions, true, null, true);
-                //PhoneCallUtils.setSoundOnVibrateOff(context);
-
+            if (!phoneNumberExists) {
+                if (blockCalls) {
+                    PhoneCallUtils.endCall(context);
+                    //PhoneCallUtils.disconnectCall(context);
+                    // Show notification ---------
+                    // Create unique id
+                    int notificationId = (int) Calendar.getInstance().getTimeInMillis();
+                    ArrayList<NotificationCompat.Action> actions = new ArrayList<>();
+                    //
+                    // Create Intent for notification
+                    Intent callBackIntent = new Intent(context, NotificationButtonReceiver.class);
+                    callBackIntent.putExtra(CONSTANTS.NOTIFICATION_ID, notificationId);
+                    callBackIntent.putExtra(CONSTANTS.ACTION_ID, CONSTANTS.ACTION_CALL_BACK);
+                    callBackIntent.putExtra(CONSTANTS.PHONE_NUMBER_ID, mPhoneNumber);
+                    // Create PendingIntent for notification
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId + 0,  // Id must be different for every action button
+                            callBackIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    // Create Notification Action
+                    NotificationCompat.Action action = new NotificationCompat.Action
+                            .Builder(R.drawable.ic_call_24dp, "Call Back", pendingIntent).build();
+                    // Add Action to array
+                    actions.add(action);
+                    // Show Notification
+                    MessageUtils.notification(context, "LINEBACKER Handled Call", "Incoming Number: " + mPhoneNumber, notificationId, RecordingLogActivity.class, actions, true, null, true);
+                    //PhoneCallUtils.setSoundOnVibrateOff(context);
+                }
                 // Reconnect to Sip server in case it isn't
                 SharedPreferences settingsNGN = context.getSharedPreferences(NgnConfigurationEntry.SHARED_PREF_NAME, 0);
                 if (settingsNGN != null && settingsNGN.getBoolean(NgnConfigurationEntry.GENERAL_AUTOSTART.toString(), NgnConfigurationEntry.DEFAULT_GENERAL_AUTOSTART)) {
@@ -123,7 +124,7 @@ public class CallBlockReceiver extends BroadcastReceiver {
                     i.putExtra("autostarted", true);
                     context.startService(i);
                 }
-            } else { //if(phoneNumberExists) { // Phone does exist or blockCalls disabled
+            } else {    // Phone number does exist
                 Engine mEngine = (Engine) Engine.getInstance();
                 INgnConfigurationService mConfigurationService = mEngine.getConfigurationService();
                 INgnSipService mSipService = mEngine.getSipService();
@@ -135,9 +136,9 @@ public class CallBlockReceiver extends BroadcastReceiver {
                             //Log.i(TAG, "Sip session unregister successful");
                             MessageUtils.toast(context, "Sip session unregister successful", false);
                     }
-                // Un-mute incoming calls
-                PhoneCallUtils.unMuteRinging(context, audioManager);     // TODO: place this line again
             }
+            // Un-mute incoming calls
+            PhoneCallUtils.unMuteRinging(context, audioManager);     // TODO: place this line again
         }
     }
 

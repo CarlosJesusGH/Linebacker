@@ -7,5 +7,30 @@
     <!--<color name="colorAccent">#FF4081</color>-->
     <color name="colorAccent">#40c3ff</color>
 
-    <!--<color name="colorPlayedRecording">#eeeeee</color>-->
+    <color name="RED_1">#c0392b</color>
+    <color name="GREEN_1">#1abc9c</color>
+    <color name="GREEN_2">#2ecc71</color>
+    <color name="GREEN_3">#16a085</color>
+    <color name="GREEN_4">#27ae60</color>
+    <color name="BLUE_1">#3498db</color>
+    <color name="BLUE_2">#2980b9</color>
+    <color name="DKBLUE_1">#34495e</color>
+    <color name="DKBLUE_2">#2c3e50</color>
+    <color name="YELLOW_1">#f1c40f</color>
+    <color name="DKYELLOW_1">#f39c12</color>
+    <color name="ORANGE">#e67e22</color>
+    <color name="VIOLET_1">#9b59b6</color>
+    <color name="DKVIOLET_1">#8e44ad</color>
+    <color name="LTGRAY_1">#95a5a6</color>
+    <color name="LTGRAY_2">#bdc3c7</color>
+    <color name="DKGRAY_1">#7f8c8d</color>
+    <color name="TERRACOTTA1">#d35400</color>
+
+    <color name="call_screen_red">#ff5757</color>
+    <color name="call_screen_green">#14ba92</color>
+    <color name="call_screen_gray">#6b6b6b</color>
+    <color name="call_screen_yellow">#e67e22</color>
+
+    <color name="call_screen_blue_arrow">#FF19568E</color>
+
 </resources>

@@ -101,7 +101,7 @@ public class SipDoubangoActivity extends AppCompatActivity {
                     protected RestMessageBean doInBackground(Void... params) {
                         RestMessageBean restMessageBean = null;
                         try {
-                            Thread.sleep(5000);
+                            Thread.sleep(2000);
                             restMessageBean = RestfulUtils.readRestfulAndParseToObject
                                     (CONSTANTS.SYNC_WS_ASTERISk_GET_USER_DATA, RestMessageBean.class);
 

@@ -1,161 +1,321 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_marginTop="20dp"
-    android:gravity="center"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/call_screen_textView_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-
-    <TextView
-        android:id="@+id/callscreen_textView_remote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20px"
-        android:text="TextView" />
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <Button
-        android:id="@+id/callscreen_button_pickup"
-            android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="@string/call_screen_answer" />
+        <FrameLayout
+            android:id="@+id/call_screen_frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_gravity="center_horizontal">
 
-    <Button
-        android:id="@+id/callscreen_button_hangup"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="@string/call_screen_end" />
+            <ImageView
+                android:id="@+id/iv_anim_circle_1"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_circle_animation" />
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/iv_anim_circle_2"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_circle_animation" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:id="@+id/callscreen_ll_options"
-        android:visibility="gone">
+            <com.cmsys.linebacker.util.RoundedImageView
+                android:id="@+id/callscreen_caller_image"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@mipmap/ic_launcher"
+                android:layout_gravity="center" />
 
-        <Button
-            android:id="@+id/callscreen_button_speaker"
-            android:layout_width="150dp"
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/callscreen_textView_info"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/speaker" />
+            android:text="@string/call_screen_info_when_known"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/callscreen_textView_remote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remote Caller Id" />
 
         <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp">
-
-        <Button
-            android:id="@+id/view_dialer_buttons_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/call_screen_option1" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/view_dialer_buttons_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/call_screen_option2" />
+            <Button
+                android:id="@+id/callscreen_button_pickup"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:text="@string/call_screen_answer"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/call_screen_green" />
 
-        <Button
-            android:id="@+id/view_dialer_buttons_3"
-            android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/callscreen_button_hangup"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:text="@string/call_screen_option_mail"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/call_screen_yellow" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/callscreen_ll_options"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/call_screen_option3" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/view_dialer_buttons_accept"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/call_screen_option_accept"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/call_screen_green" />
+
+                <Button
+                    android:id="@+id/view_dialer_buttons_mail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/call_screen_option_mail"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/call_screen_yellow" />
+
+                <Button
+                    android:id="@+id/view_dialer_buttons_reject"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/call_screen_option_reject"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/call_screen_red" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/callscreen_show_keyboard"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:text="@string/call_screen_show_keyboard"
+                android:src="@drawable/ic_expand_more_24dp"
+                android:background="@layout/util_button_pressed_action_transp" />
+
+            <LinearLayout
+                android:id="@+id/callscreen_ll_keyboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/callscreen_keyboard_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:editable="false"
+                        android:singleLine="true" />
+
+                    <ImageButton
+                        android:id="@+id/call_screen_keyboard_backspace"
+                        android:layout_width="35dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:src="@drawable/ic_backspace_24dp"
+                        android:background="@drawable/util_button_pressed_action_transp"
+                        android:layout_marginBottom="5dp"
+                        android:scaleType="fitCenter" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/view_dialer_buttons_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1"
+                        android:textColor="@color/call_screen_blue_arrow"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/call_screen_keyboard_text"
+                        android:background="@drawable/util_button_pressed_action_transp" />
+
+                    <Button
+                        android:id="@+id/view_dialer_buttons_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2"
+                        android:textColor="@color/call_screen_blue_arrow"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/call_screen_keyboard_text"
+                        android:background="@drawable/util_button_pressed_action_transp" />
+
+                    <Button
+                        android:id="@+id/view_dialer_buttons_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="3"
+                        android:textColor="@color/call_screen_blue_arrow"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/call_screen_keyboard_text"
+                        android:background="@drawable/util_button_pressed_action_transp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <Button
+                        android:id="@+id/view_dialer_buttons_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4"
+                        android:textColor="@color/call_screen_blue_arrow"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/call_screen_keyboard_text"
+                        android:background="@drawable/util_button_pressed_action_transp" />
+
+                    <Button
+                        android:id="@+id/view_dialer_buttons_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5"
+                        android:textColor="@color/call_screen_blue_arrow"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/call_screen_keyboard_text"
+                        android:background="@drawable/util_button_pressed_action_transp" />
+
+                    <Button
+                        android:id="@+id/view_dialer_buttons_6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="6"
+                        android:textColor="@color/call_screen_blue_arrow"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/call_screen_keyboard_text"
+                        android:background="@drawable/util_button_pressed_action_transp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <Button
+                        android:id="@+id/view_dialer_buttons_7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="7"
+                        android:textColor="@color/call_screen_blue_arrow"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/call_screen_keyboard_text"
+                        android:background="@drawable/util_button_pressed_action_transp" />
+
+                    <Button
+                        android:id="@+id/view_dialer_buttons_8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="8"
+                        android:textColor="@color/call_screen_blue_arrow"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/call_screen_keyboard_text"
+                        android:background="@drawable/util_button_pressed_action_transp" />
+
+                    <Button
+                        android:id="@+id/view_dialer_buttons_9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="9"
+                        android:textColor="@color/call_screen_blue_arrow"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/call_screen_keyboard_text"
+                        android:background="@drawable/util_button_pressed_action_transp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <Button
+                        android:id="@+id/view_dialer_buttons_star"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="*"
+                        android:textColor="@color/call_screen_blue_arrow"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/call_screen_keyboard_text"
+                        android:background="@drawable/util_button_pressed_action_transp" />
+
+                    <Button
+                        android:id="@+id/view_dialer_buttons_0"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/call_screen_blue_arrow"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/call_screen_keyboard_text"
+                        android:background="@drawable/util_button_pressed_action_transp" />
+
+                    <Button
+                        android:id="@+id/view_dialer_buttons_sharp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="#"
+                        android:textColor="@color/call_screen_blue_arrow"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/call_screen_keyboard_text"
+                        android:background="@drawable/util_button_pressed_action_transp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/callscreen_button_speaker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/speaker"
+                android:src="@drawable/ic_volume_up_24dp"
+                android:background="@layout/util_button_pressed_action_transp" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="visible">
-
-        <Button
-            android:id="@+id/view_dialer_buttons_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="4" />
-
-        <Button
-            android:id="@+id/view_dialer_buttons_5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="5" />
-
-        <Button
-            android:id="@+id/view_dialer_buttons_6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="6" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="visible">
-
-        <Button
-            android:id="@+id/view_dialer_buttons_7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="7" />
-
-        <Button
-            android:id="@+id/view_dialer_buttons_8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="8" />
-
-        <Button
-            android:id="@+id/view_dialer_buttons_9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="9" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="visible">
-
-        <Button
-            android:id="@+id/view_dialer_buttons_star"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="*" />
-
-        <Button
-            android:id="@+id/view_dialer_buttons_0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0" />
-
-        <Button
-            android:id="@+id/view_dialer_buttons_sharp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="#" />
-
-    </LinearLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>
