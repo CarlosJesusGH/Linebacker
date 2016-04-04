@@ -32,8 +32,13 @@ import android.widget.TextView;
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.anim.IncomingCallAnimation;
 import com.cmsys.linebacker.util.ColorUtils;
+import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
 import com.cmsys.linebacker.util.RoundedImageView;
+import com.cmsys.linebacker.util.ViewUtils;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.io.InputStream;
 
@@ -64,6 +69,9 @@ public class CallScreenActivity extends AppCompatActivity {
 
     private NgnAVSession mSession;
     private BroadcastReceiver mSipBroadCastRecv;
+
+    // https://developers.google.com/admob/android/interstitial#creating_the_adlistener
+    private InterstitialAd mInterstitialAd;
 
     public CallScreenActivity() {
         super();
@@ -150,7 +158,7 @@ public class CallScreenActivity extends AppCompatActivity {
                 300,
                 150
         );
-        mIncomingCallAnimation1.setDuration(6000);
+        mIncomingCallAnimation1.setDuration(3000);
         mIncomingCallAnimation1.setRepeatCount(Animation.INFINITE);
         mIvAnimCircle1.startAnimation(mIncomingCallAnimation1);
         // Animation 2
@@ -159,14 +167,14 @@ public class CallScreenActivity extends AppCompatActivity {
                 300,
                 150
         );
-        mIncomingCallAnimation2.setDuration(4000);
+        mIncomingCallAnimation2.setDuration(2000);
         mIncomingCallAnimation2.setRepeatCount(Animation.INFINITE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 mIvAnimCircle2.startAnimation(mIncomingCallAnimation2);
             }
-        }, 2000);
+        }, 1000);
 
         // Set listeners
         mBtHangUp.setOnClickListener(new View.OnClickListener() {
@@ -221,14 +229,16 @@ public class CallScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mLlKeyboard.getVisibility() == View.VISIBLE) {
-                    mLlKeyboard.setVisibility(View.GONE);
+                    //mLlKeyboard.setVisibility(View.GONE);
+                    ViewUtils.collapse(mLlKeyboard);
                     //mBtShowKeyboard.setText(getString(R.string.call_screen_show_keyboard));
                     mBtShowKeyboard.setImageResource(R.drawable.ic_expand_more_24dp);
                     mBtOptionsAccept.setVisibility(View.VISIBLE);
                     mBtOptionsMail.setVisibility(View.VISIBLE);
                     mBtOptionsReject.setVisibility(View.VISIBLE);
                 } else {
-                    mLlKeyboard.setVisibility(View.VISIBLE);
+                    //mLlKeyboard.setVisibility(View.VISIBLE);
+                    ViewUtils.expand(mLlKeyboard);
                     //mBtShowKeyboard.setText(getString(R.string.call_screen_hide_keyboard));
                     mBtShowKeyboard.setImageResource(R.drawable.ic_expand_less_24dp);
                     mEtKeyboardText.setText("");
@@ -275,6 +285,27 @@ public class CallScreenActivity extends AppCompatActivity {
         }
         // Setup DTMF buttons
         loadKeyboard();
+
+        // Load Interstitial Ad
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // DO SOMETHING
+//                requestNewInterstitial();
+//                MessageUtils.toast(getApplicationContext(), "INTERSTITIAL AD CLOSED", false);
+            }
+        });
+        requestNewInterstitial();
+    }
+
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
     }
 
     @Override
@@ -302,6 +333,14 @@ public class CallScreenActivity extends AppCompatActivity {
             mSession.setContext(null);
             mSession.decRef();
         }
+
+        // Show Interstitial Ad
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            MessageUtils.toast(this, "INTERSTITIAL AD NOT READY", false);
+        }
+
         super.onDestroy();
     }
 

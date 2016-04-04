@@ -52,6 +52,8 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.io.File;
 import java.io.IOException;
@@ -115,6 +117,7 @@ public class RecordingLogActivity extends AppCompatActivity
         setupViews();
         // Check if user is logged in --------------------------------------------------------------
         mUserId = UserAuthUtils.getUserId(this);
+
         // Register device on Google Cloud Messaging backend
         // Check device for Play Services APK. If check succeeds, proceed
         // with GCM registration.
@@ -236,6 +239,11 @@ public class RecordingLogActivity extends AppCompatActivity
             }
         });
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        // Load Ads banner
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     private void resetNavigationDrawerFilters() {

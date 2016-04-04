@@ -11,7 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
         // Enabling multidex support. http://developer.android.com/tools/building/multidex.html
-        //multiDexEnabled true
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -25,9 +25,9 @@ android {
         exclude 'META-INF/NOTICE'
     }
     // Necessary for multidex support.
-    /*dexOptions {
+    dexOptions {
         javaMaxHeapSize "4g"
-    }*/
+    }
 
     // Exclude packages from build
     sourceSets {
@@ -65,6 +65,9 @@ dependencies {
     compile project(':android-ngn-stack')
     // Gson Library
     compile 'com.google.code.gson:gson:2.2.+'
+    // Google Play Services Ads
+    compile 'com.google.android.gms:play-services-ads:8.4.0'
+
     //----------------------------------------------------------------------------
     // TESTED not useful libraries
 

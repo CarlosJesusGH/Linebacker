@@ -32,7 +32,7 @@ public class DataIO {
                     SharedPreferencesUtils.putOrEditString(context, context.getString(R.string.pref_key_setting_mobile_notification), mSettings.isMobileNotification());
                     SharedPreferencesUtils.putOrEditString(context, context.getString(R.string.pref_key_setting_email_notification), mSettings.isEmailNotification());
                     SharedPreferencesUtils.putOrEditString(context, context.getString(R.string.pref_key_setting_delete_weeks), mSettings.getDeleteAudiosEveryWeeks());
-                    MessageUtils.toast(context, "Firebase settings read successfully", false);
+//                    MessageUtils.toast(context, "Firebase settings read successfully", false);
                 }
             }
             @Override public void onCancelled(FirebaseError firebaseError) {}
