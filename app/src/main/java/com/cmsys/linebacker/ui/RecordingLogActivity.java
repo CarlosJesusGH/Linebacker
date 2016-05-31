@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
@@ -86,7 +87,7 @@ public class RecordingLogActivity extends AppCompatActivity
         // especially, if you're using Facebook UI elements.
         // https://developers.facebook.com/docs/android/getting-started
         FacebookSdk.sdkInitialize(getApplicationContext());
-        //IntentUtils.generateFacebookKeyHash(this);
+        IntentUtils.generateFacebookKeyHash(this);
         //
         setContentView(R.layout.activity_recording_log);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -154,6 +155,8 @@ public class RecordingLogActivity extends AppCompatActivity
                 DataIO.getFirebaseSettings(this, mUserId);
             }
             if(mUserBean == null){
+                // Set Firebase Context.
+                Firebase.setAndroidContext(this);
                 // Access Firebase user data
                 Firebase ref = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_USER + File.separator + mUserId);
                 // Reading Data Once
@@ -169,6 +172,8 @@ public class RecordingLogActivity extends AppCompatActivity
                                         .setText(mUserBean.getPhoneNumber());
                                 ((TextView) navigationView.getHeaderView(0).findViewById(R.id.tvNavHeaderText2))
                                         .setText(mUserBean.getUserLevel() == 0 ? "Free Account" : "Premium Account");
+                                SharedPreferencesUtils.putOrEditString(getApplicationContext(), getString(R.string.pref_key_voip_extension), mUserBean.getAsteriskExtension());
+                                SharedPreferencesUtils.putOrEditString(getApplicationContext(), getString(R.string.pref_key_voip_password), mUserBean.getAsteriskExtensionPass());
                             } catch (Exception e) {
                                 ExceptionUtils.displayExceptionMessage(getApplicationContext(), e);
                             }
@@ -181,7 +186,29 @@ public class RecordingLogActivity extends AppCompatActivity
                     @Override public void onCancelled(FirebaseError firebaseError) {}
                 });
             }
-            getDataFromFirebase();
+            //
+            new AsyncTask<Void, Void, RestMessageBean>() {
+                @Override
+                protected RestMessageBean doInBackground(Void... params) {
+                    RestMessageBean restMessageBean = null;
+                    try {
+                        restMessageBean = RestfulUtils.readRestfulAndParseToObject(CONSTANTS.SYNC_WS_ASTERISk_UPDATE_RECORDINGS_TRIGGER + UserAuthUtils.getUserId(getApplicationContext()), RestMessageBean.class);
+                    } catch (Exception e) {
+                        ExceptionUtils.printExceptionToFile(e);
+                    }
+                    return restMessageBean;
+                }
+
+                @Override
+                protected void onPostExecute(RestMessageBean restMessageBean) {
+                    super.onPostExecute(restMessageBean);
+                    if (restMessageBean != null && restMessageBean.getErrorId() == 0)
+                        MessageUtils.toast(getApplicationContext(), getString(R.string.message_loading_audios), false);
+                    else if (restMessageBean != null)
+                        MessageUtils.toast(getApplicationContext(), restMessageBean.getErrorMessage(), false);
+                    getDataFromFirebase();
+                }
+            }.execute();
         } else{
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
@@ -410,14 +437,28 @@ public class RecordingLogActivity extends AppCompatActivity
                                     if (firebaseError != null) {
                                         MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
                                     } else {
-                                        MessageUtils.toast(context, getString(R.string.upload_successful), false);
-                                        RestMessageBean restMessageBean = null;
-                                        try {
-                                            restMessageBean = RestfulUtils.readRestfulAndParseToObject
-                                                    (CONSTANTS.SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER, RestMessageBean.class);
-                                        } catch (Exception e) {
-                                            ExceptionUtils.printExceptionToFile(e);
-                                        }
+                                        //MessageUtils.toast(context, getString(R.string.upload_successful), false);
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                final RestMessageBean restMessageBean;
+                                                try {
+                                                    restMessageBean = RestfulUtils.readRestfulAndParseToObject(CONSTANTS.SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER + UserAuthUtils.getUserId(context), RestMessageBean.class);
+                                                    runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            if (restMessageBean != null && restMessageBean.getErrorId() == 0) {
+                                                                MessageUtils.toast(context, getString(R.string.upload_successful), false);
+                                                            } else {
+                                                                MessageUtils.toast(context, getString(R.string.upload_successful_notify_error), false);
+                                                            }
+                                                        }
+                                                    });
+                                                } catch (Exception e) {
+                                                    ExceptionUtils.printExceptionToFile(e);
+                                                }
+                                            }
+                                        }).start();
                                     }
                                     listView.setVisibility(View.VISIBLE);
                                     progressBar.setVisibility(View.GONE);

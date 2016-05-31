@@ -117,13 +117,7 @@ public class CallBlockReceiver extends BroadcastReceiver {
                     MessageUtils.notification(context, "LINEBACKER Handled Call", "Incoming Number: " + mPhoneNumber, notificationId, RecordingLogActivity.class, actions, true, null, true);
                     //PhoneCallUtils.setSoundOnVibrateOff(context);
                 }
-                // Reconnect to Sip server in case it isn't
-                SharedPreferences settingsNGN = context.getSharedPreferences(NgnConfigurationEntry.SHARED_PREF_NAME, 0);
-                if (settingsNGN != null && settingsNGN.getBoolean(NgnConfigurationEntry.GENERAL_AUTOSTART.toString(), NgnConfigurationEntry.DEFAULT_GENERAL_AUTOSTART)) {
-                    Intent i = new Intent(context, NativeService.class);
-                    i.putExtra("autostarted", true);
-                    context.startService(i);
-                }
+                registerOnPbx(context);
             } else {    // Phone number does exist
                 Engine mEngine = (Engine) Engine.getInstance();
                 INgnConfigurationService mConfigurationService = mEngine.getConfigurationService();
@@ -138,7 +132,27 @@ public class CallBlockReceiver extends BroadcastReceiver {
                     }
             }
             // Un-mute incoming calls
-            PhoneCallUtils.unMuteRinging(context, audioManager);     // TODO: place this line again
+            PhoneCallUtils.unMuteRinging(context, audioManager);
+        }
+        // Reconnect to SIP PBX even when incoming call is SecondCall
+        else if (event.equals(TelephonyManager.EXTRA_STATE_RINGING) && currentState.equals("SECOND_CALL_RINGING")) {
+            // If phone number is empty, get extra number.
+            if (mPhoneNumber == null)
+                mPhoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+            boolean phoneNumberExists = PhoneContactUtils.contactPhoneExists(context, mPhoneNumber);
+            if (!phoneNumberExists) {
+                registerOnPbx(context);
+            }
+        }
+    }
+
+    private void registerOnPbx(Context context) {
+        // Reconnect to Sip server in case it isn't
+        SharedPreferences settingsNGN = context.getSharedPreferences(NgnConfigurationEntry.SHARED_PREF_NAME, 0);
+        if (settingsNGN != null && settingsNGN.getBoolean(NgnConfigurationEntry.GENERAL_AUTOSTART.toString(), NgnConfigurationEntry.DEFAULT_GENERAL_AUTOSTART)) {
+            Intent i = new Intent(context, NativeService.class);
+            i.putExtra("autostarted", true);
+            context.startService(i);
         }
     }
 

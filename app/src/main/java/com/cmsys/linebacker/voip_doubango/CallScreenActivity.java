@@ -69,6 +69,7 @@ public class CallScreenActivity extends AppCompatActivity {
 
     private NgnAVSession mSession;
     private BroadcastReceiver mSipBroadCastRecv;
+    private boolean showInterstitial = false;
 
     // https://developers.google.com/admob/android/interstitial#creating_the_adlistener
     private InterstitialAd mInterstitialAd;
@@ -182,6 +183,7 @@ public class CallScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mSession != null) {
                     mSession.hangUpCall();
+                    showInterstitial = true;
                     mLlOptions.setVisibility(View.GONE);
                 }
             }
@@ -192,6 +194,7 @@ public class CallScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mSession != null) {
                     mSession.acceptCall();
+                    showInterstitial = true;
                     mBtPickUp.setVisibility(View.GONE);
                     mLlOptions.setVisibility(View.VISIBLE);
                     mBtHangUp.setText(getString(R.string.call_screen_end));
@@ -334,12 +337,13 @@ public class CallScreenActivity extends AppCompatActivity {
             mSession.decRef();
         }
 
+        // CJG removed 20160412
         // Show Interstitial Ad
-        if (mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
-        } else {
-            MessageUtils.toast(this, "INTERSTITIAL AD NOT READY", false);
-        }
+//        if (mInterstitialAd.isLoaded() && showInterstitial) {
+//            mInterstitialAd.show();
+//        } else {
+////            MessageUtils.toast(this, "INTERSTITIAL AD NOT READY", false);
+//        }
 
         super.onDestroy();
     }

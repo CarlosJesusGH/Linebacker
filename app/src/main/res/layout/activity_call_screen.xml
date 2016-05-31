@@ -43,7 +43,7 @@
             android:id="@+id/callscreen_textView_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/call_screen_info_when_known"
+            android:text="@string/call_screen_info_default"
             android:textStyle="bold" />
 
         <TextView

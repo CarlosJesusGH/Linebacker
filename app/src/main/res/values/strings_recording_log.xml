@@ -4,10 +4,12 @@
     <string name="reading_contacts">Reading phone...</string>
     <string name="number_contacts">Total: %1$d items</string>
     <string name="upload_successful">Phone Contacts Saved Successfully</string>
+    <string name="upload_successful_notify_error">Phone contacts saved with error while notifying server</string>
     <string name="no_recordings">No recordings to show</string>
     <string name="message_share_whatsapp">Hey, you should try using Linebacker</string>
     <string name="message_share_facebook">Hey, you should try using Linebacker</string>
     <string name="message_share_url">http://clouditapp.com/dev/linebacker/en/index.html#</string>
+    <string name="message_loading_audios">Loading log</string>
 
     <!-- Separators -->
     <string name="separator_today">TODAY</string>
@@ -18,6 +20,7 @@
 
     <!-- Web links-->
     <string name="web_link_upgrade">http://clouditapp.com/dev/linebacker/en/index.html#</string>
+    <string name="web_link_register">http://linebacker.privacyprotector.org/register</string>
     <string name="web_link_help">http://clouditapp.com/dev/linebacker/en/index.html#</string>
 
 </resources>

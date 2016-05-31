@@ -59,8 +59,8 @@ public class CaseDetailsActivity extends AppCompatActivity {
         mUserId = UserAuthUtils.getUserId(this);
         if(mRecordingBean != null && mUserId != null) {
             // Set Home/Up button
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
+            //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            //setSupportActionBar(toolbar);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             // Activity Views Setup --------------------------------------------------------------------
@@ -164,8 +164,8 @@ public class CaseDetailsActivity extends AppCompatActivity {
                                 llCaseDetailsContent.removeAllViews();
                                 addViewToLayout(getString(R.string.case_marketing_phone_number), caseBean.getMarketingPhone(), llCaseDetailsContent, R.layout.activity_case_details_item);
                                 addViewToLayout(getString(R.string.case_user_phone_number), caseBean.getPhoneNumber(), llCaseDetailsContent, R.layout.activity_case_details_item);
-                                addViewToLayout(getString(R.string.recording_date), caseBean.getDatetimeString().substring(0, caseBean.getDatetimeString().indexOf(" ")), llCaseDetailsContent, R.layout.activity_case_details_item);
-                                addViewToLayout(getString(R.string.recording_time), caseBean.getDatetimeString().substring(caseBean.getDatetimeString().indexOf(" ")), llCaseDetailsContent, R.layout.activity_case_details_item);
+                                addViewToLayout(getString(R.string.recording_date), caseBean.getDateString(), llCaseDetailsContent, R.layout.activity_case_details_item);
+                                addViewToLayout(getString(R.string.recording_time), caseBean.getTimeString(), llCaseDetailsContent, R.layout.activity_case_details_item);
                                 ref.child(File.separator + CONSTANTS.FIREBASE_DOC_CASE_STATUS + File.separator
                                         + caseBean.getStatusId() + File.separator + CONSTANTS.FIREBASE_FIELD_STATUSNAME)
                                         .addListenerForSingleValueEvent(new ValueEventListener() {

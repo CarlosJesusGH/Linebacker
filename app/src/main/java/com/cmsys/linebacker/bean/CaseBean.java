@@ -107,6 +107,30 @@ public class CaseBean implements Serializable {
         this.datetime = datetime;
     }
 
+    public String getDateString() {
+        try {
+            if (datetime instanceof Long)
+                return DateUtils.getDateString((long) datetime);
+            if (datetime instanceof Double)
+                return DateUtils.getDateString((long) ((double) datetime));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return (String) datetime;
+    }
+
+    public String getTimeString() {
+        try {
+            if (datetime instanceof Long)
+                return DateUtils.getTimeString((long) datetime);
+            if (datetime instanceof Double)
+                return DateUtils.getTimeString((long) ((double) datetime));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return (String) datetime;
+    }
+
     public String getStatusId() {
         return statusId;
     }

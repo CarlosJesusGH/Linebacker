@@ -21,11 +21,15 @@ public class UserBean implements Serializable {
     private String key;
 
     private String address;
+    private String asteriskDid;
+    private String asteriskExtension;
+    private String asteriskExtensionPass;
     private String birthday;
     private String city;
     private Object creationDate;
     private String email;
     private String firstName;
+    private String gcmRegistrationId;
     private Object lastConnection;
     private String lastName;
     private String phoneNumber;
@@ -203,5 +207,21 @@ public class UserBean implements Serializable {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
+    }
+
+    public String getAsteriskDid() {
+        return asteriskDid;
+    }
+
+    public String getAsteriskExtension() {
+        return asteriskExtension;
+    }
+
+    public String getAsteriskExtensionPass() {
+        return asteriskExtensionPass;
+    }
+
+    public String getGcmRegistrationId() {
+        return gcmRegistrationId;
     }
 }

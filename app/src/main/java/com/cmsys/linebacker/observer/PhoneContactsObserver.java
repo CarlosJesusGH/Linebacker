@@ -11,6 +11,7 @@ import com.cmsys.linebacker.util.ExceptionUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
 import com.cmsys.linebacker.util.RestfulUtils;
+import com.cmsys.linebacker.util.UserAuthUtils;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
@@ -73,7 +74,7 @@ public class PhoneContactsObserver extends ContentObserver {
                             RestMessageBean restMessageBean = null;
                             try {
                                 restMessageBean = RestfulUtils.readRestfulAndParseToObject
-                                        (CONSTANTS.SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER, RestMessageBean.class);
+                                        (CONSTANTS.SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER + UserAuthUtils.getUserId(context), RestMessageBean.class);
                             } catch (Exception e) {
                                 ExceptionUtils.printExceptionToFile(e);
                             }

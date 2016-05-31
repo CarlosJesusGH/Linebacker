@@ -18,6 +18,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
@@ -152,11 +155,18 @@ public class MessageUtils extends AlertDialog{
 		bOk.setOnClickListener(onClickListener);
 	}
 
-	public static void toast(Context context, String message, boolean isLong){
+	public static void toast(final Context context, final String message, final boolean isLong) {
+		// Set this up in the UI thread.
+
+//		new Handler(Looper.getMainLooper()) {
+//			@Override public void handleMessage(Message msg) {}
+//		};
+
 		sToast = Toast.makeText(context, "", isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
 		//sToast.setDuration(isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
 		sToast.setText(message);
 		sToast.show();
+
 	}
 
 	public void toast(String message, boolean isLong){

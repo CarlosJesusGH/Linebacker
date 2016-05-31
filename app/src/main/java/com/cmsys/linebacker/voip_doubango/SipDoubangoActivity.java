@@ -89,8 +89,16 @@ public class SipDoubangoActivity extends AppCompatActivity {
         mBtGetExtension.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                // Read extension info from user object
+                mEtSignInOut.setText(SharedPreferencesUtils.getString(getApplicationContext(), getString(R.string.pref_key_voip_extension), ""));
+                mEtPassword.setText(SharedPreferencesUtils.getString(getApplicationContext(), getString(R.string.pref_key_voip_password), ""));
+                mEtExternalPhoneNr.setVisibility(View.GONE);
+                rlExtensionData.setVisibility(View.VISIBLE);
+                mBtVoiceMailConfigNumbers.setVisibility(View.VISIBLE);
+
+                //
                 // Connect to WebService
-                new AsyncTask<Void, Void, RestMessageBean>() {
+                /*new AsyncTask<Void, Void, RestMessageBean>() {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
@@ -140,7 +148,7 @@ public class SipDoubangoActivity extends AppCompatActivity {
                         mProgressDialog.dismiss();
                         rlExtensionData.setVisibility(View.VISIBLE);
                     }
-                }.execute();
+                }.execute();*/
             }
         });
 
@@ -153,6 +161,7 @@ public class SipDoubangoActivity extends AppCompatActivity {
                     protected void onPreExecute() {
                         super.onPreExecute();
                         mProgressDialog.show();
+                        MessageUtils.toast(getApplicationContext(), "This test isn't real... yet.", true);
                     }
 
                     @Override

@@ -42,6 +42,7 @@ import java.util.Map;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.RecordingBean;
+import com.cmsys.linebacker.bean.RestMessageBean;
 import com.cmsys.linebacker.bean.SettingsBean;
 import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.util.CONSTANTS;
@@ -274,6 +275,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void attemptRegister() {
+        Uri uri = Uri.parse(getString(R.string.web_link_register)); // missing 'http://' will cause crash
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+    }
+
+    private void attemptRegister_old() {
         final MessageUtils mu = new MessageUtils(mActivity, getString(R.string.register_new_user), "", R.layout.activity_login_register_new_user, false);
         mu.setOnClickListenerAccept(new View.OnClickListener() {
             @Override
@@ -702,6 +709,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override public void onCancelled(FirebaseError firebaseError) {}
                 });
             }*/
+            //
+            if (UserAuthUtils.AUTH_TYPE == UserAuthUtils.TYPE_INTERNAL_API) {
+                HashMap<String, String> postDataParams = new HashMap<String, String>();
+                postDataParams.put("email", mEmail);
+                postDataParams.put("password", mPassword);
+                // Try login
+                final RestMessageBean loginMsg = UserAuthUtils.logUserInInternalApi(mContext, postDataParams);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (loginMsg != null && loginMsg.getErrorId() == 0) {
+                            Intent intent = new Intent(getApplicationContext(), RecordingLogActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            MessageUtils.toast(mContext, getString(R.string.login_successful), true);
+                        } else if (loginMsg != null) {
+                            MessageUtils.toast(mContext, loginMsg.getErrorMessage(), true);
+                        } else {
+                            MessageUtils.toast(mContext, getString(R.string.login_error), true);
+                        }
+                        showProgress(false);
+                    }
+                });
+            }
             //
             if(UserAuthUtils.AUTH_TYPE == UserAuthUtils.TYPE_FIREBASE_EMAIL) {
                 // Firebase access

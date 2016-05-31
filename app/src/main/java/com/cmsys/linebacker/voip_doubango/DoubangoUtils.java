@@ -40,7 +40,7 @@ public class DoubangoUtils {
     private final static String SIP_SERVER_HOST = "voip.mylinebacker.net";
     private final static int SIP_SERVER_PORT = 5060;
     private static String SIP_USERNAME = null;
-    private static String SIP_PASSWORD = "Linebacker2016*";
+    private static String SIP_PASSWORD = null; //"Linebacker2016*";
     public final static String EXTRAT_SIP_SESSION_ID = "SipSession";
 
     public DoubangoUtils(Context context) {
@@ -85,16 +85,16 @@ public class DoubangoUtils {
                         case UNREGISTRATION_OK:
                             MessageUtils.toast(mContext, "You are now unregistered", false);
                             //MessageUtils.notification(mContext, "Unregistered: " + SIP_USERNAME, DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
-                            // Save SharedPreferences
-                            SharedPreferencesUtils.removeKey(mContext, context.getString(R.string.pref_key_voip_extension));
-                            SharedPreferencesUtils.removeKey(mContext, context.getString(R.string.pref_key_voip_password));
+                            // Save SharedPreferences (Not necessary) TODO: check if necessary
+//                            SharedPreferencesUtils.removeKey(mContext, context.getString(R.string.pref_key_voip_extension));
+//                            SharedPreferencesUtils.removeKey(mContext, context.getString(R.string.pref_key_voip_password));
                             break;
                         case REGISTRATION_OK:
                             MessageUtils.toast(mContext, "You are now registered", false);
                             //MessageUtils.notification(mContext, "Registered: " + SIP_USERNAME, DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
                             // Save SharedPreferences
-                            SharedPreferencesUtils.putOrEditString(mContext, context.getString(R.string.pref_key_voip_extension), SIP_USERNAME);
-                            SharedPreferencesUtils.putOrEditString(mContext, context.getString(R.string.pref_key_voip_password), SIP_PASSWORD);
+//                            SharedPreferencesUtils.putOrEditString(mContext, context.getString(R.string.pref_key_voip_extension), SIP_USERNAME);
+//                            SharedPreferencesUtils.putOrEditString(mContext, context.getString(R.string.pref_key_voip_password), SIP_PASSWORD);
                             break;
                         case REGISTRATION_INPROGRESS:
                             MessageUtils.toast(mContext, "Trying to register...", false);

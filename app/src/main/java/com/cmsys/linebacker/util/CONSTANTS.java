@@ -41,7 +41,10 @@ public class CONSTANTS {
     public static String SYNC_WS_COMMON_PATH = "https://" + SYNC_WS_DNS + "/sampleRestfulWS/";
     public static String SYNC_WS_ASTERISk_GET_USER_DATA = SYNC_WS_COMMON_PATH + "asteriskGetNewUserData.json";
     public static String SYNC_WS_ASTERISk_TEST_VOICE_MAIL = SYNC_WS_COMMON_PATH + "asteriskTestVoicemailSetup.json";
-    public static String SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER = SYNC_WS_COMMON_PATH + "asteriskUpdateContactsTrigger.json";
+    //    public static String SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER = SYNC_WS_COMMON_PATH + "asteriskUpdateContactsTrigger.json";
+    public static String SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER = "http://linebacker.privacyprotector.org/api/contactsByUser/store/all/";
+    public static String SYNC_WS_ASTERISk_UPDATE_RECORDINGS_TRIGGER = "http://linebacker.privacyprotector.org/api/recordedAudiosByUser/audio/";
+    public static String SYNC_WS_LOGIN_API = "http://linebacker.privacyprotector.org/api/login";
 
     //---Firebase------------------
     public static String FIREBASE_APP_NAME = "linebacker";
