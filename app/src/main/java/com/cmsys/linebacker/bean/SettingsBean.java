@@ -37,7 +37,7 @@ public class SettingsBean implements Serializable {
     @JsonIgnore
     public SettingsBean setAllDefaults(){
         this.blockCalls = true;
-        this.emailNotification = true;
+        this.emailNotification = false;
         this.mobileNotification = true;
         this.deleteAudiosEveryWeeks = "4";
         return this;
