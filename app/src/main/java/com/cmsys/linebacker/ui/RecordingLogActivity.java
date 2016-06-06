@@ -174,6 +174,7 @@ public class RecordingLogActivity extends AppCompatActivity
                                         .setText(mUserBean.getUserLevel() == 0 ? "Free Account" : "Premium Account");
                                 SharedPreferencesUtils.putOrEditString(getApplicationContext(), getString(R.string.pref_key_voip_extension), mUserBean.getAsteriskExtension());
                                 SharedPreferencesUtils.putOrEditString(getApplicationContext(), getString(R.string.pref_key_voip_password), mUserBean.getAsteriskExtensionPass());
+                                SharedPreferencesUtils.putOrEditString(getApplicationContext(), getString(R.string.pref_key_voip_did), mUserBean.getAsteriskDid());
                             } catch (Exception e) {
                                 ExceptionUtils.displayExceptionMessage(getApplicationContext(), e);
                             }

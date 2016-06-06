@@ -92,7 +92,8 @@ public class SipDoubangoActivity extends AppCompatActivity {
                 // Read extension info from user object
                 mEtSignInOut.setText(SharedPreferencesUtils.getString(getApplicationContext(), getString(R.string.pref_key_voip_extension), ""));
                 mEtPassword.setText(SharedPreferencesUtils.getString(getApplicationContext(), getString(R.string.pref_key_voip_password), ""));
-                mEtExternalPhoneNr.setVisibility(View.GONE);
+                mEtExternalPhoneNr.setText(SharedPreferencesUtils.getString(getApplicationContext(), getString(R.string.pref_key_voip_did), ""));
+                mEtExternalPhoneNr.setVisibility(View.VISIBLE);
                 rlExtensionData.setVisibility(View.VISIBLE);
                 mBtVoiceMailConfigNumbers.setVisibility(View.VISIBLE);
 

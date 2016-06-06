@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -45,6 +46,7 @@ import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.bean.RestMessageBean;
 import com.cmsys.linebacker.bean.SettingsBean;
 import com.cmsys.linebacker.bean.UserBean;
+import com.cmsys.linebacker.util.AppInfoUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.CheckInputDataUtils;
 import com.cmsys.linebacker.util.MessageUtils;
@@ -156,6 +158,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
+        // Show version code and name
+        Context c = getApplicationContext();
+        MessageUtils.toast(c, "Version Name: " + AppInfoUtils.getAppVersionName(c) + "\nVersion Code: " + AppInfoUtils.getAppVersionCode(c), true);
+
     }
 
     @Override

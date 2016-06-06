@@ -49,53 +49,91 @@
             android:id="@+id/rlExtensionData"
             android:visibility="gone">
 
+            <TextView
+                android:id="@+id/tvExtension"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Extension: " />
+
             <EditText
                 android:id="@+id/etSignInOut"
-                android:layout_width="150dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/tvExtension"
+                android:layout_alignBaseline="@id/tvExtension"
                 android:hint="Extension Nr"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceSmall"
+
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
+
+            <TextView
+                android:id="@+id/tvExtensionPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password: "
+                android:layout_below="@+id/tvExtension"
+                android:layout_marginTop="10dp" />
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tvExtensionPass"
+                android:layout_alignBaseline="@id/tvExtensionPass"
+                android:hint="Password"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:singleLine="true"
+
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
+
+            <TextView
+                android:id="@+id/tvExtensionDid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Did: "
+                android:layout_below="@+id/tvExtensionPass"
+                android:layout_marginTop="10dp" />
 
             <EditText
                 android:id="@+id/etExternalPhoneNr"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@id/etSignInOut"
+                android:layout_toRightOf="@id/tvExtensionDid"
+                android:layout_alignBaseline="@id/tvExtensionDid"
                 android:hint="External Phone"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            <EditText
-                android:id="@+id/etPassword"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/etSignInOut"
-                android:hint="Password"
-                android:text=""
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:singleLine="true" />
+
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
 
             <Button
                 android:id="@+id/btSignInOut"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_alignBaseline="@id/etPassword"
-                android:layout_toRightOf="@+id/etPassword"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/tvExtensionDid"
                 android:text="Sign in/out"
                 style="?android:attr/buttonStyleSmall"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginTop="10dp" />
 
             <View
                 android:id="@+id/vSeparatorCall"
                 android:layout_width="match_parent"
                 android:layout_height="2px"
-                android:layout_below="@+id/etPassword"
+                android:layout_below="@+id/btSignInOut"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
