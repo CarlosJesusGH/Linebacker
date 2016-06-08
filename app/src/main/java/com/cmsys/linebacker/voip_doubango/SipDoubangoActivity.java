@@ -2,11 +2,18 @@ package com.cmsys.linebacker.voip_doubango;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,12 +40,17 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
+import org.doubango.ngn.events.NgnEventArgs;
+import org.doubango.ngn.events.NgnRegistrationEventArgs;
+
 import java.util.HashMap;
 
 /**
  * Created by @CarlosJesusGH on 08/03/16.
  */
 public class SipDoubangoActivity extends AppCompatActivity {
+    private static String TAG = SipDoubangoActivity.class.getCanonicalName();
+
     private DoubangoUtils mDoubango;
     private TextView mTvInfo;
     private Button mBtSignInOut, mBtCall, mBtGetExtension, mBtVoiceMailConfigNumbers, mBtTestVoicemailSetup;
@@ -78,6 +90,27 @@ public class SipDoubangoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mDoubango.serverSignInOut(mEtSignInOut.getText().toString(), mEtPassword.getText().toString());
+
+                // Subscribe for registration state changes
+                BroadcastReceiver mSipBroadCastRecv = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        final String action = intent.getAction();
+                        // Registration Event
+                        if (NgnRegistrationEventArgs.ACTION_REGISTRATION_EVENT.equals(action)) {
+                            if (mDoubango.isSipServiceRegistered()) {
+                                mBtSignInOut.getBackground().setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.call_screen_blue_arrow), PorterDuff.Mode.SRC_ATOP);
+                                mBtSignInOut.setText(getString(R.string.sip_service_unregister));
+                            } else {
+                                mBtSignInOut.getBackground().setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.call_screen_red), PorterDuff.Mode.SRC_ATOP);
+                                mBtSignInOut.setText(getString(R.string.sip_service_register));
+                            }
+                        }
+                    }
+                };
+                final IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction(NgnRegistrationEventArgs.ACTION_REGISTRATION_EVENT);
+                registerReceiver(mSipBroadCastRecv, intentFilter);
             }
         });
         mBtCall.setOnClickListener(new View.OnClickListener() {
@@ -96,6 +129,15 @@ public class SipDoubangoActivity extends AppCompatActivity {
                 mEtExternalPhoneNr.setVisibility(View.VISIBLE);
                 rlExtensionData.setVisibility(View.VISIBLE);
                 mBtVoiceMailConfigNumbers.setVisibility(View.VISIBLE);
+
+                if (mDoubango.isSipServiceRegistered()) {
+                    mBtSignInOut.getBackground().setColorFilter(ContextCompat.getColor(v.getContext(), R.color.call_screen_blue_arrow), PorterDuff.Mode.SRC_ATOP);
+                    mBtSignInOut.setText(getString(R.string.sip_service_unregister));
+                } else {
+                    mBtSignInOut.getBackground().setColorFilter(ContextCompat.getColor(v.getContext(), R.color.call_screen_red), PorterDuff.Mode.SRC_ATOP);
+                    mBtSignInOut.setText(getString(R.string.sip_service_register));
+                }
+
 
                 //
                 // Connect to WebService

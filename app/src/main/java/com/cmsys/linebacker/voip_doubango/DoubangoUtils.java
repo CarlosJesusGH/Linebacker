@@ -152,6 +152,13 @@ public class DoubangoUtils {
         return true;
     }
 
+    public boolean isSipServiceRegistered() {
+        if (mEngine.isStarted())
+            if (mSipService.isRegistered())
+                return true;
+        return false;
+    }
+
     public boolean makeVoiceCall(String phoneNumber) {
         final String validUri = NgnUriUtils.makeValidSipUri(String.format("sip:%s@%s", phoneNumber, SIP_DOMAIN));
         if (validUri == null) {

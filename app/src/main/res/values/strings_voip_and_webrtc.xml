@@ -6,4 +6,7 @@
 
     <string name="test_voicemail_successful">Successful VoiceMail Setup</string>
     <string name="get_extension_successful">Successful Get Extension Data</string>
+
+    <string name="sip_service_register">Sign In</string>
+    <string name="sip_service_unregister">Sign Out</string>
 </resources>
