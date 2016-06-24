@@ -9,11 +9,13 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -64,6 +66,9 @@ public class SipDoubangoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sip_doubango);
         //
+        // Set Home/Up button
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setupViews();
         //
         mDoubango = new DoubangoUtils(this);
@@ -111,6 +116,27 @@ public class SipDoubangoActivity extends AppCompatActivity {
                 final IntentFilter intentFilter = new IntentFilter();
                 intentFilter.addAction(NgnRegistrationEventArgs.ACTION_REGISTRATION_EVENT);
                 registerReceiver(mSipBroadCastRecv, intentFilter);
+
+                // Force button color change after 3 seconds in case it hasn't yet.
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mDoubango.isSipServiceRegistered()) {
+                            mBtSignInOut.getBackground().setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.call_screen_blue_arrow), PorterDuff.Mode.SRC_ATOP);
+                            mBtSignInOut.setText(getString(R.string.sip_service_unregister));
+                        } else {
+                            mBtSignInOut.getBackground().setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.call_screen_red), PorterDuff.Mode.SRC_ATOP);
+                            mBtSignInOut.setText(getString(R.string.sip_service_register));
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                MessageUtils.toast(getApplicationContext(), "Post delayed button update test.", false);
+                            }
+                        });
+                    }
+                }, 3000);
             }
         });
         mBtCall.setOnClickListener(new View.OnClickListener() {
@@ -411,5 +437,18 @@ public class SipDoubangoActivity extends AppCompatActivity {
             mEtSignInOut.setText(extension);
             mEtPassword.setText(password);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        // Handle click on the Home/Up button
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

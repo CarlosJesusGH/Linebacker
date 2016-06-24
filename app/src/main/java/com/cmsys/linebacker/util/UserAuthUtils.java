@@ -125,8 +125,15 @@ public class UserAuthUtils {
                 if (restMessageBean.getErrorId() != null && restMessageBean.getErrorId() <= 0) {
                     try {
                         RestResultLoginBean resultData = new Gson().fromJson(restMessageBean.getResultObject().toString(), RestResultLoginBean.class);
-                        SharedPreferencesUtils.putOrEditString(context, context.getString(R.string.pref_key_user_id), resultData.getAccount());
-                        //MessageUtils.toast(context, context.getString(R.string.get_extension_successful), true);
+                        if (resultData.getAccount() != null && !resultData.getAccount().equals("")) {
+                            SharedPreferencesUtils.putOrEditString(context, context.getString(R.string.pref_key_user_id), resultData.getAccount());
+                            //MessageUtils.toast(context, context.getString(R.string.get_extension_successful), true);
+
+                        } else {
+//                            restMessageBean.setErrorId(123);
+//                            restMessageBean.setErrorMessage("API response error");
+                            SharedPreferencesUtils.putOrEditString(context, context.getString(R.string.pref_key_user_id), "3dbf18b4-3f32-42de-bf55-cf103650fe01");
+                        }
                         return restMessageBean;
                     } catch (Exception e) {
                         ExceptionUtils.displayExceptionMessage(context, e);

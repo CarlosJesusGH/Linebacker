@@ -204,7 +204,11 @@ public class NativeService extends NgnNativeService {
                                     }
                                     mEngine.getSoundService().startRingTone();
                                 } else {
-                                    Log.e(TAG, String.format("Failed to find session with id=%ld", args.getSessionId()));
+                                    try {
+                                        Log.e(TAG, String.format("Failed to find session with id=%ld", args.getSessionId()));
+                                    } catch (Exception e) {
+                                        Log.e(TAG, "Failed to find session with id= UNKNOWN");
+                                    }
                                 }
                             } else if (NgnMediaType.isFileTransfer(mediaType)) {
                                 mEngine.refreshContentShareNotif(R.drawable.icon);

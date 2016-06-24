@@ -10,7 +10,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 3
-        versionName "1.0 Jun-08"
+        versionName "1.0 Jun-24"
         // Enabling multidex support. http://developer.android.com/tools/building/multidex.html
         multiDexEnabled true
     }
@@ -71,7 +71,7 @@ dependencies {
     // Adding <uses-sdk tools:overrideLibrary="org.doubango.ngn" /> to app manifest might be necessary
     compile project(':android-ngn-stack')
     // Gson Library
-    compile 'com.google.code.gson:gson:2.2.+'
+    compile 'com.google.code.gson:gson:2.2.4'
     // Google Play Services Ads
     compile 'com.google.android.gms:play-services-ads:8.4.0'
     // Tool for dex counting

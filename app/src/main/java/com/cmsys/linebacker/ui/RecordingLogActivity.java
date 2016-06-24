@@ -34,6 +34,7 @@ import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.gcm.GcmRegistrationAsyncTask;
 import com.cmsys.linebacker.io.DataIO;
 import com.cmsys.linebacker.observer.PhoneContactsObserver;
+import com.cmsys.linebacker.util.AppInfoUtils;
 import com.cmsys.linebacker.util.AppInitialSetupUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.ExceptionUtils;
@@ -508,6 +509,11 @@ public class RecordingLogActivity extends AppCompatActivity
             Intent intent = new Intent(this, SipDoubangoActivity.class);
             startActivity(intent);
             return true;
+        }
+        if (id == R.id.action_about) {
+            // Show version code and name
+            Context c = getApplicationContext();
+            MessageUtils.toast(c, "Version Name: " + AppInfoUtils.getAppVersionName(c) + "\nVersion Code: " + AppInfoUtils.getAppVersionCode(c), true);
         }
 
         return super.onOptionsItemSelected(item);

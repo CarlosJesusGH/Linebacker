@@ -24,6 +24,7 @@
     <string name="action_add">Add</string>
     <string name="action_logout">Log out</string>
     <string name="action_registration_status">Registration Status</string>
+    <string name="action_about">About</string>
 
     <!--Messages-->
     <string name="message_new_register">Insert New Register</string>

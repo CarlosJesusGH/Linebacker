@@ -297,7 +297,7 @@ public class CallScreenActivity extends AppCompatActivity {
             public void onAdClosed() {
                 // DO SOMETHING
 //                requestNewInterstitial();
-//                MessageUtils.toast(getApplicationContext(), "INTERSTITIAL AD CLOSED", false);
+                MessageUtils.toast(getApplicationContext(), "INTERSTITIAL AD CLOSED", false);
             }
         });
         requestNewInterstitial();
@@ -337,13 +337,13 @@ public class CallScreenActivity extends AppCompatActivity {
             mSession.decRef();
         }
 
-        // CJG removed 20160412
+        // CJG edited 20160623
         // Show Interstitial Ad
-//        if (mInterstitialAd.isLoaded() && showInterstitial) {
-//            mInterstitialAd.show();
-//        } else {
-////            MessageUtils.toast(this, "INTERSTITIAL AD NOT READY", false);
-//        }
+        if (mInterstitialAd != null && mInterstitialAd.isLoaded() && showInterstitial) {
+            mInterstitialAd.show();
+        } else {
+            MessageUtils.toast(this, "INTERSTITIAL AD NOT READY", false);
+        }
 
         super.onDestroy();
     }

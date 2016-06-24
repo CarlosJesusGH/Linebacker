@@ -19,15 +19,15 @@ public class RecordingBean implements Serializable {
     @JsonIgnore     // Ignore this field when converting to json object
     private String key;
 
+    private String audioFileUrl;
     private String audioId;
-    private String phoneNumber;
     private Object datetime;
     private String duration;
-    private String audioFileUrl;
-    private String contactName;
-    private boolean isOnCase;
     private boolean isContact;
+    private boolean isOnCase;
+    private String phoneNumber;
     private boolean wasAlreadyPlayed;
+    private String contactName;
 
     public RecordingBean(){
         // empty default constructor, necessary for Firebase to be able to deserialize blog class
@@ -92,13 +92,18 @@ public class RecordingBean implements Serializable {
     }
 
     public long getDatetimeLong() {
-        if (datetime instanceof Double)
-            return (long) ((double) datetime);
-        if (datetime instanceof String)
-            return (long) Double.parseDouble((String) datetime);
-        if (datetime instanceof Long)
+        try {
+            if (datetime instanceof Double)
+                return (long) ((double) datetime);
+            if (datetime instanceof String)
+                return (long) Double.parseDouble((String) datetime);
+            if (datetime instanceof Long)
+                return (long) datetime;
             return (long) datetime;
-        return (long) datetime;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public String getDatetimeString() {
@@ -119,10 +124,11 @@ public class RecordingBean implements Serializable {
                 return DateUtils.getDateString((long) datetime);
             if (datetime instanceof Double)
                 return DateUtils.getDateString((long) ((double) datetime));
+            return (String) datetime;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return (String) datetime;
+        return "";
     }
 
     public String getTimeString() {
@@ -131,10 +137,11 @@ public class RecordingBean implements Serializable {
                 return DateUtils.getTimeString((long) datetime);
             if (datetime instanceof Double)
                 return DateUtils.getTimeString((long) ((double) datetime));
+            return (String) datetime;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return (String) datetime;
+        return "";
     }
 
     public void setDatetime(Object datetime) {
