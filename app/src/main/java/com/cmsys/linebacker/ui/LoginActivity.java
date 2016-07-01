@@ -44,12 +44,19 @@ import java.util.Map;
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.bean.RestMessageBean;
+import com.cmsys.linebacker.bean.RestMessageCreatePbxBean;
+import com.cmsys.linebacker.bean.RestMessageRegisterBean;
+import com.cmsys.linebacker.bean.RestMessageValidateBean;
+import com.cmsys.linebacker.bean.RestResultLoginBean;
 import com.cmsys.linebacker.bean.SettingsBean;
 import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.util.AppInfoUtils;
+import com.cmsys.linebacker.util.AppLinkIndexing;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.CheckInputDataUtils;
+import com.cmsys.linebacker.util.ExceptionUtils;
 import com.cmsys.linebacker.util.MessageUtils;
+import com.cmsys.linebacker.util.RestfulUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
 import com.firebase.client.AuthData;
@@ -59,6 +66,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.gson.Gson;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -162,7 +170,41 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Show version code and name
         Context c = getApplicationContext();
         MessageUtils.toast(c, "Version Name: " + AppInfoUtils.getAppVersionName(c) + "\nVersion Code: " + AppInfoUtils.getAppVersionCode(c), true);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        final String validationUrl = AppLinkIndexing.checkIfIsLinkIndexing(getIntent());
+        if (validationUrl != null) {
+            MessageUtils.toast(this, "Validating account\nId: " + validationUrl, true);
+            // Connect to Api
+            new AsyncTask<Void, Void, RestMessageValidateBean>() {
+                @Override
+                protected RestMessageValidateBean doInBackground(Void... params) {
+                    RestMessageValidateBean restMessageBean = null;
+                    try {
+                        restMessageBean = RestfulUtils.readRestfulAndParseToObject(validationUrl, RestMessageValidateBean.class);
+
+                    } catch (Exception e) {
+                        ExceptionUtils.printExceptionToFile(e);
+                    }
+                    return restMessageBean;
+                }
+
+                @Override
+                protected void onPostExecute(RestMessageValidateBean restMessageBean) {
+                    super.onPostExecute(restMessageBean);
+                    if (restMessageBean != null && restMessageBean.isConfirmed()) {
+                        MessageUtils.toast(getApplicationContext(), restMessageBean.getMessage(), false);
+                    } else if (restMessageBean != null)
+                        MessageUtils.toast(getApplicationContext(), restMessageBean.getMessage(), false);
+                    else
+                        MessageUtils.toast(getApplicationContext(), getString(R.string.error_api_connect), false);
+                }
+            }.execute();
+        }
     }
 
     @Override
@@ -281,13 +323,198 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    private void attemptCreatePbxAccount(final String serverId) {
+        final MessageUtils mu = new MessageUtils(mActivity, getString(R.string.create_pbx_account), "", R.layout.activity_login_create_pbx_account, false);
+        mu.setOnClickListenerAccept(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Context context = getApplicationContext();
+                final EditText etFirstName = (EditText) mu.getConvertView().findViewById(R.id.etInputFirstName);
+                final EditText etLastName = (EditText) mu.getConvertView().findViewById(R.id.etInputLastName);
+                final EditText etBirthday = (EditText) mu.getConvertView().findViewById(R.id.etInputBirthday);
+                final EditText etPhoneNumber = (EditText) mu.getConvertView().findViewById(R.id.etInputPhoneNumber);
+                final EditText etPhoneNumber2 = (EditText) mu.getConvertView().findViewById(R.id.etInputPhoneNumber2);
+                //final EditText etState = (EditText) mu.getConvertView().findViewById(R.id.etInputState);
+                final EditText etCity = (EditText) mu.getConvertView().findViewById(R.id.etInputCity);
+                final EditText etZipCode = (EditText) mu.getConvertView().findViewById(R.id.etInputZipCode);
+                final EditText etAddress = (EditText) mu.getConvertView().findViewById(R.id.etInputAddress);
+                //final EditText etEmail = (EditText) mu.getConvertView().findViewById(R.id.etInputEmail);
+                //final EditText etPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputPassword);
+                //final EditText etRepeatPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputRepeatPassword);
+                //
+                List<EditText> editTextList = new ArrayList<EditText>();
+                editTextList.add(etFirstName);
+                editTextList.add(etLastName);
+                editTextList.add(etPhoneNumber);
+                editTextList.add(etPhoneNumber2);
+                editTextList.add(etZipCode);
+                editTextList.add(etCity);
+                editTextList.add(etAddress);
+                editTextList.add(etBirthday);
+                //editTextList.add(etEmail); editTextList.add(etPassword); editTextList.add(etRepeatPassword); //editTextList.add(etState);
+                //CheckInputDataUtils.fillAllFieldsSampleData(editTextList);
+                // Check if text is filled
+                if (CheckInputDataUtils.areAllFieldsFilled(editTextList)) {
+                    MessageUtils.showProgressBarAndHideButtons(mu);
+                    // Connect to Api
+                    new AsyncTask<Void, Void, RestMessageCreatePbxBean>() {
+                        HashMap<String, String> postDataParams;
+
+                        @Override
+                        protected void onPreExecute() {
+                            super.onPreExecute();
+                            postDataParams = new HashMap<String, String>();
+                            postDataParams.put("id", serverId);
+                            postDataParams.put("id_membership", "1");
+                            postDataParams.put("id_city", etZipCode.getText().toString());
+                            postDataParams.put("city", etCity.getText().toString());
+                            postDataParams.put("first_name", etFirstName.getText().toString());
+                            postDataParams.put("last_name", etLastName.getText().toString());
+                            postDataParams.put("address", etAddress.getText().toString());
+                            postDataParams.put("birthday", etBirthday.getText().toString());
+                            postDataParams.put("phone_number", etPhoneNumber.getText().toString());
+                            postDataParams.put("second_phone", etPhoneNumber2.getText().toString());
+                        }
+
+                        @Override
+                        protected RestMessageCreatePbxBean doInBackground(Void... params) {
+                            RestMessageCreatePbxBean restMessageBean = null;
+                            try {
+                                restMessageBean = RestfulUtils.readRestfulPostAndParseToObject(CONSTANTS.SYNC_WS_PBX_ACCOUNT_API, RestMessageCreatePbxBean.class, postDataParams);
+                            } catch (Exception e) {
+                                ExceptionUtils.printExceptionToFile(e);
+                            }
+                            return restMessageBean;
+                        }
+
+                        @Override
+                        protected void onPostExecute(RestMessageCreatePbxBean restMessageBean) {
+                            super.onPostExecute(restMessageBean);
+                            if (restMessageBean != null && restMessageBean.getErrorId() == 0) {
+                                if (restMessageBean.getErrorMessage() != null && restMessageBean.getErrorMessage().size() > 0)
+                                    MessageUtils.toast(getApplicationContext(), restMessageBean.getErrorMessage().get(0), false);
+                                else
+                                    MessageUtils.toast(getApplicationContext(), getString(R.string.pbx_account_create_successful), false);
+                                mu.cancel();
+                            } else if (restMessageBean != null)
+                                if (restMessageBean.getErrorMessage() != null && restMessageBean.getErrorMessage().size() > 0)
+                                    MessageUtils.toast(getApplicationContext(), restMessageBean.getErrorMessage().get(0), false);
+                                else
+                                    MessageUtils.toast(getApplicationContext(), getString(R.string.error_api_connect), false);
+                            MessageUtils.hideProgressBarAndShowAcceptButtons(mu);
+                        }
+                    }.execute();
+                } else {
+                    if (!CheckInputDataUtils.areAllFieldsFilled(editTextList))
+                        MessageUtils.toast(context, getString(R.string.error_all_fields_required), false);
+                }
+            }
+        });
+        mu.setOnClickListenerCancel(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mu.cancel();
+            }
+        });
+        mu.show();
+    }
+
     private void attemptRegister() {
+        final MessageUtils mu = new MessageUtils(mActivity, getString(R.string.register_new_user), "", R.layout.activity_login_register_new_user, false);
+        mu.setOnClickListenerAccept(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Context context = getApplicationContext();
+                final EditText etFirstName = (EditText) mu.getConvertView().findViewById(R.id.etInputFirstName);
+                final EditText etLastName = (EditText) mu.getConvertView().findViewById(R.id.etInputLastName);
+                //final EditText etPhoneNumber = (EditText) mu.getConvertView().findViewById(R.id.etInputPhoneNumber);
+                //final EditText etState = (EditText) mu.getConvertView().findViewById(R.id.etInputState);
+                //final EditText etCity = (EditText) mu.getConvertView().findViewById(R.id.etInputCity);
+                //final EditText etZipCode = (EditText) mu.getConvertView().findViewById(R.id.etInputZipCode);
+                //final EditText etAddress = (EditText) mu.getConvertView().findViewById(R.id.etInputAddress);
+                final EditText etEmail = (EditText) mu.getConvertView().findViewById(R.id.etInputEmail);
+                final EditText etPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputPassword);
+                final EditText etRepeatPassword = (EditText) mu.getConvertView().findViewById(R.id.etInputRepeatPassword);
+                //
+                List<EditText> editTextList = new ArrayList<EditText>();
+                editTextList.add(etFirstName);
+                editTextList.add(etLastName); //editTextList.add(etPhoneNumber);
+                //editTextList.add(etZipCode); //editTextList.add(etState); editTextList.add(etCity); editTextList.add(etAddress);
+                editTextList.add(etEmail);
+                editTextList.add(etPassword);
+                editTextList.add(etRepeatPassword);
+                //CheckInputDataUtils.fillAllFieldsSampleData(editTextList);
+                // Check if text is filled
+                if (CheckInputDataUtils.areAllFieldsFilled(editTextList)
+                        && etPassword.getText().toString().equals(etRepeatPassword.getText().toString())
+                        && CheckInputDataUtils.isValidEmail(etEmail.getText())) {
+                    MessageUtils.showProgressBarAndHideButtons(mu);
+                    // Connect to Api
+                    new AsyncTask<Void, Void, RestMessageRegisterBean>() {
+                        HashMap<String, String> postDataParams;
+
+                        @Override
+                        protected void onPreExecute() {
+                            super.onPreExecute();
+                            postDataParams = new HashMap<String, String>();
+                            postDataParams.put("email", etEmail.getText().toString());
+                            postDataParams.put("name", etFirstName.getText().toString() + " " + etLastName.getText().toString());
+                            postDataParams.put("password", etPassword.getText().toString());
+                            postDataParams.put("password_confirmation", etRepeatPassword.getText().toString());
+                        }
+
+                        @Override
+                        protected RestMessageRegisterBean doInBackground(Void... params) {
+                            RestMessageRegisterBean restMessageBean = null;
+                            try {
+
+                                restMessageBean = RestfulUtils.readRestfulPostAndParseToObject(CONSTANTS.SYNC_WS_REGISTER_API, RestMessageRegisterBean.class, postDataParams);
+                            } catch (Exception e) {
+                                ExceptionUtils.printExceptionToFile(e);
+                            }
+                            return restMessageBean;
+                        }
+
+                        @Override
+                        protected void onPostExecute(RestMessageRegisterBean restMessageBean) {
+                            super.onPostExecute(restMessageBean);
+                            if (restMessageBean != null && restMessageBean.isCreated()) {
+                                MessageUtils.toast(getApplicationContext(), restMessageBean.getMessage(), false);
+                                mu.cancel();
+                            } else if (restMessageBean != null)
+                                if (restMessageBean.getErrors() != null && restMessageBean.getErrors().size() > 0)
+                                    MessageUtils.toast(getApplicationContext(), restMessageBean.getErrors().get(0), false);
+                                else
+                                    MessageUtils.toast(getApplicationContext(), getString(R.string.error_api_connect), false);
+                            MessageUtils.hideProgressBarAndShowAcceptButtons(mu);
+                        }
+                    }.execute();
+                } else {
+                    if (!CheckInputDataUtils.areAllFieldsFilled(editTextList))
+                        MessageUtils.toast(context, getString(R.string.error_all_fields_required), false);
+                    else if (!CheckInputDataUtils.isValidEmail(etEmail.getText()))
+                        MessageUtils.toast(context, getString(R.string.error_invalid_email), false);
+                    else if (!etPassword.getText().toString().equals(etRepeatPassword.getText().toString()))
+                        MessageUtils.toast(context, getString(R.string.error_passwords_not_match), false);
+                }
+            }
+        });
+        mu.setOnClickListenerCancel(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mu.cancel();
+            }
+        });
+        mu.show();
+    }
+
+    private void attemptRegister_oldUsingWebSite() {
         Uri uri = Uri.parse(getString(R.string.web_link_register)); // missing 'http://' will cause crash
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
 
-    private void attemptRegister_old() {
+    private void attemptRegister_oldUsingFirebase() {
         final MessageUtils mu = new MessageUtils(mActivity, getString(R.string.register_new_user), "", R.layout.activity_login_register_new_user, false);
         mu.setOnClickListenerAccept(new View.OnClickListener() {
             @Override
@@ -732,7 +959,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             startActivity(intent);
                             MessageUtils.toast(mContext, getString(R.string.login_successful), true);
                         } else if (loginMsg != null) {
-                            MessageUtils.toast(mContext, loginMsg.getErrorMessage(), true);
+                            if (loginMsg.getErrorId() == UserAuthUtils.ERROR_NOT_PBX_ACCOUNT) {
+                                MessageUtils.toast(getApplicationContext(), getString(R.string.error_should_create_pbx_account), true);
+                                RestResultLoginBean resultData = new Gson().fromJson(loginMsg.getResultObject().toString(), RestResultLoginBean.class);
+                                if (resultData.getId() != null && !resultData.getId().equals(""))
+                                    attemptCreatePbxAccount(resultData.getId());
+                            } else
+                                MessageUtils.toast(mContext, loginMsg.getErrorMessage(), true);
                         } else {
                             MessageUtils.toast(mContext, getString(R.string.login_error), true);
                         }

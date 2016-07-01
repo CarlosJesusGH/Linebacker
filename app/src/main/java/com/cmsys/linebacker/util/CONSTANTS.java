@@ -45,6 +45,8 @@ public class CONSTANTS {
     public static String SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER = "http://linebacker.privacyprotector.org/api/contactsByUser/store/all/";
     public static String SYNC_WS_ASTERISk_UPDATE_RECORDINGS_TRIGGER = "http://linebacker.privacyprotector.org/api/recordedAudiosByUser/audio/";
     public static String SYNC_WS_LOGIN_API = "http://linebacker.privacyprotector.org/api/login";
+    public static String SYNC_WS_REGISTER_API = "http://linebacker.privacyprotector.org/api/register";
+    public static String SYNC_WS_PBX_ACCOUNT_API = "http://linebacker.privacyprotector.org/api/account";
 
     //---Firebase------------------
     public static String FIREBASE_APP_NAME = "linebacker";

@@ -10,6 +10,7 @@ import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.RestMessageBean;
 import com.cmsys.linebacker.bean.RestResultAsteriskData;
 import com.cmsys.linebacker.bean.RestResultLoginBean;
+import com.cmsys.linebacker.ui.LoginActivity;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.google.gson.Gson;
@@ -26,6 +27,7 @@ public class UserAuthUtils {
     public static final String TYPE_GOOGLE = "google+";
     public static final String TYPE_INTERNAL_API = "internal-api";
     public static String AUTH_TYPE = TYPE_INTERNAL_API;
+    public static int ERROR_NOT_PBX_ACCOUNT = 999;
 
     public static boolean isUserLogged() {
         switch (AUTH_TYPE) {
@@ -128,20 +130,18 @@ public class UserAuthUtils {
                         if (resultData.getAccount() != null && !resultData.getAccount().equals("")) {
                             SharedPreferencesUtils.putOrEditString(context, context.getString(R.string.pref_key_user_id), resultData.getAccount());
                             //MessageUtils.toast(context, context.getString(R.string.get_extension_successful), true);
-
-                        } else {
-//                            restMessageBean.setErrorId(123);
-//                            restMessageBean.setErrorMessage("API response error");
-                            SharedPreferencesUtils.putOrEditString(context, context.getString(R.string.pref_key_user_id), "3dbf18b4-3f32-42de-bf55-cf103650fe01");
+                        } else if (resultData.getId() != null && !resultData.getId().equals("")
+                                && (resultData.getAccount() == null || resultData.getAccount().equals(""))) {
+                            restMessageBean.setErrorId(ERROR_NOT_PBX_ACCOUNT);
                         }
                         return restMessageBean;
                     } catch (Exception e) {
                         ExceptionUtils.displayExceptionMessage(context, e);
                     }
                 } else {
-                    //MessageUtils.toast(context, "ERROR: " + restMessageBean.getErrorMessage(), true);
                     return restMessageBean;
                 }
+                return restMessageBean;
             }
         } catch (Exception e) {
             ExceptionUtils.printExceptionToFile(e);

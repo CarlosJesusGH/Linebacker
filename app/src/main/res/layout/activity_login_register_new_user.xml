@@ -90,20 +90,20 @@
                         android:imeOptions="actionUnspecified" />
                 </android.support.design.widget.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
 
-                    <EditText
-                        android:id="@+id/etInputPhoneNumber"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="bottom"
-                        android:hint="@string/new_user_phone_number"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:imeOptions="actionUnspecified" />
-                </android.support.design.widget.TextInputLayout>
+                <!--<EditText-->
+                <!--android:id="@+id/etInputPhoneNumber"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="bottom"-->
+                <!--android:hint="@string/new_user_phone_number"-->
+                <!--android:maxLines="1"-->
+                <!--android:singleLine="true"-->
+                <!--android:imeOptions="actionUnspecified" />-->
+                <!--</android.support.design.widget.TextInputLayout>-->
 
                 <!--<android.support.design.widget.TextInputLayout-->
                     <!--android:layout_width="match_parent"-->
@@ -135,20 +135,20 @@
                         <!--android:imeOptions="actionUnspecified" />-->
                 <!--</android.support.design.widget.TextInputLayout>-->
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
 
-                    <EditText
-                        android:id="@+id/etInputZipCode"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="bottom"
-                        android:hint="@string/new_user_zip_code"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:imeOptions="actionUnspecified" />
-                </android.support.design.widget.TextInputLayout>
+                <!--<EditText-->
+                <!--android:id="@+id/etInputZipCode"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="bottom"-->
+                <!--android:hint="@string/new_user_zip_code"-->
+                <!--android:maxLines="1"-->
+                <!--android:singleLine="true"-->
+                <!--android:imeOptions="actionUnspecified" />-->
+                <!--</android.support.design.widget.TextInputLayout>-->
 
                 <!--<android.support.design.widget.TextInputLayout-->
                     <!--android:layout_width="match_parent"-->
