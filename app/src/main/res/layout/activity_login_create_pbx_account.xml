@@ -177,10 +177,12 @@
                         android:hint="@string/new_user_zip_code"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:imeOptions="actionUnspecified" />
+                        android:imeOptions="actionUnspecified"
+                        android:nextFocusForward="@id/etInputAddress" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
