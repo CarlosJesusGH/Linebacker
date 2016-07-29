@@ -84,6 +84,7 @@
             android:visibility="gone">
 
             <LinearLayout
+                android:id="@+id/llAcceptRejectOptions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -112,6 +113,57 @@
                     android:text="@string/call_screen_option_reject"
                     android:textColor="@android:color/white"
                     android:backgroundTint="@color/call_screen_red" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llVmPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/bVmDefaultPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Default Pass"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/bVmAlreadyLogged"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/call_screen_default_password_info"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/call_screen_red" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llVmSetup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/bVmUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User\nName" />
+
+                <Button
+                    android:id="@+id/bVmMainGreeting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Main\nGreeting" />
+
+                <Button
+                    android:id="@+id/bVmBusyGreeting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Busy\nGreeting" />
 
             </LinearLayout>
 

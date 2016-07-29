@@ -9,6 +9,7 @@
     <string name="call_screen_hide_keyboard">Hide Keyboard</string>
     <string name="call_screen_info_default">LINEBACKER INTERCEPT FROM</string>
     <string name="call_screen_info_when_known">LINEBACKER FUMBLE RECOVERY</string>
+    <string name="call_screen_default_password_info">Default Password 1234\n(Press this when logged in)</string>
 
     <string name="phone_company">PHONE COMPANY</string>
 </resources>

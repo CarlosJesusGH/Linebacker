@@ -31,6 +31,8 @@ import android.widget.TextView;
 
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.anim.IncomingCallAnimation;
+import com.cmsys.linebacker.ui.SettingsActivity;
+import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.ColorUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneContactUtils;
@@ -58,9 +60,9 @@ public class CallScreenActivity extends AppCompatActivity {
     private TextView mTvInfo;
     private TextView mTvRemote;
     private ImageButton mBtSpeaker, mBtShowKeyboard;
-    private Button mBtHangUp, mBtPickUp;
-    private Button mBtOptionsAccept, mBtOptionsMail, mBtOptionsReject;
-    private LinearLayout mLlOptions, mLlKeyboard;
+    private Button mBtHangUp, mBtPickUp, mBtOptionsAccept, mBtOptionsMail, mBtOptionsReject;
+    private Button mBtVmDefaultPassword, mBtVmAlreadyLogged, mBtVmUserName, mBtVmMainGreeting, mBtVmBusyGreeting;
+    private LinearLayout mLlOptions, mLlKeyboard, mLlVmPassword, mLlVmSetup, mLlAcceptRejectOptions;
     private RoundedImageView mRivCallerImage;
     private EditText mEtKeyboardText;
     private ImageButton mBtKeyboardBackspace;
@@ -69,7 +71,8 @@ public class CallScreenActivity extends AppCompatActivity {
 
     private NgnAVSession mSession;
     private BroadcastReceiver mSipBroadCastRecv;
-    private boolean showInterstitial = false;
+    private boolean mShowInterstitial = false;
+    private boolean mShowVmSetupOptions;
 
     // https://developers.google.com/admob/android/interstitial#creating_the_adlistener
     private InterstitialAd mInterstitialAd;
@@ -88,6 +91,9 @@ public class CallScreenActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mSession = NgnAVSession.getSession(extras.getLong(DoubangoUtils.EXTRAT_SIP_SESSION_ID));
+            String callingActivity = extras.getString(CONSTANTS.BUNDLE_EXTRA_CALLING_ACTIVITY);
+            if (callingActivity != null && callingActivity.equals(SettingsActivity.class.getName()))
+                mShowVmSetupOptions = true;
         }
 
         if (mSession == null) {
@@ -144,6 +150,9 @@ public class CallScreenActivity extends AppCompatActivity {
         //mBtSpeaker.setText(getString(R.string.speaker) + " " + getString(R.string.on));
         mLlOptions = (LinearLayout) findViewById(R.id.callscreen_ll_options);
         mLlKeyboard = (LinearLayout) findViewById(R.id.callscreen_ll_keyboard);
+        mLlVmPassword = (LinearLayout) findViewById(R.id.llVmPassword);
+        mLlVmSetup = (LinearLayout) findViewById(R.id.llVmSetup);
+        mLlAcceptRejectOptions = (LinearLayout) findViewById(R.id.llAcceptRejectOptions);
         mBtKeyboardBackspace = (ImageButton) findViewById(R.id.call_screen_keyboard_backspace);
         mBtShowKeyboard = (ImageButton) findViewById(R.id.callscreen_show_keyboard);
         mRivCallerImage = (RoundedImageView) findViewById(R.id.callscreen_caller_image);
@@ -151,8 +160,14 @@ public class CallScreenActivity extends AppCompatActivity {
         mBtOptionsAccept = (Button) findViewById(R.id.view_dialer_buttons_accept);
         mBtOptionsMail = (Button) findViewById(R.id.view_dialer_buttons_mail);
         mBtOptionsReject = (Button) findViewById(R.id.view_dialer_buttons_reject);
+        mBtVmDefaultPassword = (Button) findViewById(R.id.bVmDefaultPassword);
+        mBtVmAlreadyLogged = (Button) findViewById(R.id.bVmAlreadyLogged);
+        mBtVmUserName = (Button) findViewById(R.id.bVmUserName);
+        mBtVmMainGreeting = (Button) findViewById(R.id.bVmMainGreeting);
+        mBtVmBusyGreeting = (Button) findViewById(R.id.bVmBusyGreeting);
         mIvAnimCircle1 = (ImageView) findViewById(R.id.iv_anim_circle_1);
         mIvAnimCircle2 = (ImageView) findViewById(R.id.iv_anim_circle_2);
+
         // Animation 1
         mIncomingCallAnimation1 = new IncomingCallAnimation(
                 mIvAnimCircle1,
@@ -183,7 +198,7 @@ public class CallScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mSession != null) {
                     mSession.hangUpCall();
-                    showInterstitial = true;
+                    mShowInterstitial = true;
                     mLlOptions.setVisibility(View.GONE);
                 }
             }
@@ -194,7 +209,7 @@ public class CallScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mSession != null) {
                     mSession.acceptCall();
-                    showInterstitial = true;
+                    mShowInterstitial = true;
                     mBtPickUp.setVisibility(View.GONE);
                     mLlOptions.setVisibility(View.VISIBLE);
                     mBtHangUp.setText(getString(R.string.call_screen_end));
@@ -260,6 +275,80 @@ public class CallScreenActivity extends AppCompatActivity {
                     mEtKeyboardText.setText(currentText.substring(0, currentText.length() - 1));
             }
         });
+
+        mBtVmDefaultPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        MessageUtils.toast(getApplicationContext(), "start", false);
+                        try {
+                            mSession.sendDTMF(NgnStringUtils.parseInt("1", -1));
+//                            MessageUtils.toast(getApplicationContext(), "1", false);
+                            Thread.sleep(100);
+                            mSession.sendDTMF(NgnStringUtils.parseInt("2", -1));
+//                            MessageUtils.toast(getApplicationContext(), "2", false);
+                            Thread.sleep(100);
+                            mSession.sendDTMF(NgnStringUtils.parseInt("3", -1));
+//                            MessageUtils.toast(getApplicationContext(), "3", false);
+                            Thread.sleep(100);
+                            mSession.sendDTMF(NgnStringUtils.parseInt("4", -1));
+//                            MessageUtils.toast(getApplicationContext(), "4", false);
+                        } catch (Exception e) {
+                            e.getLocalizedMessage();
+                        }
+                    }
+                }).start();
+//                mEtKeyboardText.setText(mEtKeyboardText.getText() + "12345");
+                mLlVmSetup.setVisibility(View.VISIBLE);
+//                mLlVmPassword.setVisibility(View.GONE);
+            }
+        });
+
+        mBtVmAlreadyLogged.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLlVmSetup.setVisibility(View.VISIBLE);
+                mLlVmPassword.setVisibility(View.GONE);
+            }
+        });
+
+        mBtVmUserName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSession.sendDTMF(NgnStringUtils.parseInt("0", -1));
+                mSession.sendDTMF(NgnStringUtils.parseInt("3", -1));
+            }
+        });
+
+        mBtVmMainGreeting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSession.sendDTMF(NgnStringUtils.parseInt("0", -1));
+                mSession.sendDTMF(NgnStringUtils.parseInt("1", -1));
+            }
+        });
+
+        mBtVmBusyGreeting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSession.sendDTMF(NgnStringUtils.parseInt("0", -1));
+                mSession.sendDTMF(NgnStringUtils.parseInt("2", -1));
+            }
+        });
+
+        //--------------------------------------------------------
+
+        if (mShowVmSetupOptions) {
+            mLlVmPassword.setVisibility(View.VISIBLE);
+            mLlAcceptRejectOptions.setVisibility(View.GONE);
+            mBtPickUp.performClick();
+            mBtShowKeyboard.performClick();
+        }
+
+        //--------------------------------------------------------
 
         mRemoteCallerId = mSession.getRemotePartyDisplayName();
         if (mRemoteCallerId != null) {
@@ -339,7 +428,7 @@ public class CallScreenActivity extends AppCompatActivity {
 
         // CJG edited 20160623
         // Show Interstitial Ad
-        if (mInterstitialAd != null && mInterstitialAd.isLoaded() && showInterstitial) {
+        if (mInterstitialAd != null && mInterstitialAd.isLoaded() && mShowInterstitial) {
             mInterstitialAd.show();
         } else {
             MessageUtils.toast(this, "INTERSTITIAL AD NOT READY", false);

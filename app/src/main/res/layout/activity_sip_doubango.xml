@@ -35,12 +35,21 @@
             android:visibility="gone" />
 
         <Button
+            android:id="@+id/btAccountLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tvInfo"
+            android:text="Account Login / Setup"
+            android:visibility="gone" />
+
+        <Button
             android:id="@+id/btGetExtension"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvInfo"
-            android:text="Get Automatic Extension" />
+            android:text="Account Login / Setup" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -63,11 +72,11 @@
                 android:layout_alignBaseline="@id/tvExtension"
                 android:hint="Extension Nr"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-            <!--android:clickable="false"-->
-            <!--android:cursorVisible="false"-->
-            <!--android:focusable="false"-->
-            <!--android:focusableInTouchMode="false" />-->
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
 
             <TextView
                 android:id="@+id/tvExtensionPass"
@@ -86,13 +95,11 @@
                 android:hint="Password"
                 android:text=""
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:singleLine="true" />
-
-            <!--android:clickable="false"-->
-            <!--android:cursorVisible="false"-->
-            <!--android:focusable="false"-->
-            <!--android:focusableInTouchMode="false" -->
-            <!--/>-->
+                android:singleLine="true"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
 
             <TextView
                 android:id="@+id/tvExtensionDid"
@@ -111,7 +118,6 @@
                 android:hint="External Phone"
                 android:text=""
                 android:textAppearance="?android:attr/textAppearanceSmall"
-
                 android:clickable="false"
                 android:cursorVisible="false"
                 android:focusable="false"
@@ -329,7 +335,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/vSeparatorTestVoiceMail"
-            android:text="Test VoiceMail Setup" />
+            android:text="Test VoiceMail Setup"
+            android:enabled="false" />
 
     </RelativeLayout>
 </ScrollView>

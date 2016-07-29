@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.PorterDuff;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -16,11 +17,13 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.ProgressBar;
@@ -31,6 +34,7 @@ import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
+import com.cmsys.linebacker.voip_doubango.DoubangoUtils;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -53,6 +57,7 @@ import java.util.List;
 public class SettingsActivity extends AppCompatPreferenceActivity {
     private static String mUserId;
     private static SettingsBean mSettings;
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -197,7 +202,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName)
                 || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
-                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+                || NotificationPreferenceFragment.class.getName().equals(fragmentName)
+                || VoicemailPreferenceFragment.class.getName().equals(fragmentName);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -287,6 +293,63 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 }
                 @Override public void onCancelled(FirebaseError firebaseError) {}
             });
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+            if (id == android.R.id.home) {
+                //startActivity(new Intent(getActivity(), SettingsActivity.class));
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * This fragment shows notification preferences only. It is used when the
+     * activity is showing a two-pane settings UI.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class VoicemailPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_voicemail);
+
+            Preference buttonSignIn = (Preference) findPreference(getString(R.string.pref_key_setting_voicemail_signin));
+            buttonSignIn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    //code for what you want it to do
+                    MessageUtils.toast(preference.getContext(), "Not working yet", true);
+                    return true;
+                }
+            });
+
+            Preference buttonSetup = (Preference) findPreference(getString(R.string.pref_key_setting_voicemail_setup));
+            buttonSetup.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    DoubangoUtils mDoubango;
+                    mDoubango = new DoubangoUtils(preference.getContext());
+                    mDoubango.Init();
+                    if (mDoubango.isSipServiceRegistered()) {
+                        mDoubango.makeVoiceCall("*97", new Pair<String, String>(CONSTANTS.BUNDLE_EXTRA_CALLING_ACTIVITY, SettingsActivity.class.getName()));
+                    } else {
+                        MessageUtils.toast(preference.getContext(), "Not signed in, go to registration status", true);
+                    }
+                    return true;
+                }
+            });
+
+//            setHasOptionsMenu(true);
+
+            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
+            // to their values. When their values change, their summaries are
+            // updated to reflect the new value, per the Android Design
+            // guidelines.
+//            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
         }
 
         @Override

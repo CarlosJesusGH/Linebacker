@@ -1,0 +1,13 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:title="@string/pref_title_setting_voicemail_signin"
+        android:key="@string/pref_key_setting_voicemail_signin"
+        android:summary="@string/pref_description_setting_voicemail_signin" />
+
+    <Preference
+        android:title="@string/pref_title_setting_voicemail_setup"
+        android:key="@string/pref_key_setting_voicemail_setup"
+        android:summary="@string/pref_description_setting_voicemail_setup" />
+
+</PreferenceScreen>

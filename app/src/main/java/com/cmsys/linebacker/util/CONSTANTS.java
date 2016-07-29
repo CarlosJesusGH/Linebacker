@@ -33,6 +33,7 @@ public class CONSTANTS {
     //---Bundle Extras ----------
     public static final String BUNDLE_EXTRA_USER = "user";
     public static final String BUNDLE_EXTRA_RECORDING = "recording";
+    public final static String BUNDLE_EXTRA_CALLING_ACTIVITY = "calling_activity";
 
     //---WS Sync-----------------
     public static String SYNC_WS_IP = "cj-website.ddns.net";

@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -55,7 +56,7 @@ public class SipDoubangoActivity extends AppCompatActivity {
 
     private DoubangoUtils mDoubango;
     private TextView mTvInfo;
-    private Button mBtSignInOut, mBtCall, mBtGetExtension, mBtVoiceMailConfigNumbers, mBtTestVoicemailSetup;
+    private Button mBtSignInOut, mBtCall, mBtGetExtension, mBtVoiceMailConfigNumbers, mBtTestVoicemailSetup, mBtAccountLogin;
     private EditText mEtSignInOut, mEtCall, mEtExternalPhoneNr, mEtPassword;
     private LinearLayout llCallingNumbers;
     private RelativeLayout rlExtensionData;
@@ -84,6 +85,7 @@ public class SipDoubangoActivity extends AppCompatActivity {
         mEtCall = (EditText) findViewById(R.id.etCall);
         mBtCall = (Button) findViewById(R.id.btCall);
         mBtGetExtension = (Button) findViewById(R.id.btGetExtension);
+        mBtAccountLogin = (Button) findViewById(R.id.btAccountLogin);
         mBtVoiceMailConfigNumbers = (Button) findViewById(R.id.btVoiceMailConfigNumbers);
         mBtTestVoicemailSetup = (Button) findViewById(R.id.btTestVoiceMailSetup);
         llCallingNumbers = (LinearLayout) findViewById(R.id.llCallingNumbers);
@@ -142,7 +144,18 @@ public class SipDoubangoActivity extends AppCompatActivity {
         mBtCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDoubango.makeVoiceCall(mEtCall.getText().toString());
+                if (mDoubango.isSipServiceRegistered() && !mEtCall.getText().toString().equals("")) {
+                    mDoubango.makeVoiceCall(mEtCall.getText().toString(), null);
+                } else {
+                    MessageUtils.toast(getApplicationContext(), "Not signed in or invalid number", true);
+                }
+            }
+        });
+        mBtAccountLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rlExtensionData.setVisibility(View.VISIBLE);
+                mBtAccountLogin.setVisibility(View.GONE);
             }
         });
         mBtGetExtension.setOnClickListener(new View.OnClickListener() {

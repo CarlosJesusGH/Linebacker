@@ -21,4 +21,14 @@
     <string name="pref_key_voip_extension">voipExtension</string>
     <string name="pref_key_voip_password">voipPassword</string>
     <string name="pref_key_voip_did">voipDid</string>
+
+    <string name="pref_key_setting_voicemail_signin">voicemailSignIn</string>
+    <string name="pref_title_setting_voicemail_signin">SignIn Voicemail</string>
+    <string name="pref_description_setting_voicemail_signin">Sign in to voicemail service</string>
+
+    <string name="pref_key_setting_voicemail_setup">voicemailSetting</string>
+    <string name="pref_title_setting_voicemail_setup">Setup Voicemail</string>
+    <string name="pref_description_setting_voicemail_setup">Call voicemail setting service</string>
+
+
 </resources>

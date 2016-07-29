@@ -3,7 +3,7 @@
     <string name="register_new_user">REGISTER USER</string>
     <string name="password_recovery">PASSWORD RECOVERY</string>
     <string name="send_new_password">SEND PASSWORD</string>
-    <string name="create_pbx_account">CREATE VOIP ACCOUNT</string>
+    <string name="create_pbx_account">ACTIVATE LINEBACKER NUMBER</string>
     <!-- -->
     <string name="new_user_first_name">First Name</string>
     <string name="new_user_last_name">Last Name</string>

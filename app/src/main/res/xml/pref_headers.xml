@@ -7,6 +7,11 @@
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/pref_header_general" />
 
+    <header
+        android:fragment="com.cmsys.linebacker.ui.SettingsActivity$VoicemailPreferenceFragment"
+        android:icon="@drawable/ic_voicemail_black_24dp"
+        android:title="@string/pref_header_voicemail" />
+
     <!--<header-->
         <!--android:fragment="com.cmsys.linebacker.ui.SettingsActivity$NotificationPreferenceFragment"-->
         <!--android:icon="@drawable/ic_notifications_black_24dp"-->

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -159,7 +160,7 @@ public class DoubangoUtils {
         return false;
     }
 
-    public boolean makeVoiceCall(String phoneNumber) {
+    public boolean makeVoiceCall(String phoneNumber, Pair<String, String> paramExtra) {
         final String validUri = NgnUriUtils.makeValidSipUri(String.format("sip:%s@%s", phoneNumber, SIP_DOMAIN));
         if (validUri == null) {
             MessageUtils.toast(mContext, "failed to normalize sip uri '" + phoneNumber + "'", false);
@@ -170,6 +171,8 @@ public class DoubangoUtils {
         Intent i = new Intent();
         i.setClass(mContext, CallScreenActivity.class);
         i.putExtra(EXTRAT_SIP_SESSION_ID, avSession.getId());
+        if (paramExtra != null)
+            i.putExtra(paramExtra.first, paramExtra.second);
         mContext.startActivity(i);
 
         return avSession.makeCall(validUri);
