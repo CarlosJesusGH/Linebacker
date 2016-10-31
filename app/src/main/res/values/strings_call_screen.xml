@@ -12,4 +12,8 @@
     <string name="call_screen_default_password_info">Default Password 1234\n(Press this when logged in)</string>
 
     <string name="phone_company">PHONE COMPANY</string>
+    <string name="phone_company_options">COMPANY OPTIONS</string>
+
+    <string name="confirm_activation">CONFIRM ACTIVATION</string>
+    <string name="confirm_activation_msg">Message with instructions about calling himself and listening his own voicemail</string>
 </resources>

@@ -30,5 +30,12 @@
     <string name="pref_title_setting_voicemail_setup">Setup Voicemail</string>
     <string name="pref_description_setting_voicemail_setup">Call voicemail setting service</string>
 
+    <string name="pref_key_setting_voicemail_activate">voicemailActivate</string>
+    <string name="pref_title_setting_voicemail_activate">Activate Linebacker</string>
+    <string name="pref_description_setting_voicemail_activate">Link Linebacker with your phone company</string>
+
+    <string name="pref_key_setting_voicemail_confirm">voicemailConfirm</string>
+    <string name="pref_title_setting_voicemail_confirm">Confirm Activation</string>
+    <string name="pref_description_setting_voicemail_confirm">Confirm link between linebacker and your phone company</string>
 
 </resources>

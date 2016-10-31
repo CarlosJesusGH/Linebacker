@@ -6,7 +6,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +27,7 @@ import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.util.AudioUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.MessageUtils;
+import com.cmsys.linebacker.util.PhoneCallUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -223,7 +229,28 @@ public class RecordingDetailsActivity extends AppCompatActivity {
         llRecordingDetails.removeAllViews();
         if(mRecordingBean.isContact())
             addViewToLayout(getString(R.string.recording_contact_name), mRecordingBean.getContactName());
-        addViewToLayout(getString(R.string.recording_phone_number), mRecordingBean.getPhoneNumber());
+
+        // add phone number link
+        // addViewToLayout(getString(R.string.recording_phone_number), mRecordingBean.getPhoneNumber());
+        LayoutInflater inflater = getLayoutInflater();
+        View vInflated = (View) inflater.inflate(R.layout.activity_recording_details_item, null);
+        ((TextView) vInflated.findViewById(R.id.tvTitle)).setText(getString(R.string.recording_phone_number));
+        TextView tvLink = ((TextView) vInflated.findViewById(R.id.tvText));
+        // Make TextView look like link
+        final SpannableString spannableString = new SpannableString(mRecordingBean.getPhoneNumber());
+        spannableString.setSpan(new URLSpan(""), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvLink.setText(spannableString, TextView.BufferType.SPANNABLE);
+        // set action when click
+        tvLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                MessageUtils.toast(getApplicationContext(), "call phone", true);
+                PhoneCallUtils.dialNumber(getApplicationContext(), mRecordingBean.getPhoneNumber());
+            }
+        });
+        llRecordingDetails.addView(vInflated);
+
+        // add other fields
         addViewToLayout(getString(R.string.recording_date), mRecordingBean.getDateString());
         addViewToLayout(getString(R.string.recording_time), mRecordingBean.getTimeString());
         addViewToLayout(getString(R.string.recording_audio_duration), mRecordingBean.getDuration());

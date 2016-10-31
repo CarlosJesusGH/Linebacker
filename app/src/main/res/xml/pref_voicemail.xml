@@ -10,4 +10,14 @@
         android:key="@string/pref_key_setting_voicemail_setup"
         android:summary="@string/pref_description_setting_voicemail_setup" />
 
+    <Preference
+        android:title="@string/pref_title_setting_voicemail_activate"
+        android:key="@string/pref_key_setting_voicemail_activate"
+        android:summary="@string/pref_description_setting_voicemail_activate" />
+
+    <Preference
+        android:title="@string/pref_title_setting_voicemail_confirm"
+        android:key="@string/pref_key_setting_voicemail_confirm"
+        android:summary="@string/pref_description_setting_voicemail_confirm" />
+
 </PreferenceScreen>
