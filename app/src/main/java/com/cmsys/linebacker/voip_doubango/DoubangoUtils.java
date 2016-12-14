@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.cmsys.linebacker.R;
+import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.DateUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
@@ -43,6 +44,7 @@ public class DoubangoUtils {
     private static String SIP_USERNAME = null;
     private static String SIP_PASSWORD = null; //"Linebacker2016*";
     public final static String EXTRAT_SIP_SESSION_ID = "SipSession";
+    private boolean initSuccess;
 
     public DoubangoUtils(Context context) {
         mContext = context;
@@ -65,7 +67,8 @@ public class DoubangoUtils {
         mSipBroadCastRecv = broadcastReceiver;
     }
 
-    public void Init() {
+    public boolean Init() {
+        initSuccess = true;
         // Subscribe for registration state changes
         mSipBroadCastRecv = new BroadcastReceiver() {
             @Override
@@ -82,6 +85,7 @@ public class DoubangoUtils {
                     switch (args.getEventType()) {
                         case REGISTRATION_NOK:
                             MessageUtils.toast(mContext, "Failed to register", false);
+                            initSuccess = false;
                             break;
                         case UNREGISTRATION_OK:
                             MessageUtils.toast(mContext, "You are now unregistered", false);
@@ -105,6 +109,7 @@ public class DoubangoUtils {
                             break;
                         case UNREGISTRATION_NOK:
                             MessageUtils.toast(mContext, "Failed to unregister", false);
+                            initSuccess = false;
                             break;
                     }
                     //mBtSignInOut.setText(mSipService.isRegistered() ? "Sign Out" : "Sign In");
@@ -114,9 +119,10 @@ public class DoubangoUtils {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(NgnRegistrationEventArgs.ACTION_REGISTRATION_EVENT);
         mContext.registerReceiver(mSipBroadCastRecv, intentFilter);
+        return initSuccess;
     }
 
-    public boolean serverSignInOut(String userName, String password) {
+    public boolean serverSignIn(String userName, String password){
         SIP_USERNAME = userName;
         SIP_PASSWORD = password;
 
@@ -143,6 +149,28 @@ public class DoubangoUtils {
                 mConfigurationService.commit();
                 // register (log in)
                 mSipService.register(mContext);
+            }
+        } else {
+            MessageUtils.toast(mContext, "Engine not started yet", false);
+        }
+        return true;
+    }
+
+    public boolean serverSignOut() {
+        if (mEngine.isStarted()) {
+            if (mSipService.isRegistered()) {
+                mSipService.unRegister();
+            }
+        } else {
+            MessageUtils.toast(mContext, "Engine not started yet", false);
+        }
+        return true;
+    }
+
+    public boolean serverSignInOut(String userName, String password) {
+        if (mEngine.isStarted()) {
+            if (!mSipService.isRegistered()) {
+                serverSignIn(userName, password);
             } else {
                 // unregister (log out)
                 mSipService.unRegister();
@@ -160,7 +188,7 @@ public class DoubangoUtils {
         return false;
     }
 
-    public boolean makeVoiceCall(String phoneNumber, Pair<String, String> paramExtra) {
+    public boolean makeVoiceCall(String phoneNumber, Pair<String, String> paramExtra, boolean isInternalCall) {
         final String validUri = NgnUriUtils.makeValidSipUri(String.format("sip:%s@%s", phoneNumber, SIP_DOMAIN));
         if (validUri == null) {
             MessageUtils.toast(mContext, "failed to normalize sip uri '" + phoneNumber + "'", false);
@@ -171,6 +199,7 @@ public class DoubangoUtils {
         Intent i = new Intent();
         i.setClass(mContext, CallScreenActivity.class);
         i.putExtra(EXTRAT_SIP_SESSION_ID, avSession.getId());
+        i.putExtra(CONSTANTS.BUNDLE_EXTRA_SIP_IS_INTERNAL_CALL, isInternalCall);
         if (paramExtra != null)
             i.putExtra(paramExtra.first, paramExtra.second);
         mContext.startActivity(i);

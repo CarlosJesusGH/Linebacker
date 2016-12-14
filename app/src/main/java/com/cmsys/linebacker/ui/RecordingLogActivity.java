@@ -1,8 +1,10 @@
 package com.cmsys.linebacker.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -31,6 +33,8 @@ import com.cmsys.linebacker.adapter.RecordingAdapter;
 import com.cmsys.linebacker.bean.RecordingBean;
 import com.cmsys.linebacker.bean.RestMessageBean;
 import com.cmsys.linebacker.bean.UserBean;
+// CJG 20161203
+//import com.cmsys.linebacker.gcm.GcmRegistrationAsyncTask;
 import com.cmsys.linebacker.gcm.GcmRegistrationAsyncTask;
 import com.cmsys.linebacker.io.DataIO;
 import com.cmsys.linebacker.observer.PhoneContactsObserver;
@@ -38,6 +42,8 @@ import com.cmsys.linebacker.util.AppInfoUtils;
 import com.cmsys.linebacker.util.AppInitialSetupUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.ExceptionUtils;
+// CJG 20161203
+//import com.cmsys.linebacker.util.GcmUtils;
 import com.cmsys.linebacker.util.GcmUtils;
 import com.cmsys.linebacker.util.IntentUtils;
 import com.cmsys.linebacker.util.MessageUtils;
@@ -46,9 +52,10 @@ import com.cmsys.linebacker.util.RestfulUtils;
 import com.cmsys.linebacker.util.SharedPreferencesUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
 import com.cmsys.linebacker.util.ViewUtils;
+import com.cmsys.linebacker.voip_doubango.DoubangoUtils;
 import com.cmsys.linebacker.voip_doubango.SipDoubangoActivity;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
+//import com.facebook.FacebookSdk;
+//import com.facebook.appevents.AppEventsLogger;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -56,6 +63,8 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+
+import org.doubango.ngn.events.NgnRegistrationEventArgs;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,6 +89,7 @@ public class RecordingLogActivity extends AppCompatActivity
     private MenuItem mSearchAction;
     private Boolean isSearchOpened = false;
     private boolean isFiltered = false;
+    private DoubangoUtils mDoubango;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +97,8 @@ public class RecordingLogActivity extends AppCompatActivity
         // Initialize the SDK before executing any other operations,
         // especially, if you're using Facebook UI elements.
         // https://developers.facebook.com/docs/android/getting-started
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        IntentUtils.generateFacebookKeyHash(this);
+        //FacebookSdk.sdkInitialize(getApplicationContext());
+        //IntentUtils.generateFacebookKeyHash(this);
         //
         setContentView(R.layout.activity_recording_log);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -123,8 +133,9 @@ public class RecordingLogActivity extends AppCompatActivity
         // Register device on Google Cloud Messaging backend
         // Check device for Play Services APK. If check succeeds, proceed
         // with GCM registration.
-        if (true//GcmUtils.checkPlayServices(this)
+        if (GcmUtils.checkPlayServices(this)
                 && mUserId != null) {
+            // CJG 20161203 (7 lines)
             String regId = GcmUtils.getRegistrationId(this);
             if (regId.isEmpty()) {
                 Log.i(TAG, "Not registered with GCM.");
@@ -138,6 +149,41 @@ public class RecordingLogActivity extends AppCompatActivity
         // Register PhoneContactObserver
         PhoneContactsObserver contentObserver = new PhoneContactsObserver(this, mUserId);
         this.getApplicationContext().getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, contentObserver);
+    }
+
+    private void tryPbxAutoSignIn() {
+        mDoubango.serverSignIn(mUserBean.getAsteriskExtension(), mUserBean.getAsteriskExtensionPass());
+
+        // Subscribe for registration state changes
+        BroadcastReceiver mSipBroadCastRecv = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final String action = intent.getAction();
+                // Registration Event
+                if (NgnRegistrationEventArgs.ACTION_REGISTRATION_EVENT.equals(action)) {
+                    if (mDoubango.isSipServiceRegistered()) {
+                        MessageUtils.toast(getApplicationContext(), "PBX auto-login successful", true);
+                    } else {
+                        MessageUtils.toast(getApplicationContext(), "PBX service unregistered", true);
+                    }
+                }
+            }
+        };
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(NgnRegistrationEventArgs.ACTION_REGISTRATION_EVENT);
+        registerReceiver(mSipBroadCastRecv, intentFilter);
+        // Check again after 3 seconds
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mDoubango.isSipServiceRegistered()) {
+                    MessageUtils.toast(getApplicationContext(), "PBX +5secs check successful", true);
+                } else {
+                    MessageUtils.toast(getApplicationContext(), "PBX +5secs check unregistered", true);
+                }
+            }
+        }, 5000);
     }
 
     @Override
@@ -165,6 +211,7 @@ public class RecordingLogActivity extends AppCompatActivity
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         if (snapshot.exists()) {
+                            boolean exception = false;
                             try {
                                 mUserBean = (UserBean) snapshot.getValue(UserBean.class);
                                 ((TextView) navigationView.getHeaderView(0).findViewById(R.id.tvNavHeaderTitle))
@@ -173,11 +220,30 @@ public class RecordingLogActivity extends AppCompatActivity
                                         .setText(mUserBean.getPhoneNumber());
                                 ((TextView) navigationView.getHeaderView(0).findViewById(R.id.tvNavHeaderText2))
                                         .setText(mUserBean.getUserLevel() == 0 ? "Free Account" : "Premium Account");
+                                mUserBean.setKey(snapshot.getKey());
                                 SharedPreferencesUtils.putOrEditString(getApplicationContext(), getString(R.string.pref_key_voip_extension), mUserBean.getAsteriskExtension());
                                 SharedPreferencesUtils.putOrEditString(getApplicationContext(), getString(R.string.pref_key_voip_password), mUserBean.getAsteriskExtensionPass());
                                 SharedPreferencesUtils.putOrEditString(getApplicationContext(), getString(R.string.pref_key_voip_did), mUserBean.getAsteriskDid());
+                                // Try to auto signin
+                                tryPbxAutoSignIn();
                             } catch (Exception e) {
+                                exception = true;
                                 ExceptionUtils.displayExceptionMessage(getApplicationContext(), e);
+                            }
+                            if (exception == true || mUserBean.getEmail() == null) {
+                                final MessageUtils msg = new MessageUtils(RecordingLogActivity.this,"Problem on DB", "User exists in LinebackerServer but not in Firebase or is poorly constructed\nUserKey=" + mUserBean.getKey(), 0, false);
+                                msg.getBAccept().setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        UserAuthUtils.logUserOut(getApplicationContext());
+                                        SharedPreferencesUtils.removeAll(getApplicationContext());
+                                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                        startActivity(intent);
+                                        mUserId = mUserId; // TODO DELETE
+                                        msg.dismiss();
+                                    }
+                                });
+                                msg.show();
                             }
                         } else {
                             MessageUtils.toast(getApplicationContext(), "USER DATA IS NOT CREATED\n" +
@@ -211,6 +277,23 @@ public class RecordingLogActivity extends AppCompatActivity
                     getDataFromFirebase();
                 }
             }.execute();
+            // Try pbx auto sign-in
+            if (mDoubango == null)
+                mDoubango = new DoubangoUtils(this);
+            if(!mDoubango.Init()){
+                MessageUtils.toast(getApplicationContext(), "Problem initiating Doubango services", false);
+            } else{
+                // Starts the engine
+                if (!mDoubango.getEngine().isStarted()) {
+                    if (mDoubango.getEngine().start()) {
+                        MessageUtils.toast(getApplicationContext(), "Engine started", false);
+                        if(mUserBean != null && mUserBean.getAsteriskExtension() != null)
+                            tryPbxAutoSignIn();
+                    } else {
+                        MessageUtils.toast(getApplicationContext(), "Failed to start the engine", false);
+                    }
+                }
+            }
         } else{
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
@@ -221,14 +304,14 @@ public class RecordingLogActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         // Logs 'install' and 'app activate' App Events.
-        AppEventsLogger.activateApp(this);
+        //AppEventsLogger.activateApp(this);    // Has to do with facebook lib
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         // Logs 'app deactivate' App Event.
-        AppEventsLogger.deactivateApp(this);
+        //AppEventsLogger.deactivateApp(this);  // Has to do with facebook lib
     }
 
     @Override
@@ -390,9 +473,8 @@ public class RecordingLogActivity extends AppCompatActivity
             }
         }
         if (id == R.id.action_settings) {
-            //MessageUtils mu = new MessageUtils(this, "Settings", "Go to settings activity", 0, true);
-            //MessageUtils.toast(this, "Go to settings activity...", false);
             Intent intent = new Intent(this, SettingsActivity.class);
+            //Intent intent = new Intent(this, AudioRecordActivity.class);
             startActivity(intent);
             return true;
         }
@@ -440,6 +522,7 @@ public class RecordingLogActivity extends AppCompatActivity
                                         MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
                                     } else {
                                         //MessageUtils.toast(context, getString(R.string.upload_successful), false);
+                                        // Connection to web service, it must be performed in a new thread
                                         new Thread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -482,6 +565,12 @@ public class RecordingLogActivity extends AppCompatActivity
         if (id == R.id.action_logout) {
             UserAuthUtils.logUserOut(this);
             SharedPreferencesUtils.removeAll(this);
+            if(mDoubango.getEngine().isStarted()) {
+                if(mDoubango.isSipServiceRegistered())
+                    mDoubango.serverSignOut();
+                mDoubango.getEngine().stop();
+            }
+
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             //
@@ -505,11 +594,11 @@ public class RecordingLogActivity extends AppCompatActivity
             MessageUtils.notification(getApplicationContext(), "LINEBACKER Handled Call", "Incoming Number: 123456789", notificationId, null, actions, true);*/
             return true;
         }
-        if (id == R.id.action_registration_status) {
-            Intent intent = new Intent(this, SipDoubangoActivity.class);
-            startActivity(intent);
-            return true;
-        }
+//        if (id == R.id.action_registration_status) {
+//            Intent intent = new Intent(this, SipDoubangoActivity.class);
+//            startActivity(intent);
+//            return true;
+//        }
         if (id == R.id.action_about) {
             // Show version code and name
             Context c = getApplicationContext();
@@ -562,11 +651,12 @@ public class RecordingLogActivity extends AppCompatActivity
             String message = getString(R.string.message_share_whatsapp) + "\n"
                     + getString(R.string.message_share_url);
             IntentUtils.shareMessageToWhatsapp(this, message);
-        } else if (id == R.id.nav_share_facebook) {
-            IntentUtils.shareMessageToFacebook(this, getString(R.string.app_name),
-                    getString(R.string.message_share_facebook),
-                    getString(R.string.message_share_url));
         }
+        //else if (id == R.id.nav_share_facebook) {
+        //    IntentUtils.shareMessageToFacebook(this, getString(R.string.app_name),
+        //            getString(R.string.message_share_facebook),
+        //            getString(R.string.message_share_url));
+        //}
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

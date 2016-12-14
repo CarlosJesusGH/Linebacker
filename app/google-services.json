@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "936739935767",
+    "firebase_url": "https://linebacker.firebaseio.com",
+    "project_id": "firebase-linebacker",
+    "storage_bucket": "firebase-linebacker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:936739935767:android:575a5c1026d16ac4",
+        "android_client_info": {
+          "package_name": "com.cmsys.linebacker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "936739935767-b9t53qrg0l4qq6jdar1695969ekvu8l4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0QJKbvAaEzkIHVw0rBiQV8AuYOnCn08M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -27,6 +27,7 @@
 #-dontwarn org.w3c.dom.**
 #
 -keep class com.firebase.** { *; }
+-keep class gson.** { *; }
 -keepnames class com.fasterxml.jackson.** { *; }
 -keepnames class javax.servlet.** { *; }
 -keepnames class org.ietf.jgss.** { *; }
@@ -103,6 +104,8 @@
   public protected *;
 }
 
--keep class com.facebook.** {
-   *;
-}
+-dontwarn javax.xml.stream.**
+
+#-keep class com.facebook.** {
+#   *;
+#}

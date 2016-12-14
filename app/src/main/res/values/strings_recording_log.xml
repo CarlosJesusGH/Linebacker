@@ -10,6 +10,8 @@
     <string name="message_share_facebook">Hey, you should try using Linebacker</string>
     <string name="message_share_url">http://clouditapp.com/dev/linebacker/en/index.html#</string>
     <string name="message_loading_audios">Loading log</string>
+    <string name="log_remove_successful">Log removed successfully</string>
+    <string name="log_remove_error">Error while removing log</string>
 
     <!-- Separators -->
     <string name="separator_today">TODAY</string>

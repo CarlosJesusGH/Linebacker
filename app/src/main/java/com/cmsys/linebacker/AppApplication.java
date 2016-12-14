@@ -17,6 +17,9 @@ package com.cmsys.linebacker;
 //        import com.google.samples.apps.iosched.util.AnalyticsHelper;
 //
         import android.app.Application;
+        import android.content.Context;
+        import android.support.multidex.MultiDex;
+        import android.support.multidex.MultiDexApplication;
 //        import android.content.Intent;
 //
 //        import static com.google.samples.apps.iosched.util.LogUtils.LOGE;
@@ -29,7 +32,7 @@ package com.cmsys.linebacker;
  * or Service is used by the user or system. Analytics, dependency injection, and multi-dex
  * frameworks are in this very small set of use cases.
  */
-public class AppApplication extends Application {
+public class AppApplication extends Application {     // CJG 20161204
 
     private static final String TAG = makeLogTag(AppApplication.class);
 
@@ -58,5 +61,11 @@ public class AppApplication extends Application {
 //        } catch (Exception ignorable) {
 //            LOGE(TAG, "Unknown issue trying to install a new security provider.", ignorable);
 //        }
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 }

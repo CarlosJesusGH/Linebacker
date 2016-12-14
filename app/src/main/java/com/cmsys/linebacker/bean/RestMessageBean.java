@@ -16,6 +16,8 @@ public class RestMessageBean implements Serializable {
     Object resultObject;
 
     public Integer getErrorId() {
+        if (errorId == null)
+            return 0;
         return errorId;
     }
 

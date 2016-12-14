@@ -28,6 +28,9 @@ import com.cmsys.linebacker.util.RoundedImageView;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by cj on 27/11/15.
@@ -35,6 +38,7 @@ import java.util.Date;
 public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Filterable {
     private ArrayList<RecordingBean> mRecordings;
     private ArrayList<RecordingBean> mFilteredRecordings;
+    private Filter filter;
     private Integer mTodaySeparatorDisplayed = null;
     private Integer mYesterdaySeparatorDisplayed = null;
     private Integer mThisWeekSeparatorDisplayed = null;
@@ -49,6 +53,8 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Fil
 
     @Override
     public int getCount() {
+        if(mFilteredRecordings == null)
+            return  0;
         return mFilteredRecordings.size();
     }
 
@@ -181,57 +187,59 @@ public class RecordingAdapter extends ArrayAdapter<RecordingBean> implements Fil
 
     @Override
     public Filter getFilter() {
-        Filter filter = new Filter() {
-
-            @SuppressWarnings("unchecked")
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                //arrayListNames = (List<String>) results.values;
-                mFilteredRecordings = (ArrayList<RecordingBean>) results.values;
-                notifyDataSetChanged();
-            }
-
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-
-                FilterResults results = new FilterResults();
-                ArrayList<RecordingBean> FilteredArrayNames = new ArrayList<RecordingBean>();
-
-                // Perform your search here using the searchConstraint String.
-
-                //boolean onlyContacts = false, onlyInCase = false, onlyNotInCase = false;
-                //if()
-                String lowerConstraint = constraint.toString().toLowerCase();
-                for (RecordingBean iterator : mRecordings) {
-                    if(constraint.equals(CONSTANTS.FIREBASE_FIELD_ISCONTACT + "=true")
-                            && iterator.isContact()){
-                        FilteredArrayNames.add(iterator);
-                    } else if(constraint.equals(CONSTANTS.FIREBASE_FIELD_ISCONTACT + "=false")
-                            && !iterator.isContact()){
-                        FilteredArrayNames.add(iterator);
-                    } else if(constraint.equals(CONSTANTS.FIREBASE_FIELD_ISONCASE + "=true")
-                            && iterator.isOnCase()){
-                        FilteredArrayNames.add(iterator);
-                    } else if(constraint.equals(CONSTANTS.FIREBASE_FIELD_ISONCASE + "=false")
-                            && !iterator.isOnCase()){
-                        FilteredArrayNames.add(iterator);
-                    } else if (iterator.getPhoneNumber().toLowerCase().contains(lowerConstraint.toString())
-                            || iterator.getDatetimeString().contains(lowerConstraint.toString())){
-                        FilteredArrayNames.add(iterator);
-                    } else if (!TextUtils.isEmpty(iterator.getContactName())
-                            && iterator.getContactName().toLowerCase().contains(lowerConstraint.toString())) {
-                        FilteredArrayNames.add(iterator);
-                    }
-                }
-
-                results.count = FilteredArrayNames.size();
-                results.values = FilteredArrayNames;
-                Log.e("VALUES", results.values.toString());
-
-                return results;
-            }
-        };
-
+        if(filter == null)
+            filter = new RecordingBeanFilter();
         return filter;
+    }
+
+    private class RecordingBeanFilter extends Filter{
+        private FilterResults result2;
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            //arrayListNames = (List<String>) results.values;
+            mFilteredRecordings = (ArrayList<RecordingBean>) results.values;
+            if(mFilteredRecordings != null)
+                notifyDataSetChanged();
+        }
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+            this.result2 = new FilterResults();
+            ArrayList<RecordingBean> FilteredArrayNames = new ArrayList<RecordingBean>();
+            // Perform your search here using the searchConstraint String.
+            String lowerConstraint = constraint.toString().toLowerCase();
+            for (RecordingBean iterator : mRecordings) {
+                if(constraint.equals(CONSTANTS.FIREBASE_FIELD_ISCONTACT + "=true")
+                        && iterator.isContact()){
+                    FilteredArrayNames.add(iterator);
+                } else if(constraint.equals(CONSTANTS.FIREBASE_FIELD_ISCONTACT + "=false")
+                        && !iterator.isContact()){
+                    FilteredArrayNames.add(iterator);
+                } else if(constraint.equals(CONSTANTS.FIREBASE_FIELD_ISONCASE + "=true")
+                        && iterator.isOnCase()){
+                    FilteredArrayNames.add(iterator);
+                } else if(constraint.equals(CONSTANTS.FIREBASE_FIELD_ISONCASE + "=false")
+                        && !iterator.isOnCase()){
+                    FilteredArrayNames.add(iterator);
+                } else if (iterator.getPhoneNumber().toLowerCase().contains(lowerConstraint.toString())
+                        || iterator.getDatetimeString().contains(lowerConstraint.toString())){
+                    FilteredArrayNames.add(iterator);
+                } else if (!TextUtils.isEmpty(iterator.getContactName())
+                        && iterator.getContactName().toLowerCase().contains(lowerConstraint.toString())) {
+                    FilteredArrayNames.add(iterator);
+                }
+            }
+            results.count = FilteredArrayNames.size();
+//                results.values = FilteredArrayNames;
+            results.values = FilteredArrayNames;
+            result2.values = FilteredArrayNames.clone();
+            results.count = FilteredArrayNames.size();
+            Log.e("VALUES", results.values.toString());
+
+            return results;
+        }
     }
 }

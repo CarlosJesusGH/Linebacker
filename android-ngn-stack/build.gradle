@@ -20,6 +20,7 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
+        multiDexEnabled true
     }
 
     productFlavors {
@@ -60,4 +61,12 @@ android {
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.android.support:multidex:1.0.1'
 }

@@ -39,6 +39,7 @@ import android.widget.TextView;
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.PhoneCompanyBean;
 import com.cmsys.linebacker.bean.SettingsBean;
+import com.cmsys.linebacker.util.AudioUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.HashMapUtils;
 import com.cmsys.linebacker.util.MessageUtils;
@@ -331,15 +332,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_voicemail);
 
-            Preference buttonSignIn = (Preference) findPreference(getString(R.string.pref_key_setting_voicemail_signin));
-            buttonSignIn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    //code for what you want it to do
-                    MessageUtils.toast(preference.getContext(), "Not working yet", true);
-                    return true;
-                }
-            });
+//            Preference buttonSignIn = (Preference) findPreference(getString(R.string.pref_key_setting_voicemail_signin));
+//            buttonSignIn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+//                @Override
+//                public boolean onPreferenceClick(Preference preference) {
+//                    //code for what you want it to do
+//                    MessageUtils.toast(preference.getContext(), "Not working yet", true);
+//                    return true;
+//                }
+//            });
 
             Preference buttonSetup = (Preference) findPreference(getString(R.string.pref_key_setting_voicemail_setup));
             buttonSetup.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -349,7 +350,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     mDoubango = new DoubangoUtils(preference.getContext());
                     mDoubango.Init();
                     if (mDoubango.isSipServiceRegistered()) {
-                        mDoubango.makeVoiceCall("*97", new Pair<String, String>(CONSTANTS.BUNDLE_EXTRA_CALLING_ACTIVITY, SettingsActivity.class.getName()));
+                        mDoubango.makeVoiceCall("*97", new Pair<String, String>(CONSTANTS.BUNDLE_EXTRA_CALLING_ACTIVITY, SettingsActivity.class.getName()), true);
                     } else {
                         MessageUtils.toast(preference.getContext(), "Not signed in, go to registration status", true);
                     }
@@ -374,6 +375,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                             mu.dismiss();
                         }
                     });
+                    return true;
+                }
+            });
+
+            Preference buttonRecord = (Preference) findPreference(getString(R.string.pref_key_setting_voicemail_record));
+            buttonRecord.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(preference.getContext(), AudioRecordActivity.class);
+                    startActivity(intent);
                     return true;
                 }
             });

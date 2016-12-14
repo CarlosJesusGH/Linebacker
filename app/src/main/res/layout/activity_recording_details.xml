@@ -41,6 +41,12 @@
                     android:id="@+id/bPlayAudio"
                     android:layout_gravity="center_horizontal"
                     style="@style/custom_button"/>
+
+                <Button
+                    android:text="@string/button_remove_log"
+                    android:id="@+id/bRemoveLog"
+                    android:layout_gravity="center_horizontal"
+                    style="@style/custom_button"/>
             </LinearLayout>
         </LinearLayout>
 

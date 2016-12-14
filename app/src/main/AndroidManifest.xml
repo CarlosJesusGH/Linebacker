@@ -1,56 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.cmsys.linebacker">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.cmsys.linebacker">
 
-    <uses-sdk tools:overrideLibrary="org.doubango.ngn" />
+    <uses-sdk tools:overrideLibrary="org.doubango.ngn"/>
+    <!--CJG 201611-->
+    <!--<uses-library android:name="com.google.gson" />-->
 
     <!-- Features ______________________________________________________________________________ -->
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
     <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true" />
-    <!--<uses-feature-->
-    <!--android:name="android.hardware.sip.voip"-->
-    <!--android:required="true" />-->
-    <!--<uses-feature-->
-    <!--android:name="android.software.sip"-->
-    <!--android:required="true" />-->
+        android:required="true"/>
+    <!-- <uses-feature -->
+    <!-- android:name="android.hardware.sip.voip" -->
+    <!-- android:required="true" /> -->
+    <!-- <uses-feature -->
+    <!-- android:name="android.software.sip" -->
+    <!-- android:required="true" /> -->
     <uses-feature
         android:name="android.software.sip.voip"
-        android:required="false" />
+        android:required="false"/>
 
     <!-- Permissions ___________________________________________________________________________ -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <!--  -->
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <!--  -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.STORAGE" />
-    <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
-    <!--  -->
-    <!--<uses-permission android:name="android.permission.USE_SIP" />-->
-    <!--  -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.STORAGE"/>
 
-    <permission
-        android:name="com.example.gcm.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
+    <!--  -->
+    <!-- <uses-permission android:name="android.permission.USE_SIP" /> -->
+    <!--  -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <!-- <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" /> -->
+    <!-- <permission -->
+    <!-- android:name="com.example.gcm.permission.C2D_MESSAGE" -->
+    <!-- android:protectionLevel="signature" /> -->
+
+
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_PROFILE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
 
     <!-- _______________________________________________________________________________________ -->
     <!-- Application ___________________________________________________________________________ -->
@@ -59,50 +64,56 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light">
+        android:theme="@style/Theme.AppCompat.Light"
+        >
 
         <!-- Add Facebook metadata and activity _________________________________________________ -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:value="@string/facebook_app_id"/>
 
-        <activity
-            android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name"
-             />
+        <!--<activity-->
+            <!--android:name="com.facebook.FacebookActivity"-->
+            <!--android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"-->
+            <!--android:label="@string/app_name"/>-->
 
-        <provider
-            android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider1543906325933041"
-            android:exported="true" />
+        <!--<provider-->
+            <!--android:name="com.facebook.FacebookContentProvider"-->
+            <!--android:authorities="com.facebook.app.FacebookContentProvider1543906325933041"-->
+            <!--android:exported="true"/>-->
 
         <!-- Receivers __________________________________________________________________________ -->
-        <receiver android:name=".receiver.NotificationButtonReceiver" />
+        <receiver android:name=".receiver.NotificationButtonReceiver"/>
         <receiver android:name=".receiver.CallBlockReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.PHONE_STATE"/>
             </intent-filter>
         </receiver>
         <receiver
             android:name=".gcm.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.cmsys.linebacker" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+
+                <category android:name="com.cmsys.linebacker"/>
             </intent-filter>
         </receiver>
         <receiver android:name=".receiver.BootCompletedReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
             </intent-filter>
         </receiver>
 
         <!-- Services ___________________________________________________________________________ -->
-        <service android:name=".gcm.GcmIntentService" />
-        <service android:name=".service.PhoneStateService" />
-        <service android:name=".voip_doubango.NativeService" />
+        <service android:name=".gcm.GcmIntentService"/>
+        <service android:name=".service.PhoneStateService"/>
+        <service android:name=".voip_doubango.NativeService"/>
+
+        <!--Services for sending files-->
+        <service android:name=".util.upload_file.ServiceUpload" />
+        <!--<service android:name="util.project.ServiceTest" />-->
+        <service android:name=".util.upload_file.IntentServiceUpload" />
 
         <!-- Activities _________________________________________________________________________ -->
         <activity
@@ -110,27 +121,33 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <!-- _______________________________ -->
         <activity
             android:name=".ui.LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme"><!-- ATTENTION: This intent was auto-generated. Follow instructions at
-  https://g.co/AppIndexing/AndroidStudio to publish your URLs. -->
+            android:theme="@style/AppTheme">
+            <!--
+ ATTENTION: This intent was auto-generated. Follow instructions at
+  https://g.co/AppIndexing/AndroidStudio to publish your URLs.
+            -->
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!-- ATTENTION: This data URL was auto-generated. We recommend that you use the HTTP scheme.
-                  TODO: Change the host or pathPrefix as necessary. -->
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <!--
+                  ATTENTION: This data URL was auto-generated. We recommend that you use the HTTP scheme.
+                  TODO: Change the host or pathPrefix as necessary.
+                -->
                 <data
                     android:host="linebacker.privacyprotector.org"
                     android:pathPrefix="/api"
-                    android:scheme="http" />
+                    android:scheme="http"/>
             </intent-filter>
         </activity>
         <!-- _______________________________ -->
@@ -145,23 +162,31 @@
         <activity
             android:name=".ui.RecordingDetailsActivity"
             android:label="@string/title_activity_recording_details"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"/>
         <!-- _______________________________ -->
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"/>
         <!-- _______________________________ -->
-        <!--<activity android:name=".voip_webrtc.WebRtcActivity" />-->
+        <activity
+            android:name=".util.AudioRecordActivity"
+            android:label="@string/title_activity_record"
+            android:theme="@style/AppTheme"/>
         <!-- _______________________________ -->
-        <!--<activity android:name=".voip_webrtc.SampleRtcActivity" />-->
+        <!-- <activity android:name=".voip_webrtc.WebRtcActivity" /> -->
         <!-- _______________________________ -->
-        <!--<activity android:name=".voip_siprtc.SipRtcActivity" />-->
-        <!--<activity android:name=".voip_pjsip.SipActivity" />-->
+        <!-- <activity android:name=".voip_webrtc.SampleRtcActivity" /> -->
+        <!-- _______________________________ -->
+        <!-- <activity android:name=".voip_siprtc.SipRtcActivity" /> -->
+        <!-- <activity android:name=".voip_pjsip.SipActivity" /> -->
         <activity
             android:name=".voip_doubango.SipDoubangoActivity"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".voip_doubango.CallScreenActivity" />
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".voip_doubango.CallScreenActivity"/>
+        <activity android:name=".ui.AudioRecordActivity"
+                  android:label="@string/title_activity_record_voice_message"
+                  android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

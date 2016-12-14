@@ -73,6 +73,7 @@ public class CallScreenActivity extends AppCompatActivity {
     private BroadcastReceiver mSipBroadCastRecv;
     private boolean mShowInterstitial = false;
     private boolean mShowVmSetupOptions;
+    private boolean mIsInternalCall = false;
 
     // https://developers.google.com/admob/android/interstitial#creating_the_adlistener
     private InterstitialAd mInterstitialAd;
@@ -92,6 +93,7 @@ public class CallScreenActivity extends AppCompatActivity {
         if (extras != null) {
             mSession = NgnAVSession.getSession(extras.getLong(DoubangoUtils.EXTRAT_SIP_SESSION_ID));
             String callingActivity = extras.getString(CONSTANTS.BUNDLE_EXTRA_CALLING_ACTIVITY);
+            mIsInternalCall = extras.getBoolean(CONSTANTS.BUNDLE_EXTRA_SIP_IS_INTERNAL_CALL);
             if (callingActivity != null && callingActivity.equals(SettingsActivity.class.getName()))
                 mShowVmSetupOptions = true;
         }
@@ -428,10 +430,10 @@ public class CallScreenActivity extends AppCompatActivity {
 
         // CJG edited 20160623
         // Show Interstitial Ad
-        if (mInterstitialAd != null && mInterstitialAd.isLoaded() && mShowInterstitial) {
+        if (mInterstitialAd != null && mInterstitialAd.isLoaded() && mShowInterstitial && !mIsInternalCall) {
             mInterstitialAd.show();
         } else {
-            MessageUtils.toast(this, "INTERSTITIAL AD NOT READY", false);
+            MessageUtils.toast(this, "Interstitial not showed", false);
         }
 
         super.onDestroy();

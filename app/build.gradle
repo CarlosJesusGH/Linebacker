@@ -10,21 +10,28 @@ android {
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 3
-        versionName "1.0 Oct-28"
+        versionName "1.0 Dec-07"
         // Enabling multidex support. http://developer.android.com/tools/building/multidex.html
+        // CJG 20161202
         multiDexEnabled true
     }
 
-//    buildTypes {
-//        release {
+    // This is necessary for using Proguard
+    buildTypes {
+        debug {
+            minifyEnabled true
+            shrinkResources true
+//            useProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), //('proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+            multiDexKeepFile file('dex.keep')
+        }
+        release {
 //            minifyEnabled true
+            //shrinkResources true
 //            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//        }
-//        debug {
-//            minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//        }
-//    }
+        }
+    }
 
     packagingOptions {
         exclude 'META-INF/LICENSE'
@@ -32,9 +39,9 @@ android {
         exclude 'META-INF/NOTICE'
     }
     // Necessary for multidex support.
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
+//    dexOptions {
+//        javaMaxHeapSize "4g"
+//    }
 
     // Exclude packages from build
     sourceSets {
@@ -44,6 +51,9 @@ android {
                 exclude '**/voip_siprtc/*'
                 exclude '**/voip_pjsip/*'
                 exclude '**/doubango_test/*'
+                //CJG 20161203
+                //exclude '**/gcm/*'
+                //exclude '**/util/GcmUtils.java'
             }
         }
     }
@@ -54,50 +64,104 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
+
+
+
     // Firebase
     //compile 'com.firebase:firebase-client-android:2.3.1'
-    compile 'com.firebase:firebase-client-android:2.5.2+'
+    compile 'com.firebase:firebase-client-android:2.5.2'
     ///compile 'com.android.support:support-v4:23.1.1'
+
     // Google Services - GCM
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    //compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    compile 'com.google.android.gms:play-services-gcm:10.0.1'
     compile project(path: ':linebacker-backend', configuration: 'android-endpoints')
+    // CJG 20161203
+
+    // Gson Library
+    // CJG 20161203
+    ///compile 'com.google.code.gson:gson:2.2.4'
+    //compile files('libs/gson-2.6.2.jar')
+    //compile 'com.google.code.gson:gson:2.4'
+    // NOT FOR GRADLE (maybe dex.keep) provided 'com.google.code.gson:gson:2.2.4'
+    compile 'com.google.code.gson:gson:2.3.1'
+
+
+
     // Facebook SDK
-    compile 'com.facebook.android:facebook-android-sdk:4.+'
+
+    ///compile 'com.facebook.android:facebook-android-sdk:4.9.0'
+
     // Compile Doubango library project for SIP voip communication
+
     // Adding <uses-sdk tools:overrideLibrary="org.doubango.ngn" /> to app manifest might be necessary
     compile project(':android-ngn-stack')
-    // Gson Library
-    compile 'com.google.code.gson:gson:2.2.4'
+
+
     // Google Play Services Ads
-    compile 'com.google.android.gms:play-services-ads:8.4.0'
+    //compile 'com.google.android.gms:play-services-ads:8.4.0'
+    compile 'com.google.android.gms:play-services-ads:10.0.1'
     // Tool for dex counting
+
     //compile 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.4.4'
 
     //----------------------------------------------------------------------------
+
     // TESTED not useful libraries
 
     // WebRTC
+
     // Check WebRTC versions in here -> http://mvnrepository.com/artifact/io.pristine/libjingle
+
     //compile 'io.pristine:libjingle:11139@aar'     // last version today 20150131
+
     //compile 'io.pristine:libjingle:8871@aar'      // used on AndroidRTC sample app
+
     //*compile 'io.pristine:libjingle:9127@aar'        // library version on WebRTC tutorial
 
     // Socket.io
+
     //compile 'com.github.nkzawa:socket.io-client:0.4.2'
-//    compile('io.socket:socket.io-client:0.6.3') {
-//        exclude group: 'org.json', module: 'json'
-//    }
+
+    //    compile('io.socket:socket.io-client:0.6.3') {
+
+    //        exclude group: 'org.json', module: 'json'
+
+    //    }
 
     // Respoke SDK for Android (Digium SDK for Android+Asterisk Development)
+
     // https://www.digium.com/company/news/digium-releases-respoke-ios-and-android-sdks-webrtc-and-messaging
+
     // https://www.respoke.io/      -       https://github.com/respoke/respoke-sdk-android
+
     //compile 'com.digium.respoke:respoke-sdk:1.+'
 
     // Avoid using multidex if possible
+
     // Enabling multidex support. http://developer.android.com/tools/building/multidex.html
-    //compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:multidex:1.0.1'
 }
+
+// Tool for dex counting
+buildscript {
+    repositories {
+        mavenCentral() // or jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.google.gms:google-services:3.0.0'
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1'
+    }
+}
+
+// make sure this line comes *after* you apply the Android plugin
+apply plugin: 'com.getkeepsafe.dexcount'
+//apply plugin: 'com.google.gms.google-services'

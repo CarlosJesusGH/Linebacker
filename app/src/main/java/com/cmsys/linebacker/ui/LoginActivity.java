@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -53,6 +54,7 @@ import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.util.AppInfoUtils;
 import com.cmsys.linebacker.util.AppLinkIndexing;
 import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.CallLogUtils;
 import com.cmsys.linebacker.util.CheckInputDataUtils;
 import com.cmsys.linebacker.util.ExceptionUtils;
 import com.cmsys.linebacker.util.MessageUtils;
@@ -68,13 +70,15 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 
+
 import static android.Manifest.permission.READ_CONTACTS;
+import static com.cmsys.linebacker.util.LogUtils.makeLogTag;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
-
+    private static final String TAG = makeLogTag(LoginActivity.class);
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -346,11 +350,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 editTextList.add(etFirstName);
                 editTextList.add(etLastName);
                 editTextList.add(etPhoneNumber);
-                editTextList.add(etPhoneNumber2);
+                //editTextList.add(etPhoneNumber2);
                 editTextList.add(etZipCode);
                 editTextList.add(etCity);
-                editTextList.add(etAddress);
-                editTextList.add(etBirthday);
+                //editTextList.add(etAddress);
+                //editTextList.add(etBirthday);
                 //editText                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              List.add(etEmail); editTextList.add(etPassword); editTextList.add(etRepeatPassword); //editTextList.add(etState);
                 //CheckInputDataUtils.fillAllFieldsSampleData(editTextList);
                 // Check if text is filled
@@ -370,10 +374,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             postDataParams.put("city", etCity.getText().toString());
                             postDataParams.put("first_name", etFirstName.getText().toString());
                             postDataParams.put("last_name", etLastName.getText().toString());
-                            postDataParams.put("address", etAddress.getText().toString());
-                            postDataParams.put("birthday", etBirthday.getText().toString());
+                            //postDataParams.put("address", etAddress.getText().toString());
+                            //postDataParams.put("birthday", etBirthday.getText().toString());
                             postDataParams.put("phone_number", etPhoneNumber.getText().toString());
-                            postDataParams.put("second_phone", etPhoneNumber2.getText().toString());
+                            //postDataParams.put("second_phone", etPhoneNumber2.getText().toString());
                         }
 
                         @Override
@@ -961,9 +965,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         } else if (loginMsg != null) {
                             if (loginMsg.getErrorId() == UserAuthUtils.ERROR_NOT_PBX_ACCOUNT) {
                                 MessageUtils.toast(getApplicationContext(), getString(R.string.error_should_create_pbx_account), true);
-                                RestResultLoginBean resultData = new Gson().fromJson(loginMsg.getResultObject().toString(), RestResultLoginBean.class);
-                                if (resultData.getId() != null && !resultData.getId().equals(""))
-                                    attemptCreatePbxAccount(resultData.getId());
+                                if(loginMsg.getResultObject() != null) {
+                                    RestResultLoginBean resultData = new Gson().fromJson(loginMsg.getResultObject().toString(), RestResultLoginBean.class);
+                                    if (resultData.getId() != null && !resultData.getId().equals(""))
+                                        attemptCreatePbxAccount(resultData.getId());
+                                }
                             } else
                                 MessageUtils.toast(mContext, loginMsg.getErrorMessage(), true);
                         } else {

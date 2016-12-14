@@ -13,6 +13,7 @@ import android.util.Log;
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.ui.RecordingLogActivity;
 import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.CallLogUtils;
 import com.cmsys.linebacker.util.LogUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneCallUtils;
@@ -86,6 +87,11 @@ public class CallBlockReceiver extends BroadcastReceiver {
             if (mPhoneNumber == null)
                 mPhoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
             boolean phoneNumberExists = PhoneContactUtils.contactPhoneExists(context, mPhoneNumber);
+            if (!phoneNumberExists) {
+                phoneNumberExists = CallLogUtils.existInOutgoingCalls(context, mPhoneNumber);
+                if(phoneNumberExists)
+                    MessageUtils.toast(context, "Number not registered but exists in outgoing call log", true);
+            }
             // Check if blockCalls is enabled
             boolean blockCalls = SharedPreferencesUtils.getBoolean(context, context.getString(R.string.pref_key_setting_block_calls), true);
             MessageUtils.toast(context, mPhoneNumber + "\nPhone Number " + (phoneNumberExists ? "" : "DOESN'T ")
@@ -125,10 +131,9 @@ public class CallBlockReceiver extends BroadcastReceiver {
                 //
                 if (mEngine.isStarted())
                     if (mSipService.isRegistered()) {
-                        if (mSipService.unRegister())
-                            //MessageUtils.notification(context, "Unregistered: Linebacker", DateUtils.getDateTimeString(System.currentTimeMillis()), (int) System.currentTimeMillis(), null, null, false, null, true);
-                            //Log.i(TAG, "Sip session unregister successful");
-                            MessageUtils.toast(context, "Sip session unregister successful", false);
+//                        if (mSipService.unRegister())
+//                            MessageUtils.toast(context, "Sip session unregister successful", false);
+                        MessageUtils.toast(context, "Sip session keep alive", false);
                     }
             }
             // Un-mute incoming calls

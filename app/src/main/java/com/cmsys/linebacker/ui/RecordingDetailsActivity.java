@@ -9,9 +9,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,11 +21,14 @@ import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.CaseBean;
 import com.cmsys.linebacker.bean.LogBean;
 import com.cmsys.linebacker.bean.RecordingBean;
+import com.cmsys.linebacker.bean.RestMessageBean;
 import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.util.AudioUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.ExceptionUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneCallUtils;
+import com.cmsys.linebacker.util.RestfulUtils;
 import com.cmsys.linebacker.util.UserAuthUtils;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -41,7 +42,7 @@ public class RecordingDetailsActivity extends AppCompatActivity {
     private LinearLayout llRecordingDetails;
     private RecordingBean mRecordingBean;
     private UserBean mUserBean;
-    private Button bReport, bPlay;
+    private Button bReport, bPlay, bRemove;
     private String mUserId;
 
     @Override
@@ -71,6 +72,7 @@ public class RecordingDetailsActivity extends AppCompatActivity {
         llRecordingDetails = (LinearLayout) findViewById(R.id.llRecordingDetails);
         bReport = (Button) findViewById(R.id.bReport);
         bPlay = (Button) findViewById(R.id.bPlayAudio);
+        bRemove = (Button) findViewById(R.id.bRemoveLog);
 
         fillRecordingData();
 
@@ -195,6 +197,64 @@ public class RecordingDetailsActivity extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+
+        bRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final MessageUtils mu = new MessageUtils(RecordingDetailsActivity.this, getString(R.string.action_remove_log), getString(R.string.are_you_sure), 0, false);
+                mu.setOnClickListenerYes(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mu.getProgressBar().setVisibility(View.VISIBLE);
+                        mu.getBYes().setVisibility(View.GONE);
+                        mu.getBNo().setVisibility(View.GONE);
+                        // Connection to web service, it must be performed in a new thread
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                final RestMessageBean restMessageBean;
+                                String toastMsg = "";
+                                try {
+                                    restMessageBean = RestfulUtils.readRestfulAndParseToObject(CONSTANTS.SYNC_WS_ASTERISk_REMOVE_LOG + mRecordingBean.getDatetimeLong() + "/" + UserAuthUtils.getUserId(context), RestMessageBean.class);
+                                    if (restMessageBean != null && restMessageBean.getErrorId() == 0) {
+                                        toastMsg = getString(R.string.log_remove_successful);
+                                        mu.cancel();
+                                        finish();
+                                    } else {
+                                        if (restMessageBean.getErrorMessage() != null && !restMessageBean.getErrorMessage().equals(""))
+                                            toastMsg = restMessageBean.getErrorMessage();
+                                        else
+                                            toastMsg = getString(R.string.log_remove_error);
+                                    }
+
+                                } catch (Exception e) {
+                                    ExceptionUtils.printExceptionToFile(e);
+                                    ExceptionUtils.displayExceptionMessage(context, e);
+                                }
+                                final String finalToastMsg = toastMsg;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!finalToastMsg.equals(""))
+                                            MessageUtils.toast(context, finalToastMsg, false);
+                                        mu.getBYes().setVisibility(View.VISIBLE);
+                                        mu.getBNo().setVisibility(View.VISIBLE);
+                                        mu.getProgressBar().setVisibility(View.GONE);
+                                    }
+                                });
+                            }
+                        }).start();
+                    }
+                });
+                mu.setOnClickListenerNo(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mu.cancel();
+                    }
+                });
+                mu.show();
             }
         });
     }

@@ -1,9 +1,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
-        android:title="@string/pref_title_setting_voicemail_signin"
-        android:key="@string/pref_key_setting_voicemail_signin"
-        android:summary="@string/pref_description_setting_voicemail_signin" />
+    <!--<Preference-->
+        <!--android:title="@string/pref_title_setting_voicemail_signin"-->
+        <!--android:key="@string/pref_key_setting_voicemail_signin"-->
+        <!--android:summary="@string/pref_description_setting_voicemail_signin" />-->
 
     <Preference
         android:title="@string/pref_title_setting_voicemail_setup"
@@ -19,5 +19,10 @@
         android:title="@string/pref_title_setting_voicemail_confirm"
         android:key="@string/pref_key_setting_voicemail_confirm"
         android:summary="@string/pref_description_setting_voicemail_confirm" />
+
+    <Preference
+        android:title="@string/pref_title_setting_voicemail_record"
+        android:key="@string/pref_key_setting_voicemail_record"
+        android:summary="@string/pref_description_setting_voicemail_record" />
 
 </PreferenceScreen>

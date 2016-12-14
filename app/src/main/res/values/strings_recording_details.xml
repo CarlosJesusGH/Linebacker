@@ -9,6 +9,7 @@
     <string name="button_report">REPORT</string>
     <string name="button_show_log">SHOW CASE DETAILS</string>
     <string name="button_play_audio">PLAY AUDIO</string>
+    <string name="button_remove_log">REMOVE LOG</string>
     <string name="report_this_event">Report this event</string>
     <string name="case_status">Case Status:</string>
     <string name="type_address_here">Type address here</string>
@@ -16,4 +17,13 @@
     <string name="add_new_address_message">Please insert an address. This is necessary to legally report a case.</string>
     <string name="new_address_added">New address added</string>
     <string name="error_address_empty">Address field can\'t be empty</string>
+    <string name="button_record_greeting_start">Record Greeting</string>
+    <string name="button_record_greeting_stop">End Recording</string>
+    <string name="button_play_greeting_start">Play Greeting</string>
+    <string name="button_play_greeting_stop">End</string>
+    <string name="button_play_audio_start">Start playing</string>
+    <string name="button_play_audio_stop">Stop playing</string>
+    <string name="button_recorded_audio_activate">Activate audio</string>
+    <string name="button_recorded_audio_activating">Activate audio</string>
+    <string name="button_recorded_audio_activated">Activate complete</string>
 </resources>

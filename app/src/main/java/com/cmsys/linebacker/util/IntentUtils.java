@@ -11,8 +11,8 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.cmsys.linebacker.R;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
+//import com.facebook.share.model.ShareLinkContent;
+//import com.facebook.share.widget.ShareDialog;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -38,20 +38,20 @@ public class IntentUtils {
         return app_installed;
     }
 
-    public static void generateFacebookKeyHash(Context context) {
-        try {
-            PackageInfo info = context.getPackageManager().getPackageInfo(PACKAGE_LINEBACKER, PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-    }
+    //public static void generateFacebookKeyHash(Context context) {
+    //    try {
+    //        PackageInfo info = context.getPackageManager().getPackageInfo(PACKAGE_LINEBACKER, PackageManager.GET_SIGNATURES);
+    //        for (Signature signature : info.signatures) {
+    //            MessageDigest md = MessageDigest.getInstance("SHA");
+    //            md.update(signature.toByteArray());
+    //            Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+    //        }
+    //    } catch (PackageManager.NameNotFoundException e) {
+    //        e.printStackTrace();
+    //    } catch (NoSuchAlgorithmException e) {
+    //        e.printStackTrace();
+    //    }
+    //}
 
     public static void shareMessageToApp(Context context, String message, String packageApp){
         Intent sendIntent = new Intent();
@@ -69,15 +69,15 @@ public class IntentUtils {
         shareMessageToApp(context, message, PACKAGE_WHATSAPP);
     }
 
-    public static void shareMessageToFacebook(Activity activity, String title, String description, String url){
-        ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentTitle(title)
-                .setContentDescription(description)
-                .setContentUrl(Uri.parse(url))
-                //.setImageUrl(Uri.parse("android.resource://" + PACKAGE_LINEBACKER + " / " + R.mipmap.ic_launcher))    // Didn't work
-                .setImageUrl(Uri.parse("https://dl.dropboxusercontent.com/u/18586179/Linebacker/ic_linebacker.png"))
-                .build();
-        ShareDialog shareDialog = new ShareDialog(activity);
-        shareDialog.show(content);
-    }
+    //public static void shareMessageToFacebook(Activity activity, String title, String description, String url){
+    //    ShareLinkContent content = new ShareLinkContent.Builder()
+    //            .setContentTitle(title)
+    //            .setContentDescription(description)
+    //            .setContentUrl(Uri.parse(url))
+    //            //.setImageUrl(Uri.parse("android.resource://" + PACKAGE_LINEBACKER + " / " + R.mipmap.ic_launcher))    // Didn't work
+    //            .setImageUrl(Uri.parse("https://dl.dropboxusercontent.com/u/18586179/Linebacker/ic_linebacker.png"))
+    //            .build();
+    //    ShareDialog shareDialog = new ShareDialog(activity);
+    //    shareDialog.show(content);
+    //}
 }

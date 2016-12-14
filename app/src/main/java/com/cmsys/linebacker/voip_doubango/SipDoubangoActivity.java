@@ -145,7 +145,7 @@ public class SipDoubangoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mDoubango.isSipServiceRegistered() && !mEtCall.getText().toString().equals("")) {
-                    mDoubango.makeVoiceCall(mEtCall.getText().toString(), null);
+                    mDoubango.makeVoiceCall(mEtCall.getText().toString(), null, false);
                 } else {
                     MessageUtils.toast(getApplicationContext(), "Not signed in or invalid number", true);
                 }

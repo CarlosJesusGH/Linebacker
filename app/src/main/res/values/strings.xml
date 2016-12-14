@@ -69,6 +69,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="title_activity_recording_details">RECORDING DETAILS</string>
     <string name="title_activity_recording_log">CALL LOG</string>
+    <string name="title_activity_record_voice_message">RECORD VOICE MESSAGE</string>
     <string name="login_successful">Login Successful</string>
     <string name="login_error">Login Error</string>
 
@@ -78,6 +79,10 @@
     <string name="action_home">Go Home</string>
     <string name="title_activity_create_case">CASE DETAILS</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_record">Record Message</string>
+
+    <!-- String related to Recording Details-->
+    <string name="action_remove_log">Remove this log</string>
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>

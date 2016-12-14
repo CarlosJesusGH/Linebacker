@@ -34,6 +34,7 @@ public class CONSTANTS {
     public static final String BUNDLE_EXTRA_USER = "user";
     public static final String BUNDLE_EXTRA_RECORDING = "recording";
     public final static String BUNDLE_EXTRA_CALLING_ACTIVITY = "calling_activity";
+    public final static String BUNDLE_EXTRA_SIP_IS_INTERNAL_CALL = "isInternalCall";
 
     //---WS Sync-----------------
     public static String SYNC_WS_IP = "cj-website.ddns.net";
@@ -48,6 +49,8 @@ public class CONSTANTS {
     public static String SYNC_WS_LOGIN_API = "http://linebacker.privacyprotector.org/api/login";
     public static String SYNC_WS_REGISTER_API = "http://linebacker.privacyprotector.org/api/register";
     public static String SYNC_WS_PBX_ACCOUNT_API = "http://linebacker.privacyprotector.org/api/account";
+    public static String SYNC_WS_ASTERISk_REMOVE_LOG = "http://linebacker.privacyprotector.org/api/deleteAudio/";
+    public static String SYNC_WS_UPLOAD_AUDIO_API = "http://linebacker.privacyprotector.org/api/voicemail";
 
     //---Firebase------------------
     public static String FIREBASE_APP_NAME = "linebacker";
@@ -109,6 +112,7 @@ public class CONSTANTS {
     public static String PATH_ROOT_APP_FOLDER = Environment.getExternalStorageDirectory() + File.separator + FOLDER_NAME_ROOT + File.separator;
     public static String PDF_FILE_NAME = "pdf.pdf";
     public static String LOG_FILE_NAME = "log.txt";
+    public static String AUDIO_GREETING_FILE_NAME = "recordedAudio.mp3";
 
     //-----------------------------
 

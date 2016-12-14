@@ -115,7 +115,7 @@ public class RecordingBean implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return (String) datetime;
+        return (String) datetime.toString();
     }
 
     public String getDateString() {
