@@ -37,7 +37,8 @@ public class UtilUploader {
 //        final String serverUrlString = "http://cj-website.ddns.net:8080/HelloWorld/jaxrs/CarrentalUploadPdf/upload";
 //        final String serverUrlString = CONSTANTS.SYNC_WS_COMMON_PATH + CONSTANTS.SYNC_WS_METHOD_UPLOAD;
         final String serverUrlString = pUrl;
-        final String fileNameOnServer = DateUtils.getDateTimeString(DateUtils.getNow()).replace("-","").replace(":","").replace(" ","_") + "_" + CONSTANTS.PDF_FILE_NAME;
+        //final String fileNameOnServer = DateUtils.getDateTimeString(DateUtils.getNow()).replace("-","").replace(":","").replace(" ","_") + "_" + CONSTANTS.AUDIO_FILE_NAME;
+        final String fileNameOnServer = CONSTANTS.AUDIO_FILE_NAME;
         //final String fileToUploadPath = CONSTANTS.PATH_ROOT_APP_FOLDER + File.separator + CONSTANTS.FOLDER_NAME_DOCUMENTS + File.separator + CONSTANTS.PDF_FILE_NAME;
         final String fileToUploadPath = filePath;
         final String paramNameString = "file";

@@ -40,7 +40,7 @@ public class AudioRecordActivity extends AppCompatActivity {
         cbSendFile.setFilePath(CONSTANTS.PATH_ROOT_APP_FOLDER + CONSTANTS.FOLDER_NAME_AUDIOS + File.separator + CONSTANTS.AUDIO_GREETING_FILE_NAME);
         cbSendFile.setServerUrl(CONSTANTS.SYNC_WS_UPLOAD_AUDIO_API);
         cbSendFile.addPostParams("id", UserAuthUtils.getUserId(getApplicationContext()));
-        cbSendFile.addPostParams("name", "greet");
+        cbSendFile.addPostParams("name", "unavail");
     }
 
     @Override

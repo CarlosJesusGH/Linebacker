@@ -51,6 +51,7 @@ public class CONSTANTS {
     public static String SYNC_WS_PBX_ACCOUNT_API = "http://linebacker.privacyprotector.org/api/account";
     public static String SYNC_WS_ASTERISk_REMOVE_LOG = "http://linebacker.privacyprotector.org/api/deleteAudio/";
     public static String SYNC_WS_UPLOAD_AUDIO_API = "http://linebacker.privacyprotector.org/api/voicemail";
+    public static String SYNC_WS_REPORT_CASE_API = "http://linebacker.privacyprotector.org/api/filingacase";
 
     //---Firebase------------------
     public static String FIREBASE_APP_NAME = "linebacker";
@@ -112,6 +113,7 @@ public class CONSTANTS {
     public static String PATH_ROOT_APP_FOLDER = Environment.getExternalStorageDirectory() + File.separator + FOLDER_NAME_ROOT + File.separator;
     public static String PDF_FILE_NAME = "pdf.pdf";
     public static String LOG_FILE_NAME = "log.txt";
+    public static String AUDIO_FILE_NAME = "unavail.mp3";
     public static String AUDIO_GREETING_FILE_NAME = "recordedAudio.mp3";
 
     //-----------------------------

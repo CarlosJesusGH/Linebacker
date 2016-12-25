@@ -1,10 +1,12 @@
 package com.cmsys.linebacker.util.upload_file;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -22,14 +24,20 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.cmsys.linebacker.bean.RestMessageBean;
+import com.cmsys.linebacker.util.ExceptionUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 
 import com.cmsys.linebacker.util.CONSTANTS;
+import com.google.gson.Gson;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by CarlosJesus on 2014-08-20.
@@ -78,6 +86,8 @@ public class ServiceUpload extends Service {
     private UploadNotificationConfig notificationConfig;
     private int lastPublishedProgress;
     private boolean isErrorFound;
+    private RestMessageBean restMessageBean;
+    private boolean showNotification = false;
 
     /**
      * Utility method that creates the intent that starts the background
@@ -204,7 +214,8 @@ public class ServiceUpload extends Service {
                     lastPublishedProgress = 0;
                     wakeLock.acquire();
                     try {
-                        createNotification();
+                        if (showNotification)
+                            createNotification();
                         handleFileUpload(uploadId, url, method, files, headers, parameters);
                     } catch (Exception exception) {
                         broadcastError(uploadId, exception);
@@ -221,11 +232,24 @@ public class ServiceUpload extends Service {
         protected void onPostExecute(Void aVoid) {
             Log.i(TAG, "ServiceText - onPostExecute");
             super.onPostExecute(aVoid);
-            if(!isErrorFound) {
-                MessageUtils.toast(getApplicationContext(), "File uploaded successfully", true);
-            }else{
-                MessageUtils.toast(getApplicationContext(), "Error while uploading file", true);
-            }
+
+            if (restMessageBean != null && restMessageBean.getErrorId() == 0) {
+                if (!TextUtils.isEmpty(restMessageBean.getErrorMessage()))
+                    MessageUtils.toast(getApplicationContext(), restMessageBean.getErrorMessage(), true);
+                else {
+                    MessageUtils.toast(getApplicationContext(),  "File uploaded successfully", false);
+                }
+            } else if (restMessageBean != null) {
+                if (!TextUtils.isEmpty(restMessageBean.getErrorMessage()))
+                    MessageUtils.toast(getApplicationContext(), restMessageBean.getErrorMessage(), false);
+            } else
+                MessageUtils.toast(getApplicationContext(), "Error while uploading file", false);
+
+            //if(!isErrorFound) {
+            //    MessageUtils.toast(getApplicationContext(), "File uploaded successfully", true);
+            //}else{
+            //    MessageUtils.toast(getApplicationContext(), "Error while uploading file", true);
+            //}
         }
     }
 
@@ -261,6 +285,24 @@ public class ServiceUpload extends Service {
             requestStream.write(trailer, 0, trailer.length);
             final int serverResponseCode = conn.getResponseCode();
             final String serverResponseMessage = conn.getResponseMessage();
+
+            String response = "";
+            if (serverResponseCode == HttpsURLConnection.HTTP_OK) {
+                String line;
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line = br.readLine()) != null) {
+                    response += line;
+                }
+            } else {
+                response = "";
+            }
+            // Try to parse it as RestMessageBean object
+            try {
+                restMessageBean = new Gson().fromJson(response, RestMessageBean.class);
+            } catch (Exception e) {
+                ExceptionUtils.printExceptionToFile(e);
+                throw e;
+            }
 
             broadcastCompleted(uploadId, serverResponseCode, serverResponseMessage);
 
@@ -427,7 +469,8 @@ public class ServiceUpload extends Service {
         if (progress <= lastPublishedProgress) return;
         lastPublishedProgress = progress;
 
-        updateNotificationProgress(progress);
+        if (showNotification)
+            updateNotificationProgress(progress);
 
         final Intent intent = new Intent(BROADCAST_ACTION);
         intent.putExtra(UPLOAD_ID, uploadId);
@@ -446,9 +489,11 @@ public class ServiceUpload extends Service {
         }
 
         if (responseCode >= 200 && responseCode <= 299)
-            updateNotificationCompleted();
+            if (showNotification)
+                updateNotificationCompleted();
         else
-            updateNotificationError();
+            if (showNotification)
+                updateNotificationError();
 
         final Intent intent = new Intent(BROADCAST_ACTION);
         intent.putExtra(UPLOAD_ID, uploadId);
@@ -460,7 +505,8 @@ public class ServiceUpload extends Service {
 
     private void broadcastError(final String uploadId, final Exception exception) {
 
-        updateNotificationError();
+        if (showNotification)
+            updateNotificationError();
 
         isErrorFound = true;
 

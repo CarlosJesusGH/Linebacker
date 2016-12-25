@@ -8,30 +8,30 @@ android {
     defaultConfig {
         applicationId "com.cmsys.linebacker"
         minSdkVersion 16
-        targetSdkVersion 22
-        versionCode 3
-        versionName "1.0 Dec-07"
+        targetSdkVersion 23
+        versionCode 4
+        versionName "1.0 Dec-24"
         // Enabling multidex support. http://developer.android.com/tools/building/multidex.html
         // CJG 20161202
-        multiDexEnabled true
+//        multiDexEnabled true
     }
 
     // This is necessary for using Proguard
-    buildTypes {
-        debug {
-            minifyEnabled true
-            shrinkResources true
-//            useProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), //('proguard-android-optimize.txt'),
-                    'proguard-rules.pro'
-            multiDexKeepFile file('dex.keep')
-        }
-        release {
+//    buildTypes {
+//        debug {
 //            minifyEnabled true
-            //shrinkResources true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+//            shrinkResources true
+////            useProguard false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), //('proguard-android-optimize.txt'),
+//                    'proguard-rules.pro'
+//            multiDexKeepFile file('dex.keep')
+//        }
+//        release {
+////            minifyEnabled true
+//            //shrinkResources true
+////            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+//    }
 
     packagingOptions {
         exclude 'META-INF/LICENSE'
@@ -90,7 +90,7 @@ dependencies {
     //compile files('libs/gson-2.6.2.jar')
     //compile 'com.google.code.gson:gson:2.4'
     // NOT FOR GRADLE (maybe dex.keep) provided 'com.google.code.gson:gson:2.2.4'
-    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'com.google.code.gson:gson:2.4'
 
 
 
@@ -146,22 +146,22 @@ dependencies {
     // Avoid using multidex if possible
 
     // Enabling multidex support. http://developer.android.com/tools/building/multidex.html
-    compile 'com.android.support:multidex:1.0.1'
+//    compile 'com.android.support:multidex:1.0.1'
 }
 
 // Tool for dex counting
-buildscript {
-    repositories {
-        mavenCentral() // or jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
-        classpath 'com.google.gms:google-services:3.0.0'
-        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1'
-    }
-}
+//buildscript {
+//    repositories {
+//        mavenCentral() // or jcenter()
+//    }
+//
+//    dependencies {
+//        classpath 'com.android.tools.build:gradle:2.2.3'
+//        classpath 'com.google.gms:google-services:3.0.0'
+//        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1'
+//    }
+//}
 
 // make sure this line comes *after* you apply the Android plugin
-apply plugin: 'com.getkeepsafe.dexcount'
+//apply plugin: 'com.getkeepsafe.dexcount'
 //apply plugin: 'com.google.gms.google-services'

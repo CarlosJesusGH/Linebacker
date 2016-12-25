@@ -4,16 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.URLSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,7 +28,9 @@ import com.cmsys.linebacker.bean.RestMessageBean;
 import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.util.AudioUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
+import com.cmsys.linebacker.util.CheckInputDataUtils;
 import com.cmsys.linebacker.util.ExceptionUtils;
+import com.cmsys.linebacker.util.LogUtils;
 import com.cmsys.linebacker.util.MessageUtils;
 import com.cmsys.linebacker.util.PhoneCallUtils;
 import com.cmsys.linebacker.util.RestfulUtils;
@@ -35,10 +40,13 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ServerValue;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RecordingDetailsActivity extends AppCompatActivity {
+    private static final String TAG = LogUtils.makeLogTag(LoginActivity.class);
     private LinearLayout llRecordingDetails;
     private RecordingBean mRecordingBean;
     private UserBean mUserBean;
@@ -79,100 +87,197 @@ public class RecordingDetailsActivity extends AppCompatActivity {
         if (mRecordingBean.isContact())
             bReport.setVisibility(View.GONE);
 
-        if (mRecordingBean.isOnCase())
+        if (mRecordingBean.isOnCase()) {
             bReport.setText(getString(R.string.button_show_log));
+            bReport.setVisibility(View.GONE);
+        }
 
         final Activity activity = this;
         final Context context = this;
+        //bReport.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View v) {
+        //        if(((Button) v).getText().equals(getString(R.string.button_report))) {
+        //            final MessageUtils mu1 = new MessageUtils(activity, getString(R.string.report_this_event), getString(R.string.are_you_sure), 0, false);
+        //            mu1.setOnClickListenerYes(new View.OnClickListener() {
+        //                @Override
+        //                public void onClick(View v) {
+        //                    // Check if user has specific address assigned
+        //                    if (TextUtils.isEmpty(mUserBean.getAddress())) {
+        //                        final MessageUtils mu2 = new MessageUtils(activity, getString(R.string.add_new_address),
+        //                                getString(R.string.add_new_address_message), 0, false);
+        //                        mu2.showEditTextAndSoftKeyboard();
+        //                        mu2.getTilInput().setHint(getString(R.string.type_address_here));
+        //                        mu2.setOnClickListenerAccept(new View.OnClickListener() {
+        //                            @Override
+        //                            public void onClick(View v) {
+        //                                final Context context = v.getContext();
+        //                                // Check if text is filled
+        //                                if (!mu2.getEtInput().getText().toString().equals("")) {
+        //                                    mu2.getProgressBar().setVisibility(View.VISIBLE);
+        //                                    mu2.getBAccept().setVisibility(View.GONE);
+        //                                    mu2.getBCancel().setVisibility(View.GONE);
+        //                                    // Get address string
+        //                                    final String addressString = mu2.getEtInput().getText().toString();
+        //                                    // Connect to Firebase
+        //                                    Firebase.setAndroidContext(context);
+        //                                    final Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_USER +
+        //                                            File.separator + mUserId + File.separator + CONSTANTS.FIREBASE_FIELD_USERADDRESS);
+        //                                    fbRef.setValue(addressString, new Firebase.CompletionListener() {
+        //                                        @Override
+        //                                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+        //                                            if (firebaseError != null) {
+        //                                                MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
+        //                                                mu2.getProgressBar().setVisibility(View.GONE);
+        //                                                mu2.getBAccept().setVisibility(View.VISIBLE);
+        //                                                mu2.getBCancel().setVisibility(View.VISIBLE);
+        //                                            } else {
+        //                                                MessageUtils.toast(context, getString(R.string.new_address_added), false);
+        //                                                mUserBean.setAddress(addressString);
+        //                                                reportCase(context);
+        //                                                mu1.cancel();
+        //                                                mu2.cancel();
+        //                                            }
+        //                                        }
+        //                                    });
+        //                                } else {
+        //                                    MessageUtils.toast(context, getString(R.string.error_address_empty), false);
+        //                                }
+        //                            }
+        //                        });
+        //                        mu2.setOnClickListenerCancel(new View.OnClickListener() {
+        //                            @Override
+        //                            public void onClick(View v) {
+        //                                mu2.cancel();
+        //                                mu1.cancel();
+        //                            }
+        //                        });
+        //                        mu2.show();
+        //                        //------------------------------------------------------------------
+        //                    } else {    // User has already an specific address
+        //                        // Check if user has premium account
+        //                        if (mUserBean.isUserLevelPremium()) {
+        //                            reportCase(context);
+        //                        } else {
+        //                            Uri uri = Uri.parse(getString(R.string.web_link_upgrade)); // missing 'http://' will cause crashed
+        //                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        //                            startActivity(intent);
+        //                        }
+        //                        mu1.cancel();
+        //                    }
+        //                }
+        //            });
+        //            mu1.setOnClickListenerNo(new View.OnClickListener() {
+        //                @Override
+        //                public void onClick(View v) {
+        //                    mu1.cancel();
+        //                }
+        //            });
+        //            mu1.getBAccept().setVisibility(View.GONE);
+        //            mu1.show();
+        //        } else{
+        //            //MessageUtils.toast(v.getContext(), "Go to case logger activity...", false);
+        //            Intent intent = new Intent(v.getContext(), CaseDetailsActivity.class);
+        //            intent.putExtra(CONSTANTS.BUNDLE_EXTRA_RECORDING, mRecordingBean);
+        //            startActivity(intent);
+        //        }
+        //    }
+        //}
         bReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(((Button) v).getText().equals(getString(R.string.button_report))) {
-                    final MessageUtils mu1 = new MessageUtils(activity, getString(R.string.report_this_event), getString(R.string.are_you_sure), 0, false);
-                    mu1.setOnClickListenerYes(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // Check if user has specific address assigned
-                            if (TextUtils.isEmpty(mUserBean.getAddress())) {
-                                final MessageUtils mu2 = new MessageUtils(activity, getString(R.string.add_new_address),
-                                        getString(R.string.add_new_address_message), 0, false);
-                                mu2.showEditTextAndSoftKeyboard();
-                                mu2.getTilInput().setHint(getString(R.string.type_address_here));
-                                mu2.setOnClickListenerAccept(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        final Context context = v.getContext();
-                                        // Check if text is filled
-                                        if (!mu2.getEtInput().getText().toString().equals("")) {
-                                            mu2.getProgressBar().setVisibility(View.VISIBLE);
-                                            mu2.getBAccept().setVisibility(View.GONE);
-                                            mu2.getBCancel().setVisibility(View.GONE);
-                                            // Get address string
-                                            final String addressString = mu2.getEtInput().getText().toString();
-                                            // Connect to Firebase
-                                            Firebase.setAndroidContext(context);
-                                            final Firebase fbRef = new Firebase(CONSTANTS.FIREBASE_APP_URL + CONSTANTS.FIREBASE_DOC_USER +
-                                                    File.separator + mUserId + File.separator + CONSTANTS.FIREBASE_FIELD_USERADDRESS);
-                                            fbRef.setValue(addressString, new Firebase.CompletionListener() {
-                                                @Override
-                                                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                                                    if (firebaseError != null) {
-                                                        MessageUtils.toast(context, context.getString(R.string.error_firebase_save) + firebaseError.getMessage(), false);
-                                                        mu2.getProgressBar().setVisibility(View.GONE);
-                                                        mu2.getBAccept().setVisibility(View.VISIBLE);
-                                                        mu2.getBCancel().setVisibility(View.VISIBLE);
-                                                    } else {
-                                                        MessageUtils.toast(context, getString(R.string.new_address_added), false);
-                                                        mUserBean.setAddress(addressString);
-                                                        reportCase(context);
-                                                        mu1.cancel();
-                                                        mu2.cancel();
-                                                    }
-                                                }
-                                            });
-                                        } else {
-                                            MessageUtils.toast(context, getString(R.string.error_address_empty), false);
-                                        }
-                                    }
-                                });
-                                mu2.setOnClickListenerCancel(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        mu2.cancel();
-                                        mu1.cancel();
-                                    }
-                                });
-                                mu2.show();
-                                //------------------------------------------------------------------
-                            } else {    // User has already an specific address
-                                // Check if user has premium account
-                                if (mUserBean.isUserLevelPremium()) {
-                                    reportCase(context);
-                                } else {
-                                    Uri uri = Uri.parse(getString(R.string.web_link_upgrade)); // missing 'http://' will cause crashed
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                    startActivity(intent);
+                final MessageUtils mu = new MessageUtils(activity, getString(R.string.report_case_info), "", R.layout.custom_dialog_report_case_info, false);
+                mu.setOnClickListenerAccept(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Context context = getApplicationContext();
+                        final EditText etStreet = (EditText) mu.getConvertView().findViewById(R.id.etStreet);
+                        final EditText etCompanyName = (EditText) mu.getConvertView().findViewById(R.id.etCompanyName);
+                        final EditText etTelemarketingService = (EditText) mu.getConvertView().findViewById(R.id.etTelemarketingService);
+                        final EditText etTelemarketingAgent = (EditText) mu.getConvertView().findViewById(R.id.etTelemarketingAgent);
+                        final EditText etComments = (EditText) mu.getConvertView().findViewById(R.id.etComments);
+                        //
+                        List<EditText> editTextList = new ArrayList<EditText>();
+                        editTextList.add(etStreet);
+                        editTextList.add(etCompanyName);
+                        editTextList.add(etTelemarketingService);
+                        editTextList.add(etTelemarketingAgent);
+                        editTextList.add(etComments);
+
+                        // Check if text is filled
+                        if (CheckInputDataUtils.areAllFieldsFilled(editTextList)) {
+                            MessageUtils.showProgressBarAndHideButtons(mu);
+                            // Connect to Api
+                            new AsyncTask<Void, Void, RestMessageBean>() {
+                                HashMap<String, String> postDataParams;
+
+                                @Override
+                                protected void onPreExecute() {
+                                    super.onPreExecute();
+                                    postDataParams = new HashMap<String, String>();
+                                    postDataParams.put("id_userAcc", mUserId);
+                                    postDataParams.put("id_call", mRecordingBean.getKey());
+                                    postDataParams.put("street", etStreet.getText().toString());
+                                    postDataParams.put("company_name", etCompanyName.getText().toString());
+                                    postDataParams.put("telemakerting_service", etTelemarketingService.getText().toString());
+                                    postDataParams.put("telemakerting_agent_supervisor", etTelemarketingAgent.getText().toString());
+                                    postDataParams.put("comments_adicional_info", etComments.getText().toString());
                                 }
-                                mu1.cancel();
-                            }
+
+                                @Override
+                                protected RestMessageBean doInBackground(Void... params) {
+                                    RestMessageBean restMessageBean = null;
+                                    try {
+                                        restMessageBean = RestfulUtils.readRestfulPostAndParseToObject(CONSTANTS.SYNC_WS_REPORT_CASE_API, RestMessageBean.class, postDataParams);
+                                        //Log.i(TAG,"Perform here connection to api");
+                                    } catch (Exception e) {
+                                        ExceptionUtils.printExceptionToFile(e);
+                                    }
+                                    return restMessageBean;
+                                }
+
+                                @Override
+                                protected void onPostExecute(RestMessageBean restMessageBean) {
+                                    super.onPostExecute(restMessageBean);
+                                    if (restMessageBean != null && restMessageBean.getErrorId() == 0) {
+                                        if (!TextUtils.isEmpty(restMessageBean.getErrorMessage()))
+                                            MessageUtils.toast(getApplicationContext(), restMessageBean.getErrorMessage(), true);
+                                        else {
+                                            MessageUtils.toast(getApplicationContext(), getString(R.string.report_case_reported_successful), false);
+                                        }
+                                        bReport.setVisibility(View.GONE);
+                                        mRecordingBean.setIsOnCase(true);
+                                        fillRecordingData();
+                                        mu.cancel();
+                                    } else if (restMessageBean != null) {
+                                        if (!TextUtils.isEmpty(restMessageBean.getErrorMessage()))
+                                            MessageUtils.toast(getApplicationContext(), restMessageBean.getErrorMessage(), false);
+                                    } else
+                                        MessageUtils.toast(getApplicationContext(), getString(R.string.error_api_connect), false);
+                                    MessageUtils.hideProgressBarAndShowAcceptButtons(mu);
+                                }
+                            }.execute();
+                        } else {
+                            if (!CheckInputDataUtils.areAllFieldsFilled(editTextList))
+                                MessageUtils.toast(context, getString(R.string.error_all_fields_required), false);
                         }
-                    });
-                    mu1.setOnClickListenerNo(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mu1.cancel();
-                        }
-                    });
-                    mu1.getBAccept().setVisibility(View.GONE);
-                    mu1.show();
-                } else{
-                    //MessageUtils.toast(v.getContext(), "Go to case logger activity...", false);
-                    Intent intent = new Intent(v.getContext(), CaseDetailsActivity.class);
-                    intent.putExtra(CONSTANTS.BUNDLE_EXTRA_RECORDING, mRecordingBean);
-                    startActivity(intent);
-                }
+                    }
+                });
+                mu.setOnClickListenerCancel(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mu.cancel();
+                    }
+                });
+                mu.show();
             }
         });
+        //bReport.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View v) {
+        //        MessageUtils.toast(context, "Not working yet", false);
+        //    }
+        //});
 
         bPlay.setOnClickListener(new View.OnClickListener() {
             @Override

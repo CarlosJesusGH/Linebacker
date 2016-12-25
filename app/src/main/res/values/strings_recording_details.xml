@@ -26,4 +26,11 @@
     <string name="button_recorded_audio_activate">Activate audio</string>
     <string name="button_recorded_audio_activating">Activate audio</string>
     <string name="button_recorded_audio_activated">Activate complete</string>
+    <!---->
+    <string name="report_case_street">Street</string>
+    <string name="report_case_company_name">Company Name</string>
+    <string name="report_case_telemarketing_service">Telemarketing service</string>
+    <string name="report_case_telemarketing_agent">Telemarketing agent/supervisor</string>
+    <string name="report_case_comments">Comments/additional info</string>
+    <string name="report_case_reported_successful">Case reported successfully</string>
 </resources>
