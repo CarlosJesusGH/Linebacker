@@ -20,7 +20,7 @@
 package org.doubango.ngn.events;
 
 public enum NgnRegistrationEventTypes {
-    REGISTRATION_OK,
+	REGISTRATION_OK,
     REGISTRATION_NOK,
     REGISTRATION_INPROGRESS,
     UNREGISTRATION_OK,

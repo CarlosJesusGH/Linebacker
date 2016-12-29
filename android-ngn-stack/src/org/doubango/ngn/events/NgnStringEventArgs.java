@@ -26,14 +26,14 @@ import android.os.Parcelable;
  * Generic event argument containing short string
  */
 public class NgnStringEventArgs extends NgnEventArgs {
-    private String mValue;
-
-    public NgnStringEventArgs(String value) {
-        mValue = value;
-    }
-
-    public NgnStringEventArgs(Parcel in) {
-        super(in);
+	private String mValue;
+	
+	public NgnStringEventArgs(String value){
+		mValue = value;
+	}
+	
+	public NgnStringEventArgs(Parcel in){
+    	super(in);
     }
 
     public static final Parcelable.Creator<NgnStringEventArgs> CREATOR = new Parcelable.Creator<NgnStringEventArgs>() {
@@ -45,24 +45,24 @@ public class NgnStringEventArgs extends NgnEventArgs {
             return new NgnStringEventArgs[size];
         }
     };
+    
+	public String getValue(){
+		return mValue;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return mValue;
+	}
 
-    public String getValue() {
-        return mValue;
-    }
+	@Override
+	protected void readFromParcel(Parcel in) {
+		mValue = in.readString();
+	}
 
-
-    @Override
-    public String toString() {
-        return mValue;
-    }
-
-    @Override
-    protected void readFromParcel(Parcel in) {
-        mValue = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mValue);
-    }
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(mValue);
+	}
 }

@@ -23,7 +23,7 @@ package org.doubango.ngn.sip;
  * Presence status
  */
 public enum NgnPresenceStatus {
-    None,
+	None,
     Offline,
     Busy,
     Away,

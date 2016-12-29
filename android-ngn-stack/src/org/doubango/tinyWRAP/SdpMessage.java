@@ -9,46 +9,46 @@
 package org.doubango.tinyWRAP;
 
 public class SdpMessage {
-    private long swigCPtr;
-    protected boolean swigCMemOwn;
+  private long swigCPtr;
+  protected boolean swigCMemOwn;
 
-    protected SdpMessage(long cPtr, boolean cMemoryOwn) {
-        swigCMemOwn = cMemoryOwn;
-        swigCPtr = cPtr;
-    }
+  protected SdpMessage(long cPtr, boolean cMemoryOwn) {
+    swigCMemOwn = cMemoryOwn;
+    swigCPtr = cPtr;
+  }
 
-    protected static long getCPtr(SdpMessage obj) {
-        return (obj == null) ? 0 : obj.swigCPtr;
-    }
+  protected static long getCPtr(SdpMessage obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
 
-    protected void finalize() {
-        delete();
-    }
+  protected void finalize() {
+    delete();
+  }
 
-    public synchronized void delete() {
-        if (swigCPtr != 0) {
-            if (swigCMemOwn) {
-                swigCMemOwn = false;
-                tinyWRAPJNI.delete_SdpMessage(swigCPtr);
-            }
-            swigCPtr = 0;
-        }
+  public synchronized void delete() {
+    if (swigCPtr != 0) {
+      if (swigCMemOwn) {
+        swigCMemOwn = false;
+        tinyWRAPJNI.delete_SdpMessage(swigCPtr);
+      }
+      swigCPtr = 0;
     }
+  }
 
-    public SdpMessage() {
-        this(tinyWRAPJNI.new_SdpMessage(), true);
-    }
+  public SdpMessage() {
+    this(tinyWRAPJNI.new_SdpMessage(), true);
+  }
 
-    public String getSdpHeaderValue(String media, char name, long index) {
-        return tinyWRAPJNI.SdpMessage_getSdpHeaderValue__SWIG_0(swigCPtr, this, media, name, index);
-    }
+  public String getSdpHeaderValue(String media, char name, long index) {
+    return tinyWRAPJNI.SdpMessage_getSdpHeaderValue__SWIG_0(swigCPtr, this, media, name, index);
+  }
 
-    public String getSdpHeaderValue(String media, char name) {
-        return tinyWRAPJNI.SdpMessage_getSdpHeaderValue__SWIG_1(swigCPtr, this, media, name);
-    }
+  public String getSdpHeaderValue(String media, char name) {
+    return tinyWRAPJNI.SdpMessage_getSdpHeaderValue__SWIG_1(swigCPtr, this, media, name);
+  }
 
-    public String getSdpHeaderAValue(String media, String attributeName) {
-        return tinyWRAPJNI.SdpMessage_getSdpHeaderAValue(swigCPtr, this, media, attributeName);
-    }
+  public String getSdpHeaderAValue(String media, String attributeName) {
+    return tinyWRAPJNI.SdpMessage_getSdpHeaderAValue(swigCPtr, this, media, attributeName);
+  }
 
 }

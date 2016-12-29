@@ -9,42 +9,42 @@
 package org.doubango.utils;
 
 public class AndroidUtils {
-    private long swigCPtr;
-    protected boolean swigCMemOwn;
+  private long swigCPtr;
+  protected boolean swigCMemOwn;
 
-    public AndroidUtils(long cPtr, boolean cMemoryOwn) {
-        swigCMemOwn = cMemoryOwn;
-        swigCPtr = cPtr;
-    }
+  public AndroidUtils(long cPtr, boolean cMemoryOwn) {
+    swigCMemOwn = cMemoryOwn;
+    swigCPtr = cPtr;
+  }
 
-    public static long getCPtr(AndroidUtils obj) {
-        return (obj == null) ? 0 : obj.swigCPtr;
-    }
+  public static long getCPtr(AndroidUtils obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
 
-    protected void finalize() {
-        delete();
-    }
+  protected void finalize() {
+    delete();
+  }
 
-    public synchronized void delete() {
-        if (swigCPtr != 0) {
-            if (swigCMemOwn) {
-                swigCMemOwn = false;
-                utilsJNI.delete_AndroidUtils(swigCPtr);
-            }
-            swigCPtr = 0;
-        }
+  public synchronized void delete() {
+    if (swigCPtr != 0) {
+      if (swigCMemOwn) {
+        swigCMemOwn = false;
+        utilsJNI.delete_AndroidUtils(swigCPtr);
+      }
+      swigCPtr = 0;
     }
+  }
 
-    public AndroidUtils() {
-        this(utilsJNI.new_AndroidUtils(), true);
-    }
+  public AndroidUtils() {
+    this(utilsJNI.new_AndroidUtils(), true);
+  }
 
-    public static java.math.BigInteger getCpuFamily() {
-        return utilsJNI.AndroidUtils_getCpuFamily();
-    }
+  public static java.math.BigInteger getCpuFamily() {
+    return utilsJNI.AndroidUtils_getCpuFamily();
+  }
 
-    public static java.math.BigInteger getCpuFeatures() {
-        return utilsJNI.AndroidUtils_getCpuFeatures();
-    }
+  public static java.math.BigInteger getCpuFeatures() {
+    return utilsJNI.AndroidUtils_getCpuFeatures();
+  }
 
 }

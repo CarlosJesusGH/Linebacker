@@ -23,7 +23,7 @@ package org.doubango.ngn.events;
  * List of all supported types associated to SIP INVITE event arguments
  */
 public enum NgnInviteEventTypes {
-    INCOMING,
+	INCOMING,
     INPROGRESS,
     RINGING,
     EARLY_MEDIA,

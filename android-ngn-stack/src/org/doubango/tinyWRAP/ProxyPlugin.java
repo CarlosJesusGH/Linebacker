@@ -9,38 +9,38 @@
 package org.doubango.tinyWRAP;
 
 public class ProxyPlugin {
-    private long swigCPtr;
-    protected boolean swigCMemOwn;
+  private long swigCPtr;
+  protected boolean swigCMemOwn;
 
-    protected ProxyPlugin(long cPtr, boolean cMemoryOwn) {
-        swigCMemOwn = cMemoryOwn;
-        swigCPtr = cPtr;
-    }
+  protected ProxyPlugin(long cPtr, boolean cMemoryOwn) {
+    swigCMemOwn = cMemoryOwn;
+    swigCPtr = cPtr;
+  }
 
-    protected static long getCPtr(ProxyPlugin obj) {
-        return (obj == null) ? 0 : obj.swigCPtr;
-    }
+  protected static long getCPtr(ProxyPlugin obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
 
-    protected void finalize() {
-        delete();
-    }
+  protected void finalize() {
+    delete();
+  }
 
-    public synchronized void delete() {
-        if (swigCPtr != 0) {
-            if (swigCMemOwn) {
-                swigCMemOwn = false;
-                tinyWRAPJNI.delete_ProxyPlugin(swigCPtr);
-            }
-            swigCPtr = 0;
-        }
+  public synchronized void delete() {
+    if (swigCPtr != 0) {
+      if (swigCMemOwn) {
+        swigCMemOwn = false;
+        tinyWRAPJNI.delete_ProxyPlugin(swigCPtr);
+      }
+      swigCPtr = 0;
     }
+  }
 
-    public twrap_proxy_plugin_type_t getType() {
-        return twrap_proxy_plugin_type_t.swigToEnum(tinyWRAPJNI.ProxyPlugin_getType(swigCPtr, this));
-    }
+  public twrap_proxy_plugin_type_t getType() {
+    return twrap_proxy_plugin_type_t.swigToEnum(tinyWRAPJNI.ProxyPlugin_getType(swigCPtr, this));
+  }
 
-    public java.math.BigInteger getId() {
-        return tinyWRAPJNI.ProxyPlugin_getId(swigCPtr, this);
-    }
+  public java.math.BigInteger getId() {
+    return tinyWRAPJNI.ProxyPlugin_getId(swigCPtr, this);
+  }
 
 }

@@ -9,50 +9,50 @@
 package org.doubango.tinyWRAP;
 
 public class AudioResampler {
-    private long swigCPtr;
-    protected boolean swigCMemOwn;
+  private long swigCPtr;
+  protected boolean swigCMemOwn;
 
-    protected AudioResampler(long cPtr, boolean cMemoryOwn) {
-        swigCMemOwn = cMemoryOwn;
-        swigCPtr = cPtr;
-    }
+  protected AudioResampler(long cPtr, boolean cMemoryOwn) {
+    swigCMemOwn = cMemoryOwn;
+    swigCPtr = cPtr;
+  }
 
-    protected static long getCPtr(AudioResampler obj) {
-        return (obj == null) ? 0 : obj.swigCPtr;
-    }
+  protected static long getCPtr(AudioResampler obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
 
-    protected void finalize() {
-        delete();
-    }
+  protected void finalize() {
+    delete();
+  }
 
-    public synchronized void delete() {
-        if (swigCPtr != 0) {
-            if (swigCMemOwn) {
-                swigCMemOwn = false;
-                tinyWRAPJNI.delete_AudioResampler(swigCPtr);
-            }
-            swigCPtr = 0;
-        }
+  public synchronized void delete() {
+    if (swigCPtr != 0) {
+      if (swigCMemOwn) {
+        swigCMemOwn = false;
+        tinyWRAPJNI.delete_AudioResampler(swigCPtr);
+      }
+      swigCPtr = 0;
     }
+  }
 
-    public AudioResampler(long nInFreq, long nOutFreq, long nFrameDuration, long nChannels, long nQuality) {
-        this(tinyWRAPJNI.new_AudioResampler(nInFreq, nOutFreq, nFrameDuration, nChannels, nQuality), true);
-    }
+  public AudioResampler(long nInFreq, long nOutFreq, long nFrameDuration, long nChannels, long nQuality) {
+    this(tinyWRAPJNI.new_AudioResampler(nInFreq, nOutFreq, nFrameDuration, nChannels, nQuality), true);
+  }
 
-    public boolean isValid() {
-        return tinyWRAPJNI.AudioResampler_isValid(swigCPtr, this);
-    }
+  public boolean isValid() {
+    return tinyWRAPJNI.AudioResampler_isValid(swigCPtr, this);
+  }
 
-    public long getOutputRequiredSizeInShort() {
-        return tinyWRAPJNI.AudioResampler_getOutputRequiredSizeInShort(swigCPtr, this);
-    }
+  public long getOutputRequiredSizeInShort() {
+    return tinyWRAPJNI.AudioResampler_getOutputRequiredSizeInShort(swigCPtr, this);
+  }
 
-    public long getInputRequiredSizeInShort() {
-        return tinyWRAPJNI.AudioResampler_getInputRequiredSizeInShort(swigCPtr, this);
-    }
+  public long getInputRequiredSizeInShort() {
+    return tinyWRAPJNI.AudioResampler_getInputRequiredSizeInShort(swigCPtr, this);
+  }
 
-    public long process(java.nio.ByteBuffer pInData, long nInSizeInBytes, java.nio.ByteBuffer pOutData, long nOutSizeInBytes) {
-        return tinyWRAPJNI.AudioResampler_process(swigCPtr, this, pInData, nInSizeInBytes, pOutData, nOutSizeInBytes);
-    }
+  public long process(java.nio.ByteBuffer pInData, long nInSizeInBytes, java.nio.ByteBuffer pOutData, long nOutSizeInBytes) {
+    return tinyWRAPJNI.AudioResampler_process(swigCPtr, this, pInData, nInSizeInBytes, pOutData, nOutSizeInBytes);
+  }
 
 }

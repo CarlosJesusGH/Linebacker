@@ -9,30 +9,30 @@
 package org.doubango.tinyWRAP;
 
 public class StackEvent extends SipEvent {
-    private long swigCPtr;
+  private long swigCPtr;
 
-    protected StackEvent(long cPtr, boolean cMemoryOwn) {
-        super(tinyWRAPJNI.StackEvent_SWIGUpcast(cPtr), cMemoryOwn);
-        swigCPtr = cPtr;
-    }
+  protected StackEvent(long cPtr, boolean cMemoryOwn) {
+    super(tinyWRAPJNI.StackEvent_SWIGUpcast(cPtr), cMemoryOwn);
+    swigCPtr = cPtr;
+  }
 
-    protected static long getCPtr(StackEvent obj) {
-        return (obj == null) ? 0 : obj.swigCPtr;
-    }
+  protected static long getCPtr(StackEvent obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
 
-    protected void finalize() {
-        delete();
-    }
+  protected void finalize() {
+    delete();
+  }
 
-    public synchronized void delete() {
-        if (swigCPtr != 0) {
-            if (swigCMemOwn) {
-                swigCMemOwn = false;
-                tinyWRAPJNI.delete_StackEvent(swigCPtr);
-            }
-            swigCPtr = 0;
-        }
-        super.delete();
+  public synchronized void delete() {
+    if (swigCPtr != 0) {
+      if (swigCMemOwn) {
+        swigCMemOwn = false;
+        tinyWRAPJNI.delete_StackEvent(swigCPtr);
+      }
+      swigCPtr = 0;
     }
+    super.delete();
+  }
 
 }

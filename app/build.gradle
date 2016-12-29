@@ -9,11 +9,11 @@ android {
         applicationId "com.cmsys.linebacker"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 4
-        versionName "1.0 Dec-24"
+        versionCode 5
+        versionName "1.0 Dec-25"
         // Enabling multidex support. http://developer.android.com/tools/building/multidex.html
         // CJG 20161202
-//        multiDexEnabled true
+        multiDexEnabled true
     }
 
     // This is necessary for using Proguard
@@ -146,7 +146,7 @@ dependencies {
     // Avoid using multidex if possible
 
     // Enabling multidex support. http://developer.android.com/tools/building/multidex.html
-//    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:multidex:1.0.1'
 }
 
 // Tool for dex counting

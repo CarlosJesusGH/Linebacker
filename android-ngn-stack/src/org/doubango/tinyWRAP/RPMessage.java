@@ -9,46 +9,46 @@
 package org.doubango.tinyWRAP;
 
 public class RPMessage {
-    private long swigCPtr;
-    protected boolean swigCMemOwn;
+  private long swigCPtr;
+  protected boolean swigCMemOwn;
 
-    protected RPMessage(long cPtr, boolean cMemoryOwn) {
-        swigCMemOwn = cMemoryOwn;
-        swigCPtr = cPtr;
-    }
+  protected RPMessage(long cPtr, boolean cMemoryOwn) {
+    swigCMemOwn = cMemoryOwn;
+    swigCPtr = cPtr;
+  }
 
-    protected static long getCPtr(RPMessage obj) {
-        return (obj == null) ? 0 : obj.swigCPtr;
-    }
+  protected static long getCPtr(RPMessage obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
 
-    protected void finalize() {
-        delete();
-    }
+  protected void finalize() {
+    delete();
+  }
 
-    public synchronized void delete() {
-        if (swigCPtr != 0) {
-            if (swigCMemOwn) {
-                swigCMemOwn = false;
-                tinyWRAPJNI.delete_RPMessage(swigCPtr);
-            }
-            swigCPtr = 0;
-        }
+  public synchronized void delete() {
+    if (swigCPtr != 0) {
+      if (swigCMemOwn) {
+        swigCMemOwn = false;
+        tinyWRAPJNI.delete_RPMessage(swigCPtr);
+      }
+      swigCPtr = 0;
     }
+  }
 
-    public RPMessage() {
-        this(tinyWRAPJNI.new_RPMessage(), true);
-    }
+  public RPMessage() {
+    this(tinyWRAPJNI.new_RPMessage(), true);
+  }
 
-    public twrap_rpmessage_type_t getType() {
-        return twrap_rpmessage_type_t.swigToEnum(tinyWRAPJNI.RPMessage_getType(swigCPtr, this));
-    }
+  public twrap_rpmessage_type_t getType() {
+    return twrap_rpmessage_type_t.swigToEnum(tinyWRAPJNI.RPMessage_getType(swigCPtr, this));
+  }
 
-    public long getPayloadLength() {
-        return tinyWRAPJNI.RPMessage_getPayloadLength(swigCPtr, this);
-    }
+  public long getPayloadLength() {
+    return tinyWRAPJNI.RPMessage_getPayloadLength(swigCPtr, this);
+  }
 
-    public long getPayload(java.nio.ByteBuffer output, long maxsize) {
-        return tinyWRAPJNI.RPMessage_getPayload(swigCPtr, this, output, maxsize);
-    }
+  public long getPayload(java.nio.ByteBuffer output, long maxsize) {
+    return tinyWRAPJNI.RPMessage_getPayload(swigCPtr, this, output, maxsize);
+  }
 
 }

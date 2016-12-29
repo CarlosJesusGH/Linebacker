@@ -23,18 +23,19 @@ import org.doubango.tinyWRAP.InfoSession;
 import org.doubango.tinyWRAP.SipSession;
 
 public class NgnInfoSession extends NgnSipSession {
-    private final InfoSession mSession;
+	private final InfoSession mSession;
+	
+	protected NgnInfoSession(NgnSipStack sipStack) {
+		super(sipStack);
+		mSession = new InfoSession(sipStack);
+		super.init();
+	}
 
-    protected NgnInfoSession(NgnSipStack sipStack) {
-        super(sipStack);
-        mSession = new InfoSession(sipStack);
-        super.init();
-    }
+	
 
-
-    @Override
-    protected SipSession getSession() {
-        return mSession;
-    }
-
+	@Override
+	protected SipSession getSession() {
+		return mSession;
+	}
+	
 }

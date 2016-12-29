@@ -27,31 +27,31 @@ import android.os.Parcelable;
 /**
  * Event argument for SIP INVITE sessions
  */
-public class NgnInviteEventArgs extends NgnEventArgs {
-    private final static String TAG = NgnInviteEventArgs.class.getCanonicalName();
-
-    private long mSessionId;
+public class NgnInviteEventArgs extends NgnEventArgs{
+	private final static String TAG = NgnInviteEventArgs.class.getCanonicalName();
+	
+	private long mSessionId;
     private NgnInviteEventTypes mEventType;
     private NgnMediaType mMediaType;
     private String mPhrase;
-
+    
     public static final String ACTION_INVITE_EVENT = TAG + ".ACTION_INVITE_EVENT";
-
+    
     public static final String EXTRA_EMBEDDED = NgnEventArgs.EXTRA_EMBEDDED; // @NgnInviteEventArgs
     public static final String EXTRA_SESSION = "session"; // @object
     public static final String EXTRA_SIPCODE = "sipCode"; // @short
     public static final String EXTRA_REFERTO_URI = "referto-uri"; //@String
 
-    public NgnInviteEventArgs(long sessionId, NgnInviteEventTypes eventType, NgnMediaType mediaType, String phrase) {
-        super();
-        mSessionId = sessionId;
-        mEventType = eventType;
-        mMediaType = mediaType;
-        mPhrase = phrase;
+    public NgnInviteEventArgs(long sessionId, NgnInviteEventTypes eventType, NgnMediaType mediaType, String phrase){
+    	super();
+    	mSessionId = sessionId;
+    	mEventType = eventType;
+    	mMediaType = mediaType;
+    	mPhrase = phrase;
     }
 
-    public NgnInviteEventArgs(Parcel in) {
-        super(in);
+    public NgnInviteEventArgs(Parcel in){
+    	super(in);
     }
 
     public static final Parcelable.Creator<NgnInviteEventArgs> CREATOR = new Parcelable.Creator<NgnInviteEventArgs>() {
@@ -63,36 +63,36 @@ public class NgnInviteEventArgs extends NgnEventArgs {
             return new NgnInviteEventArgs[size];
         }
     };
-
-    public long getSessionId() {
+    
+    public long getSessionId(){
         return mSessionId;
     }
 
-    public NgnInviteEventTypes getEventType() {
+    public NgnInviteEventTypes getEventType(){
         return mEventType;
     }
-
-    public NgnMediaType getMediaType() {
+    
+    public NgnMediaType getMediaType(){
         return mMediaType;
     }
 
-    public String getPhrase() {
+    public String getPhrase(){
         return mPhrase;
     }
 
     @Override
-    protected void readFromParcel(Parcel in) {
-        mSessionId = in.readLong();
-        mEventType = Enum.valueOf(NgnInviteEventTypes.class, in.readString());
-        mMediaType = Enum.valueOf(NgnMediaType.class, in.readString());
-        mPhrase = in.readString();
-    }
+	protected void readFromParcel(Parcel in) {
+    	mSessionId = in.readLong();
+		mEventType = Enum.valueOf(NgnInviteEventTypes.class, in.readString());
+		mMediaType = Enum.valueOf(NgnMediaType.class, in.readString());
+		mPhrase = in.readString();
+	}
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(mSessionId);
-        dest.writeString(mEventType.toString());
-        dest.writeString(mMediaType.toString());
-        dest.writeString(mPhrase);
-    }
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeLong(mSessionId);
+		dest.writeString(mEventType.toString());
+		dest.writeString(mMediaType.toString());
+		dest.writeString(mPhrase);
+	}
 }

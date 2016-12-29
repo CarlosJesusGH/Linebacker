@@ -9,58 +9,58 @@
 package org.doubango.tinyWRAP;
 
 public class PublicationSession extends SipSession {
-    private long swigCPtr;
+  private long swigCPtr;
 
-    protected PublicationSession(long cPtr, boolean cMemoryOwn) {
-        super(tinyWRAPJNI.PublicationSession_SWIGUpcast(cPtr), cMemoryOwn);
-        swigCPtr = cPtr;
-    }
+  protected PublicationSession(long cPtr, boolean cMemoryOwn) {
+    super(tinyWRAPJNI.PublicationSession_SWIGUpcast(cPtr), cMemoryOwn);
+    swigCPtr = cPtr;
+  }
 
-    protected static long getCPtr(PublicationSession obj) {
-        return (obj == null) ? 0 : obj.swigCPtr;
-    }
+  protected static long getCPtr(PublicationSession obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
 
-    protected void finalize() {
-        delete();
-    }
+  protected void finalize() {
+    delete();
+  }
 
-    public synchronized void delete() {
-        if (swigCPtr != 0) {
-            if (swigCMemOwn) {
-                swigCMemOwn = false;
-                tinyWRAPJNI.delete_PublicationSession(swigCPtr);
-            }
-            swigCPtr = 0;
-        }
-        super.delete();
+  public synchronized void delete() {
+    if (swigCPtr != 0) {
+      if (swigCMemOwn) {
+        swigCMemOwn = false;
+        tinyWRAPJNI.delete_PublicationSession(swigCPtr);
+      }
+      swigCPtr = 0;
     }
+    super.delete();
+  }
 
-    public boolean Publish(byte[] bytes) {
-        if (bytes != null) {
-            final java.nio.ByteBuffer byteBuffer = this.getByteBuffer(bytes);
-            return this.publish(byteBuffer, bytes.length);
-        }
-        return false;
+  public boolean Publish(byte[] bytes) {
+    if(bytes != null){
+		final java.nio.ByteBuffer byteBuffer = this.getByteBuffer(bytes);
+        return this.publish(byteBuffer, bytes.length);
     }
+    return false;
+  }
 
-    public PublicationSession(SipStack pStack) {
-        this(tinyWRAPJNI.new_PublicationSession(SipStack.getCPtr(pStack), pStack), true);
-    }
+  public PublicationSession(SipStack pStack) {
+    this(tinyWRAPJNI.new_PublicationSession(SipStack.getCPtr(pStack), pStack), true);
+  }
 
-    public boolean publish(java.nio.ByteBuffer payload, long len, ActionConfig config) {
-        return tinyWRAPJNI.PublicationSession_publish__SWIG_0(swigCPtr, this, payload, len, ActionConfig.getCPtr(config), config);
-    }
+  public boolean publish(java.nio.ByteBuffer payload, long len, ActionConfig config) {
+    return tinyWRAPJNI.PublicationSession_publish__SWIG_0(swigCPtr, this, payload, len, ActionConfig.getCPtr(config), config);
+  }
 
-    public boolean publish(java.nio.ByteBuffer payload, long len) {
-        return tinyWRAPJNI.PublicationSession_publish__SWIG_1(swigCPtr, this, payload, len);
-    }
+  public boolean publish(java.nio.ByteBuffer payload, long len) {
+    return tinyWRAPJNI.PublicationSession_publish__SWIG_1(swigCPtr, this, payload, len);
+  }
 
-    public boolean unPublish(ActionConfig config) {
-        return tinyWRAPJNI.PublicationSession_unPublish__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
-    }
+  public boolean unPublish(ActionConfig config) {
+    return tinyWRAPJNI.PublicationSession_unPublish__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
+  }
 
-    public boolean unPublish() {
-        return tinyWRAPJNI.PublicationSession_unPublish__SWIG_1(swigCPtr, this);
-    }
+  public boolean unPublish() {
+    return tinyWRAPJNI.PublicationSession_unPublish__SWIG_1(swigCPtr, this);
+  }
 
 }

@@ -4,10 +4,10 @@
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="22" />
+        android:targetSdkVersion="23" />
 
     <instrumentation
-        android:name="com.android.test.runner.MultiDexTestRunner"
+        android:name="android.test.InstrumentationTestRunner"
         android:functionalTest="false"
         android:handleProfiling="false"
         android:label="Tests for org.doubango.ngn.test"

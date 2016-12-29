@@ -9,42 +9,42 @@
 package org.doubango.tinyWRAP;
 
 public class MediaContentCPIM extends MediaContent {
-    private long swigCPtr;
+  private long swigCPtr;
 
-    protected MediaContentCPIM(long cPtr, boolean cMemoryOwn) {
-        super(tinyWRAPJNI.MediaContentCPIM_SWIGUpcast(cPtr), cMemoryOwn);
-        swigCPtr = cPtr;
-    }
+  protected MediaContentCPIM(long cPtr, boolean cMemoryOwn) {
+    super(tinyWRAPJNI.MediaContentCPIM_SWIGUpcast(cPtr), cMemoryOwn);
+    swigCPtr = cPtr;
+  }
 
-    protected static long getCPtr(MediaContentCPIM obj) {
-        return (obj == null) ? 0 : obj.swigCPtr;
-    }
+  protected static long getCPtr(MediaContentCPIM obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
 
-    protected void finalize() {
-        delete();
-    }
+  protected void finalize() {
+    delete();
+  }
 
-    public synchronized void delete() {
-        if (swigCPtr != 0) {
-            if (swigCMemOwn) {
-                swigCMemOwn = false;
-                tinyWRAPJNI.delete_MediaContentCPIM(swigCPtr);
-            }
-            swigCPtr = 0;
-        }
-        super.delete();
+  public synchronized void delete() {
+    if (swigCPtr != 0) {
+      if (swigCMemOwn) {
+        swigCMemOwn = false;
+        tinyWRAPJNI.delete_MediaContentCPIM(swigCPtr);
+      }
+      swigCPtr = 0;
     }
+    super.delete();
+  }
 
-    public long getPayloadLength() {
-        return tinyWRAPJNI.MediaContentCPIM_getPayloadLength(swigCPtr, this);
-    }
+  public long getPayloadLength() {
+    return tinyWRAPJNI.MediaContentCPIM_getPayloadLength(swigCPtr, this);
+  }
 
-    public long getPayload(java.nio.ByteBuffer pOutput, long nMaxsize) {
-        return tinyWRAPJNI.MediaContentCPIM_getPayload(swigCPtr, this, pOutput, nMaxsize);
-    }
+  public long getPayload(java.nio.ByteBuffer pOutput, long nMaxsize) {
+    return tinyWRAPJNI.MediaContentCPIM_getPayload(swigCPtr, this, pOutput, nMaxsize);
+  }
 
-    public String getHeaderValue(String pName) {
-        return tinyWRAPJNI.MediaContentCPIM_getHeaderValue(swigCPtr, this, pName);
-    }
+  public String getHeaderValue(String pName) {
+    return tinyWRAPJNI.MediaContentCPIM_getHeaderValue(swigCPtr, this, pName);
+  }
 
 }

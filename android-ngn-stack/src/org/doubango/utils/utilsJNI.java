@@ -9,11 +9,8 @@
 package org.doubango.utils;
 
 public class utilsJNI {
-    public final static native long new_AndroidUtils();
-
-    public final static native void delete_AndroidUtils(long jarg1);
-
-    public final static native java.math.BigInteger AndroidUtils_getCpuFamily();
-
-    public final static native java.math.BigInteger AndroidUtils_getCpuFeatures();
+  public final static native long new_AndroidUtils();
+  public final static native void delete_AndroidUtils(long jarg1);
+  public final static native java.math.BigInteger AndroidUtils_getCpuFamily();
+  public final static native java.math.BigInteger AndroidUtils_getCpuFeatures();
 }

@@ -21,29 +21,29 @@ package org.doubango.ngn.model;
 
 
 public class NgnEmail {
-    public static enum EmailType {
-        None
-    }
-
-    private final String mValue;
-    private final EmailType mType;
-    private final String mDescription;
-
-    public NgnEmail(EmailType type, String value, String description) {
-        mType = type;
-        mValue = value;
-        mDescription = description;
-    }
-
-    public String getValue() {
-        return mValue;
-    }
-
-    public EmailType getPhoneType() {
-        return mType;
-    }
-
-    public String getDescription() {
-        return mDescription;
-    }
+	public static enum EmailType{
+		None
+	}
+	
+	private final String mValue;
+	private final EmailType mType;
+	private final String mDescription;
+	
+	public NgnEmail(EmailType type, String value, String description){
+		mType = type;
+		mValue = value;
+		mDescription = description;
+	}
+	
+	public String getValue(){
+		return mValue;
+	}
+	
+	public EmailType getPhoneType(){
+		return mType;
+	}
+	
+	public String getDescription(){
+		return mDescription;
+	}
 }

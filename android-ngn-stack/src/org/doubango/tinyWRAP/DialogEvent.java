@@ -9,30 +9,30 @@
 package org.doubango.tinyWRAP;
 
 public class DialogEvent extends SipEvent {
-    private long swigCPtr;
+  private long swigCPtr;
 
-    protected DialogEvent(long cPtr, boolean cMemoryOwn) {
-        super(tinyWRAPJNI.DialogEvent_SWIGUpcast(cPtr), cMemoryOwn);
-        swigCPtr = cPtr;
-    }
+  protected DialogEvent(long cPtr, boolean cMemoryOwn) {
+    super(tinyWRAPJNI.DialogEvent_SWIGUpcast(cPtr), cMemoryOwn);
+    swigCPtr = cPtr;
+  }
 
-    protected static long getCPtr(DialogEvent obj) {
-        return (obj == null) ? 0 : obj.swigCPtr;
-    }
+  protected static long getCPtr(DialogEvent obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
 
-    protected void finalize() {
-        delete();
-    }
+  protected void finalize() {
+    delete();
+  }
 
-    public synchronized void delete() {
-        if (swigCPtr != 0) {
-            if (swigCMemOwn) {
-                swigCMemOwn = false;
-                tinyWRAPJNI.delete_DialogEvent(swigCPtr);
-            }
-            swigCPtr = 0;
-        }
-        super.delete();
+  public synchronized void delete() {
+    if (swigCPtr != 0) {
+      if (swigCMemOwn) {
+        swigCMemOwn = false;
+        tinyWRAPJNI.delete_DialogEvent(swigCPtr);
+      }
+      swigCPtr = 0;
     }
+    super.delete();
+  }
 
 }

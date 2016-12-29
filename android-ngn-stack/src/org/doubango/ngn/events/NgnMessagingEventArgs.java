@@ -22,17 +22,17 @@ package org.doubango.ngn.events;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class NgnMessagingEventArgs extends NgnEventArgs {
-    private final static String TAG = NgnMessagingEventArgs.class.getCanonicalName();
-
-    private long mSessionId;
+public class NgnMessagingEventArgs extends NgnEventArgs{
+	private final static String TAG = NgnMessagingEventArgs.class.getCanonicalName();
+	
+	private long mSessionId;
     private NgnMessagingEventTypes mEventType;
     private String mPhrase;
     private byte[] mPayload;
     private String mContentType;
-
+    
     public static final String ACTION_MESSAGING_EVENT = TAG + ".ACTION_MESSAGING_EVENT";
-
+    
     public static final String EXTRA_EMBEDDED = NgnEventArgs.EXTRA_EMBEDDED; // NgnEventArgs
     public static final String EXTRA_SESSION = TAG + "session"; // NgnSession
     public static final String EXTRA_CODE = TAG + "code"; // Short
@@ -40,8 +40,8 @@ public class NgnMessagingEventArgs extends NgnEventArgs {
     public static final String EXTRA_DATE = TAG + "date"; // Date
     public static final String EXTRA_T140_DATA_TYPE = TAG + "t140_data_type"; // tmedia_t140_data_type_t
 
-    public NgnMessagingEventArgs(long sessionId, NgnMessagingEventTypes type, String phrase, byte[] payload, String contentType) {
-        super();
+    public NgnMessagingEventArgs(long sessionId, NgnMessagingEventTypes type, String phrase, byte[] payload, String contentType){
+    	super();
         mSessionId = sessionId;
         mEventType = type;
         mPhrase = phrase;
@@ -49,8 +49,8 @@ public class NgnMessagingEventArgs extends NgnEventArgs {
         mContentType = contentType;
     }
 
-    public NgnMessagingEventArgs(Parcel in) {
-        super(in);
+    public NgnMessagingEventArgs(Parcel in){
+    	super(in);
     }
 
     public static final Parcelable.Creator<NgnMessagingEventArgs> CREATOR = new Parcelable.Creator<NgnMessagingEventArgs>() {
@@ -62,42 +62,42 @@ public class NgnMessagingEventArgs extends NgnEventArgs {
             return new NgnMessagingEventArgs[size];
         }
     };
-
-    public long getSessionId() {
+    
+    public long getSessionId(){
         return mSessionId;
     }
 
-    public NgnMessagingEventTypes getEventType() {
+    public NgnMessagingEventTypes getEventType(){
         return mEventType;
     }
 
-    public String getPhrase() {
+    public String getPhrase(){
         return mPhrase;
     }
 
-    public byte[] getPayload() {
+    public byte[] getPayload(){
         return mPayload;
     }
-
+    
     public String getContentType() {
-        return mContentType;
+    	return mContentType;
     }
 
-    @Override
-    protected void readFromParcel(Parcel in) {
-        mSessionId = in.readLong();
-        mEventType = Enum.valueOf(NgnMessagingEventTypes.class, in.readString());
-        mPhrase = in.readString();
-        mContentType = in.readString();
-        mPayload = in.createByteArray();
-    }
+	@Override
+	protected void readFromParcel(Parcel in) {
+		mSessionId = in.readLong();
+		mEventType = Enum.valueOf(NgnMessagingEventTypes.class, in.readString());
+		mPhrase = in.readString();
+		mContentType = in.readString();
+		mPayload = in.createByteArray();
+	}
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(mSessionId);
-        dest.writeString(mEventType.toString());
-        dest.writeString(mPhrase);
-        dest.writeString(mContentType);
-        dest.writeByteArray(mPayload);
-    }
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeLong(mSessionId);
+		dest.writeString(mEventType.toString());
+		dest.writeString(mPhrase);
+		dest.writeString(mContentType);
+		dest.writeByteArray(mPayload);
+	}
 }

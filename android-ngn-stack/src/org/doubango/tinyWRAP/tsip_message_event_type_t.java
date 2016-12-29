@@ -9,44 +9,44 @@
 package org.doubango.tinyWRAP;
 
 public enum tsip_message_event_type_t {
-    tsip_i_message,
-    tsip_ao_message;
+  tsip_i_message,
+  tsip_ao_message;
 
-    public final int swigValue() {
-        return swigValue;
-    }
+  public final int swigValue() {
+    return swigValue;
+  }
 
-    public static tsip_message_event_type_t swigToEnum(int swigValue) {
-        tsip_message_event_type_t[] swigValues = tsip_message_event_type_t.class.getEnumConstants();
-        if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
-            return swigValues[swigValue];
-        for (tsip_message_event_type_t swigEnum : swigValues)
-            if (swigEnum.swigValue == swigValue)
-                return swigEnum;
-        throw new IllegalArgumentException("No enum " + tsip_message_event_type_t.class + " with value " + swigValue);
-    }
+  public static tsip_message_event_type_t swigToEnum(int swigValue) {
+    tsip_message_event_type_t[] swigValues = tsip_message_event_type_t.class.getEnumConstants();
+    if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
+      return swigValues[swigValue];
+    for (tsip_message_event_type_t swigEnum : swigValues)
+      if (swigEnum.swigValue == swigValue)
+        return swigEnum;
+    throw new IllegalArgumentException("No enum " + tsip_message_event_type_t.class + " with value " + swigValue);
+  }
 
-    @SuppressWarnings("unused")
-    private tsip_message_event_type_t() {
-        this.swigValue = SwigNext.next++;
-    }
+  @SuppressWarnings("unused")
+  private tsip_message_event_type_t() {
+    this.swigValue = SwigNext.next++;
+  }
 
-    @SuppressWarnings("unused")
-    private tsip_message_event_type_t(int swigValue) {
-        this.swigValue = swigValue;
-        SwigNext.next = swigValue + 1;
-    }
+  @SuppressWarnings("unused")
+  private tsip_message_event_type_t(int swigValue) {
+    this.swigValue = swigValue;
+    SwigNext.next = swigValue+1;
+  }
 
-    @SuppressWarnings("unused")
-    private tsip_message_event_type_t(tsip_message_event_type_t swigEnum) {
-        this.swigValue = swigEnum.swigValue;
-        SwigNext.next = this.swigValue + 1;
-    }
+  @SuppressWarnings("unused")
+  private tsip_message_event_type_t(tsip_message_event_type_t swigEnum) {
+    this.swigValue = swigEnum.swigValue;
+    SwigNext.next = this.swigValue+1;
+  }
 
-    private final int swigValue;
+  private final int swigValue;
 
-    private static class SwigNext {
-        private static int next = 0;
-    }
+  private static class SwigNext {
+    private static int next = 0;
+  }
 }
 

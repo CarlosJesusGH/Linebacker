@@ -29,26 +29,26 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-public class NgnMediaPluginEventArgs extends NgnEventArgs {
-    private final static String TAG = NgnMediaPluginEventArgs.class.getCanonicalName();
-
-    private BigInteger mPluginId;
-    private NgnMediaType mMediaType;
-    private NgnMediaPluginEventTypes mEventType;
-
-    public static final String ACTION_MEDIA_PLUGIN_EVENT = TAG + ".ACTION_MEDIA_PLUGIN_EVENT";
-
-    public static final String EXTRA_EMBEDDED = NgnEventArgs.EXTRA_EMBEDDED;
-
-    public NgnMediaPluginEventArgs(BigInteger pluginId, NgnMediaType mediaType, NgnMediaPluginEventTypes eventType) {
-        super();
-        mPluginId = pluginId;
-        mMediaType = mediaType;
-        mEventType = eventType;
-    }
-
-    public NgnMediaPluginEventArgs(Parcel in) {
-        super(in);
+public class NgnMediaPluginEventArgs extends NgnEventArgs{
+	private final static String TAG = NgnMediaPluginEventArgs.class.getCanonicalName();
+	
+	private BigInteger mPluginId;
+	private NgnMediaType mMediaType;
+	private NgnMediaPluginEventTypes mEventType;
+	
+	public static final String ACTION_MEDIA_PLUGIN_EVENT = TAG + ".ACTION_MEDIA_PLUGIN_EVENT";
+	
+	public static final String EXTRA_EMBEDDED = NgnEventArgs.EXTRA_EMBEDDED;
+	
+	public NgnMediaPluginEventArgs(BigInteger pluginId, NgnMediaType mediaType, NgnMediaPluginEventTypes eventType){
+		super();
+		mPluginId = pluginId;
+		mMediaType = mediaType;
+		mEventType = eventType;
+	}
+	
+	public NgnMediaPluginEventArgs(Parcel in){
+    	super(in);
     }
 
     public static final Parcelable.Creator<NgnMediaPluginEventArgs> CREATOR = new Parcelable.Creator<NgnMediaPluginEventArgs>() {
@@ -60,40 +60,40 @@ public class NgnMediaPluginEventArgs extends NgnEventArgs {
             return new NgnMediaPluginEventArgs[size];
         }
     };
-
-    public BigInteger getPluginId() {
+    
+    public BigInteger getPluginId(){
         return mPluginId;
     }
 
-    public NgnMediaType getMediaType() {
+    public NgnMediaType getMediaType(){
         return mMediaType;
     }
 
-    public NgnMediaPluginEventTypes getEventType() {
+    public NgnMediaPluginEventTypes getEventType(){
         return mEventType;
     }
-
+    
     @Override
-    protected void readFromParcel(Parcel in) {
-        mPluginId = BigInteger.valueOf(in.readLong());
-        mMediaType = Enum.valueOf(NgnMediaType.class, in.readString());
-        mEventType = Enum.valueOf(NgnMediaPluginEventTypes.class, in.readString());
-    }
+	protected void readFromParcel(Parcel in) {
+    	mPluginId = BigInteger.valueOf(in.readLong());
+    	mMediaType = Enum.valueOf(NgnMediaType.class, in.readString());
+    	mEventType = Enum.valueOf(NgnMediaPluginEventTypes.class, in.readString());
+	}
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(mPluginId.longValue());
-        dest.writeString(mMediaType.toString());
-        dest.writeString(mEventType.toString());
-    }
-
-    public static void broadcastEvent(NgnMediaPluginEventArgs args) {
-        if (NgnApplication.getContext() == null) {
-            Log.e(TAG, "Null application context");
-            return;
-        }
-        final Intent intent = new Intent(NgnMediaPluginEventArgs.ACTION_MEDIA_PLUGIN_EVENT);
-        intent.putExtra(NgnMediaPluginEventArgs.EXTRA_EMBEDDED, args);
-        NgnApplication.getContext().sendBroadcast(intent);
-    }
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeLong(mPluginId.longValue());
+		dest.writeString(mMediaType.toString());
+		dest.writeString(mEventType.toString());
+	}
+	
+	public static void broadcastEvent(NgnMediaPluginEventArgs args){
+		if(NgnApplication.getContext() == null){
+			Log.e(TAG,"Null application context");
+			return;
+		}
+		final Intent intent = new Intent(NgnMediaPluginEventArgs.ACTION_MEDIA_PLUGIN_EVENT);
+		intent.putExtra(NgnMediaPluginEventArgs.EXTRA_EMBEDDED, args);
+		NgnApplication.getContext().sendBroadcast(intent);
+	}
 }

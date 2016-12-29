@@ -14,13 +14,13 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 16
-    buildToolsVersion "23.0.2"
+   compileSdkVersion 23
+   buildToolsVersion "23.0.2"
+    useLibrary  'org.apache.http.legacy'
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 22
-        multiDexEnabled true
+        targetSdkVersion 23
     }
 
     productFlavors {
@@ -61,12 +61,4 @@ android {
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile 'com.android.support:multidex:1.0.1'
 }

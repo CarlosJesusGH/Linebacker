@@ -30,53 +30,53 @@ import org.simpleframework.xml.Root;
 @Root(name = "events")
 public class NgnHistoryList {
     private final NgnObservableList<NgnHistoryEvent> mEvents;
-
-    @ElementList(name = "event", required = false, inline = true)
-    private List<NgnHistoryEvent> mSerializableEvents;
-
-    public NgnHistoryList() {
-        mEvents = new NgnObservableList<NgnHistoryEvent>(true);
-        mSerializableEvents = mEvents.getList();
+    
+	@ElementList(name="event", required=false, inline=true)
+	private List<NgnHistoryEvent> mSerializableEvents;
+	
+    public NgnHistoryList(){
+    	mEvents = new NgnObservableList<NgnHistoryEvent>(true);
+    	mSerializableEvents = mEvents.getList();
     }
-
-    public NgnObservableList<NgnHistoryEvent> getList() {
-        return mEvents;
-    }
-
-    public void addEvent(NgnHistoryEvent e) {
-        mEvents.add(0, e);
-    }
-
-    public void removeEvent(NgnHistoryEvent e) {
-        if (mEvents != null) {
-            mEvents.remove(e);
-        }
-    }
-
-    public void removeEvents(Collection<NgnHistoryEvent> events) {
-        if (mEvents != null) {
-            mEvents.removeAll(events);
-        }
-    }
-
-    public void removeEvents(NgnPredicate<NgnHistoryEvent> predicate) {
-        if (mEvents != null) {
-            final List<NgnHistoryEvent> eventsToRemove = mEvents.filter(predicate);
-            mEvents.removeAll(eventsToRemove);
-        }
-    }
-
-    public void removeEvent(int location) {
-        if (mEvents != null) {
-            mEvents.remove(location);
-        }
-    }
-
-    public void clear() {
-        if (mEvents != null) {
-            mEvents.clear();
-        }
-    }
-
-
+    
+	public NgnObservableList<NgnHistoryEvent> getList(){
+		return mEvents;
+	}
+	
+	public void addEvent(NgnHistoryEvent e){
+		mEvents.add(0, e);
+	}
+	
+	public void removeEvent(NgnHistoryEvent e){
+		if(mEvents != null){
+			mEvents.remove(e);
+		}
+	}
+	
+	public void removeEvents(Collection<NgnHistoryEvent> events){
+		if(mEvents != null){
+			mEvents.removeAll(events);
+		}
+	}
+	
+	public void removeEvents(NgnPredicate<NgnHistoryEvent> predicate){
+		if(mEvents != null){
+			final List<NgnHistoryEvent> eventsToRemove = mEvents.filter(predicate);
+			mEvents.removeAll(eventsToRemove);
+		}
+	}
+	
+	public void removeEvent(int location){
+		if(mEvents != null){
+			mEvents.remove(location);
+		}
+	}
+	
+	public void clear(){
+		if(mEvents != null){
+			mEvents.clear();
+		}
+	}
+	
+	
 }

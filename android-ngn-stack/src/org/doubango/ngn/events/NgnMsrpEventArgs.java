@@ -22,14 +22,14 @@ package org.doubango.ngn.events;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class NgnMsrpEventArgs extends NgnEventArgs {
-    private final static String TAG = NgnMsrpEventArgs.class.getCanonicalName();
-
-    private long mSessionId;
+public class NgnMsrpEventArgs extends NgnEventArgs{
+	private final static String TAG = NgnMsrpEventArgs.class.getCanonicalName();
+	
+	private long mSessionId;
     private NgnMsrpEventTypes mEventType;
-
+    
     public static final String ACTION_MSRP_EVENT = TAG + ".ACTION_MSRP_EVENT";
-
+    
     public static final String EXTRA_EMBEDDED = NgnEventArgs.EXTRA_EMBEDDED;
     public static final String EXTRA_DATA = "data";
     public static final String EXTRA_CONTENT_TYPE = "content-type";
@@ -40,14 +40,14 @@ public class NgnMsrpEventArgs extends NgnEventArgs {
     public static final String EXTRA_RESPONSE_CODE = "response-code";
     public static final String EXTRA_REQUEST_TYPE = "request-type";
 
-    public NgnMsrpEventArgs(long sessionId, NgnMsrpEventTypes type) {
-        super();
-        mSessionId = sessionId;
-        mEventType = type;
+    public NgnMsrpEventArgs(long sessionId, NgnMsrpEventTypes type){
+    	super();
+    	mSessionId = sessionId;
+    	mEventType = type;
     }
 
-    public NgnMsrpEventArgs(Parcel in) {
-        super(in);
+    public NgnMsrpEventArgs(Parcel in){
+    	super(in);
     }
 
     public static final Parcelable.Creator<NgnMsrpEventArgs> CREATOR = new Parcelable.Creator<NgnMsrpEventArgs>() {
@@ -59,24 +59,24 @@ public class NgnMsrpEventArgs extends NgnEventArgs {
             return new NgnMsrpEventArgs[size];
         }
     };
-
-    public long getSessionId() {
+    
+    public long getSessionId(){
         return mSessionId;
     }
 
-    public NgnMsrpEventTypes getEventType() {
+    public NgnMsrpEventTypes getEventType(){
         return mEventType;
     }
 
-    @Override
-    protected void readFromParcel(Parcel in) {
-        mSessionId = in.readLong();
-        mEventType = Enum.valueOf(NgnMsrpEventTypes.class, in.readString());
-    }
+	@Override
+	protected void readFromParcel(Parcel in) {
+		mSessionId = in.readLong();
+		mEventType = Enum.valueOf(NgnMsrpEventTypes.class, in.readString());
+	}
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(mSessionId);
-        dest.writeString(mEventType.toString());
-    }
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeLong(mSessionId);
+		dest.writeString(mEventType.toString());
+	}
 }

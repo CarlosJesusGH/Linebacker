@@ -26,53 +26,53 @@ import org.doubango.tinyWRAP.ProxyPlugin;
 /**
  * MyProxyPlugin
  */
-public class NgnProxyPlugin implements Comparable<NgnProxyPlugin> {
-
-    protected boolean mValid;
-    protected boolean mStarted;
-    protected boolean mPaused;
-    protected boolean mPrepared;
-    protected final BigInteger mId;
-    protected final ProxyPlugin mPlugin;
-    protected long mSipSessionId;
-
-    public NgnProxyPlugin(BigInteger id, ProxyPlugin plugin) {
-        mId = id;
-        mPlugin = plugin;
-        mValid = true;
-        mSipSessionId = -1;
-    }
-
-    public long getSipSessionId() {
-        return mSipSessionId;
-    }
-
-    public void setSipSessionId(long id) {
-        mSipSessionId = id;
-    }
-
-    public boolean isValid() {
-        return mValid;
-    }
-
-    public boolean isStarted() {
-        return mStarted;
-    }
-
-    public boolean isPaused() {
-        return mPaused;
-    }
-
-    public boolean isPrepared() {
-        return mPrepared;
-    }
-
-    public void invalidate() {
-        mValid = false;
-    }
-
-    @Override
-    public int compareTo(NgnProxyPlugin another) {
-        return (mId.intValue() - another.mId.intValue());
-    }
+public class NgnProxyPlugin implements Comparable<NgnProxyPlugin>{
+	
+	protected boolean mValid;
+	protected boolean mStarted;
+	protected boolean mPaused;
+	protected boolean mPrepared;
+	protected final BigInteger mId;
+	protected final ProxyPlugin mPlugin;
+	protected long mSipSessionId;
+	
+	public NgnProxyPlugin(BigInteger id, ProxyPlugin plugin){
+		mId = id;
+		mPlugin = plugin;
+		mValid = true;
+		mSipSessionId = -1;
+	}
+	
+	public long getSipSessionId(){
+		return mSipSessionId;
+	}
+	
+	public void setSipSessionId(long id){
+		mSipSessionId = id;
+	}
+	
+	public boolean isValid(){
+		return mValid;
+	}
+	
+	public boolean isStarted(){
+		return mStarted;
+	}
+	
+	public boolean isPaused(){
+		return mPaused;
+	}
+	
+	public boolean isPrepared(){
+		return mPrepared;
+	}
+	
+	public void invalidate(){
+		mValid = false;
+	}
+	
+	@Override
+	public int compareTo(NgnProxyPlugin another) {
+		return (mId.intValue() - another.mId.intValue());
+	}
 }

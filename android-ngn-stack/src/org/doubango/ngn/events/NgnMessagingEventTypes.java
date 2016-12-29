@@ -20,7 +20,7 @@
 package org.doubango.ngn.events;
 
 public enum NgnMessagingEventTypes {
-    INCOMING,
+	INCOMING,
     OUTGOING,
     SUCCESS,
     FAILURE

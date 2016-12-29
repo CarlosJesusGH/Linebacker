@@ -9,90 +9,90 @@
 package org.doubango.tinyWRAP;
 
 public class ProxyVideoConsumer extends ProxyPlugin {
-    private long swigCPtr;
+  private long swigCPtr;
 
-    protected ProxyVideoConsumer(long cPtr, boolean cMemoryOwn) {
-        super(tinyWRAPJNI.ProxyVideoConsumer_SWIGUpcast(cPtr), cMemoryOwn);
-        swigCPtr = cPtr;
-    }
+  protected ProxyVideoConsumer(long cPtr, boolean cMemoryOwn) {
+    super(tinyWRAPJNI.ProxyVideoConsumer_SWIGUpcast(cPtr), cMemoryOwn);
+    swigCPtr = cPtr;
+  }
 
-    protected static long getCPtr(ProxyVideoConsumer obj) {
-        return (obj == null) ? 0 : obj.swigCPtr;
-    }
+  protected static long getCPtr(ProxyVideoConsumer obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
 
-    protected void finalize() {
-        delete();
-    }
+  protected void finalize() {
+    delete();
+  }
 
-    public synchronized void delete() {
-        if (swigCPtr != 0) {
-            if (swigCMemOwn) {
-                swigCMemOwn = false;
-                tinyWRAPJNI.delete_ProxyVideoConsumer(swigCPtr);
-            }
-            swigCPtr = 0;
-        }
-        super.delete();
+  public synchronized void delete() {
+    if (swigCPtr != 0) {
+      if (swigCMemOwn) {
+        swigCMemOwn = false;
+        tinyWRAPJNI.delete_ProxyVideoConsumer(swigCPtr);
+      }
+      swigCPtr = 0;
     }
+    super.delete();
+  }
 
-    public boolean setDisplaySize(long nWidth, long nHeight) {
-        return tinyWRAPJNI.ProxyVideoConsumer_setDisplaySize(swigCPtr, this, nWidth, nHeight);
-    }
+  public boolean setDisplaySize(long nWidth, long nHeight) {
+    return tinyWRAPJNI.ProxyVideoConsumer_setDisplaySize(swigCPtr, this, nWidth, nHeight);
+  }
 
-    public long getDisplayWidth() {
-        return tinyWRAPJNI.ProxyVideoConsumer_getDisplayWidth(swigCPtr, this);
-    }
+  public long getDisplayWidth() {
+    return tinyWRAPJNI.ProxyVideoConsumer_getDisplayWidth(swigCPtr, this);
+  }
 
-    public long getDisplayHeight() {
-        return tinyWRAPJNI.ProxyVideoConsumer_getDisplayHeight(swigCPtr, this);
-    }
+  public long getDisplayHeight() {
+    return tinyWRAPJNI.ProxyVideoConsumer_getDisplayHeight(swigCPtr, this);
+  }
 
-    public long getDecodedWidth() {
-        return tinyWRAPJNI.ProxyVideoConsumer_getDecodedWidth(swigCPtr, this);
-    }
+  public long getDecodedWidth() {
+    return tinyWRAPJNI.ProxyVideoConsumer_getDecodedWidth(swigCPtr, this);
+  }
 
-    public long getDecodedHeight() {
-        return tinyWRAPJNI.ProxyVideoConsumer_getDecodedHeight(swigCPtr, this);
-    }
+  public long getDecodedHeight() {
+    return tinyWRAPJNI.ProxyVideoConsumer_getDecodedHeight(swigCPtr, this);
+  }
 
-    public void setCallback(ProxyVideoConsumerCallback pCallback) {
-        tinyWRAPJNI.ProxyVideoConsumer_setCallback(swigCPtr, this, ProxyVideoConsumerCallback.getCPtr(pCallback), pCallback);
-    }
+  public void setCallback(ProxyVideoConsumerCallback pCallback) {
+    tinyWRAPJNI.ProxyVideoConsumer_setCallback(swigCPtr, this, ProxyVideoConsumerCallback.getCPtr(pCallback), pCallback);
+  }
 
-    public boolean setAutoResizeDisplay(boolean bAutoResizeDisplay) {
-        return tinyWRAPJNI.ProxyVideoConsumer_setAutoResizeDisplay(swigCPtr, this, bAutoResizeDisplay);
-    }
+  public boolean setAutoResizeDisplay(boolean bAutoResizeDisplay) {
+    return tinyWRAPJNI.ProxyVideoConsumer_setAutoResizeDisplay(swigCPtr, this, bAutoResizeDisplay);
+  }
 
-    public boolean getAutoResizeDisplay() {
-        return tinyWRAPJNI.ProxyVideoConsumer_getAutoResizeDisplay(swigCPtr, this);
-    }
+  public boolean getAutoResizeDisplay() {
+    return tinyWRAPJNI.ProxyVideoConsumer_getAutoResizeDisplay(swigCPtr, this);
+  }
 
-    public boolean setConsumeBuffer(java.nio.ByteBuffer pConsumeBufferPtr, long nConsumeBufferSize) {
-        return tinyWRAPJNI.ProxyVideoConsumer_setConsumeBuffer(swigCPtr, this, pConsumeBufferPtr, nConsumeBufferSize);
-    }
+  public boolean setConsumeBuffer(java.nio.ByteBuffer pConsumeBufferPtr, long nConsumeBufferSize) {
+    return tinyWRAPJNI.ProxyVideoConsumer_setConsumeBuffer(swigCPtr, this, pConsumeBufferPtr, nConsumeBufferSize);
+  }
 
-    public long pull(java.nio.ByteBuffer pOutput, long nSize) {
-        return tinyWRAPJNI.ProxyVideoConsumer_pull(swigCPtr, this, pOutput, nSize);
-    }
+  public long pull(java.nio.ByteBuffer pOutput, long nSize) {
+    return tinyWRAPJNI.ProxyVideoConsumer_pull(swigCPtr, this, pOutput, nSize);
+  }
 
-    public boolean reset() {
-        return tinyWRAPJNI.ProxyVideoConsumer_reset(swigCPtr, this);
-    }
+  public boolean reset() {
+    return tinyWRAPJNI.ProxyVideoConsumer_reset(swigCPtr, this);
+  }
 
-    public java.math.BigInteger getMediaSessionId() {
-        return tinyWRAPJNI.ProxyVideoConsumer_getMediaSessionId(swigCPtr, this);
-    }
+  public java.math.BigInteger getMediaSessionId() {
+    return tinyWRAPJNI.ProxyVideoConsumer_getMediaSessionId(swigCPtr, this);
+  }
 
-    public static boolean registerPlugin() {
-        return tinyWRAPJNI.ProxyVideoConsumer_registerPlugin();
-    }
+  public static boolean registerPlugin() {
+    return tinyWRAPJNI.ProxyVideoConsumer_registerPlugin();
+  }
 
-    public static void setDefaultChroma(tmedia_chroma_t eChroma) {
-        tinyWRAPJNI.ProxyVideoConsumer_setDefaultChroma(eChroma.swigValue());
-    }
+  public static void setDefaultChroma(tmedia_chroma_t eChroma) {
+    tinyWRAPJNI.ProxyVideoConsumer_setDefaultChroma(eChroma.swigValue());
+  }
 
-    public static void setDefaultAutoResizeDisplay(boolean bAutoResizeDisplay) {
-        tinyWRAPJNI.ProxyVideoConsumer_setDefaultAutoResizeDisplay(bAutoResizeDisplay);
-    }
+  public static void setDefaultAutoResizeDisplay(boolean bAutoResizeDisplay) {
+    tinyWRAPJNI.ProxyVideoConsumer_setDefaultAutoResizeDisplay(bAutoResizeDisplay);
+  }
 
 }

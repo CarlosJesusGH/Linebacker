@@ -29,22 +29,21 @@ import org.doubango.tinyWRAP.SipSession;
  */
 public class NgnRegistrationSession extends NgnSipSession {
 
-    private final RegistrationSession mSession;
+	private final RegistrationSession mSession;
 
-    /**
-     * Creates new registration session
-     *
-     * @param sipStack the stack to use to create the session
-     */
-    public NgnRegistrationSession(NgnSipStack sipStack) {
-        super(sipStack);
+	/**
+	 * Creates new registration session
+	 * @param sipStack the stack to use to create the session
+	 */
+    public NgnRegistrationSession(NgnSipStack sipStack){
+    	super(sipStack);
         mSession = new RegistrationSession(sipStack);
 
         super.init();
         super.setSigCompId(sipStack.getSigCompId());
-
-        mSession.setExpires(NgnEngine.getInstance().getConfigurationService().getInt(NgnConfigurationEntry.NETWORK_REGISTRATION_TIMEOUT,
-                NgnConfigurationEntry.DEFAULT_NETWORK_REGISTRATION_TIMEOUT));
+        
+        mSession.setExpires(NgnEngine.getInstance().getConfigurationService().getInt(NgnConfigurationEntry.NETWORK_REGISTRATION_TIMEOUT, 
+        		NgnConfigurationEntry.DEFAULT_NETWORK_REGISTRATION_TIMEOUT));
         
         /* support for 3GPP SMS over IP */
         super.addCaps("+g.3gpp.smsip");
@@ -73,24 +72,22 @@ public class NgnRegistrationSession extends NgnSipSession {
 
     /**
      * Sends SIP REGISTER request
-     *
      * @return true if succeed and false otherwise
      */
-    public boolean register() {
+    public boolean register(){
         return mSession.register_();
     }
 
     /**
      * Unregisters (SIP REGISTER with expires=0)
-     *
      * @return true if succeed and false otherwise
      */
-    public boolean unregister() {
+    public boolean unregister(){
         return mSession.unRegister();
     }
 
-    @Override
-    protected SipSession getSession() {
-        return mSession;
-    }
+	@Override
+	protected SipSession getSession() {
+		return mSession;
+	}
 }

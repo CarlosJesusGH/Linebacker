@@ -23,18 +23,17 @@ import org.doubango.ngn.media.NgnMediaType;
 
 public abstract class NgnHistoryMsrpEvent extends NgnHistoryEvent {
 
-    protected NgnHistoryMsrpEvent(NgnMediaType mediaType, String remoteParty) {
+    protected NgnHistoryMsrpEvent(NgnMediaType mediaType,String remoteParty) {
         super(mediaType, remoteParty);
     }
-
-    public static class NgnHistoryChatEvent extends NgnHistoryMsrpEvent {
+    
+    public static class NgnHistoryChatEvent extends NgnHistoryMsrpEvent{
 
         public NgnHistoryChatEvent(String remoteParty) {
             super(NgnMediaType.Chat, remoteParty);
         }
     }
-
-    public static class NgnHistoryFileTransferEvent extends NgnHistoryMsrpEvent {
+    public static class NgnHistoryFileTransferEvent extends NgnHistoryMsrpEvent{
 
         public NgnHistoryFileTransferEvent(String remoteParty) {
             super(NgnMediaType.FileTransfer, remoteParty);

@@ -18,8 +18,8 @@ package com.cmsys.linebacker;
 //
         import android.app.Application;
         import android.content.Context;
-        import android.support.multidex.MultiDex;
-        import android.support.multidex.MultiDexApplication;
+        //import android.support.multidex.MultiDex;
+        //import android.support.multidex.MultiDexApplication;
 //        import android.content.Intent;
 //
 //        import static com.google.samples.apps.iosched.util.LogUtils.LOGE;
@@ -66,6 +66,6 @@ public class AppApplication extends Application {     // CJG 20161204
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        MultiDex.install(this);
+        //MultiDex.install(this);
     }
 }

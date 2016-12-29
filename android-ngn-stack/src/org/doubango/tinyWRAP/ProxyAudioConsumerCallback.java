@@ -9,66 +9,66 @@
 package org.doubango.tinyWRAP;
 
 public class ProxyAudioConsumerCallback {
-    private long swigCPtr;
-    protected boolean swigCMemOwn;
+  private long swigCPtr;
+  protected boolean swigCMemOwn;
 
-    protected ProxyAudioConsumerCallback(long cPtr, boolean cMemoryOwn) {
-        swigCMemOwn = cMemoryOwn;
-        swigCPtr = cPtr;
-    }
+  protected ProxyAudioConsumerCallback(long cPtr, boolean cMemoryOwn) {
+    swigCMemOwn = cMemoryOwn;
+    swigCPtr = cPtr;
+  }
 
-    protected static long getCPtr(ProxyAudioConsumerCallback obj) {
-        return (obj == null) ? 0 : obj.swigCPtr;
-    }
+  protected static long getCPtr(ProxyAudioConsumerCallback obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
 
-    protected void finalize() {
-        delete();
-    }
+  protected void finalize() {
+    delete();
+  }
 
-    public synchronized void delete() {
-        if (swigCPtr != 0) {
-            if (swigCMemOwn) {
-                swigCMemOwn = false;
-                tinyWRAPJNI.delete_ProxyAudioConsumerCallback(swigCPtr);
-            }
-            swigCPtr = 0;
-        }
-    }
-
-    protected void swigDirectorDisconnect() {
+  public synchronized void delete() {
+    if (swigCPtr != 0) {
+      if (swigCMemOwn) {
         swigCMemOwn = false;
-        delete();
+        tinyWRAPJNI.delete_ProxyAudioConsumerCallback(swigCPtr);
+      }
+      swigCPtr = 0;
     }
+  }
 
-    public void swigReleaseOwnership() {
-        swigCMemOwn = false;
-        tinyWRAPJNI.ProxyAudioConsumerCallback_change_ownership(this, swigCPtr, false);
-    }
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
 
-    public void swigTakeOwnership() {
-        swigCMemOwn = true;
-        tinyWRAPJNI.ProxyAudioConsumerCallback_change_ownership(this, swigCPtr, true);
-    }
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    tinyWRAPJNI.ProxyAudioConsumerCallback_change_ownership(this, swigCPtr, false);
+  }
 
-    public ProxyAudioConsumerCallback() {
-        this(tinyWRAPJNI.new_ProxyAudioConsumerCallback(), true);
-        tinyWRAPJNI.ProxyAudioConsumerCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
-    }
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    tinyWRAPJNI.ProxyAudioConsumerCallback_change_ownership(this, swigCPtr, true);
+  }
 
-    public int prepare(int ptime, int rate, int channels) {
-        return (getClass() == ProxyAudioConsumerCallback.class) ? tinyWRAPJNI.ProxyAudioConsumerCallback_prepare(swigCPtr, this, ptime, rate, channels) : tinyWRAPJNI.ProxyAudioConsumerCallback_prepareSwigExplicitProxyAudioConsumerCallback(swigCPtr, this, ptime, rate, channels);
-    }
+  public ProxyAudioConsumerCallback() {
+    this(tinyWRAPJNI.new_ProxyAudioConsumerCallback(), true);
+    tinyWRAPJNI.ProxyAudioConsumerCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
+  }
 
-    public int start() {
-        return (getClass() == ProxyAudioConsumerCallback.class) ? tinyWRAPJNI.ProxyAudioConsumerCallback_start(swigCPtr, this) : tinyWRAPJNI.ProxyAudioConsumerCallback_startSwigExplicitProxyAudioConsumerCallback(swigCPtr, this);
-    }
+  public int prepare(int ptime, int rate, int channels) {
+    return (getClass() == ProxyAudioConsumerCallback.class) ? tinyWRAPJNI.ProxyAudioConsumerCallback_prepare(swigCPtr, this, ptime, rate, channels) : tinyWRAPJNI.ProxyAudioConsumerCallback_prepareSwigExplicitProxyAudioConsumerCallback(swigCPtr, this, ptime, rate, channels);
+  }
 
-    public int pause() {
-        return (getClass() == ProxyAudioConsumerCallback.class) ? tinyWRAPJNI.ProxyAudioConsumerCallback_pause(swigCPtr, this) : tinyWRAPJNI.ProxyAudioConsumerCallback_pauseSwigExplicitProxyAudioConsumerCallback(swigCPtr, this);
-    }
+  public int start() {
+    return (getClass() == ProxyAudioConsumerCallback.class) ? tinyWRAPJNI.ProxyAudioConsumerCallback_start(swigCPtr, this) : tinyWRAPJNI.ProxyAudioConsumerCallback_startSwigExplicitProxyAudioConsumerCallback(swigCPtr, this);
+  }
 
-    public int stop() {
-        return (getClass() == ProxyAudioConsumerCallback.class) ? tinyWRAPJNI.ProxyAudioConsumerCallback_stop(swigCPtr, this) : tinyWRAPJNI.ProxyAudioConsumerCallback_stopSwigExplicitProxyAudioConsumerCallback(swigCPtr, this);
-    }
+  public int pause() {
+    return (getClass() == ProxyAudioConsumerCallback.class) ? tinyWRAPJNI.ProxyAudioConsumerCallback_pause(swigCPtr, this) : tinyWRAPJNI.ProxyAudioConsumerCallback_pauseSwigExplicitProxyAudioConsumerCallback(swigCPtr, this);
+  }
+
+  public int stop() {
+    return (getClass() == ProxyAudioConsumerCallback.class) ? tinyWRAPJNI.ProxyAudioConsumerCallback_stop(swigCPtr, this) : tinyWRAPJNI.ProxyAudioConsumerCallback_stopSwigExplicitProxyAudioConsumerCallback(swigCPtr, this);
+  }
 
 }
