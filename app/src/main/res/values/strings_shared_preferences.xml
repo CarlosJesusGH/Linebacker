@@ -41,4 +41,8 @@
     <string name="pref_key_setting_voicemail_record">voicemailRecord</string>
     <string name="pref_title_setting_voicemail_record">Change voicemail message</string>
     <string name="pref_description_setting_voicemail_record">Record and activate new message for your voicemail</string>
+
+    <string name="pref_key_setting_check_voicemail_connection">voicemailCheckConn</string>
+    <string name="pref_title_setting_check_voicemail_connection">Check voicemail connection</string>
+    <string name="pref_description_setting_check_voicemail_connection">Check connectivity to voicemail and sign in again if necessary</string>
 </resources>

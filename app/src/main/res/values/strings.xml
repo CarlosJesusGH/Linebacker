@@ -61,6 +61,7 @@
     <string name="action_register_user">Register</string>
     <string name="action_create_pbx_account">Create VOIP account</string>
     <string name="action_password_recovery">Forgot your password?</string>
+    <string name="action_give_app_permissions">Problem giving app permissions?</string>
     <string name="action_delete_user">Delete User</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>

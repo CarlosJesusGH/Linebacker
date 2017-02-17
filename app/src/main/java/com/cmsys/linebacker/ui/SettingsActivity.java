@@ -4,8 +4,10 @@ package com.cmsys.linebacker.ui;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.media.Ringtone;
@@ -13,6 +15,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -39,6 +42,7 @@ import android.widget.TextView;
 import com.cmsys.linebacker.R;
 import com.cmsys.linebacker.bean.PhoneCompanyBean;
 import com.cmsys.linebacker.bean.SettingsBean;
+import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.util.AudioUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.HashMapUtils;
@@ -53,6 +57,8 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+
+import org.doubango.ngn.events.NgnRegistrationEventArgs;
 
 import java.io.File;
 import java.util.HashMap;
@@ -72,6 +78,7 @@ import java.util.List;
 public class SettingsActivity extends AppCompatPreferenceActivity {
     private static String mUserId;
     private static SettingsBean mSettings;
+    private static UserBean mUserBean;
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -125,6 +132,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     };
 
+
     /**
      * Helper method to determine if the device has an extra-large screen. For
      * example, 10" tablets are extra-large.
@@ -165,6 +173,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         mUserId = UserAuthUtils.getUserId(this);
         if(mUserId == null){
             finish();
+        }
+        // Get user info from bundle
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null && mUserBean == null){
+            mUserBean = (UserBean) bundle.getSerializable(CONSTANTS.BUNDLE_EXTRA_USER);
         }
     }
 
@@ -321,16 +334,62 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     }
 
+    public static void tryPbxAutoSignIn(DoubangoUtils mDoubango, final Preference preference, Activity activity){
+        mDoubango.serverSignIn(mUserBean.getAsteriskExtension(), mUserBean.getAsteriskExtensionPass());
+        MessageUtils.toast(preference.getContext(), "Trying again auto sign in", false);
+
+        // Subscribe for registration state changes
+        final DoubangoUtils finalMDoubango = mDoubango;
+        BroadcastReceiver mSipBroadCastRecv = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final String action = intent.getAction();
+                // Registration Event
+                if (NgnRegistrationEventArgs.ACTION_REGISTRATION_EVENT.equals(action)) {
+                    if (finalMDoubango.isSipServiceRegistered()) {
+                        MessageUtils.toast(preference.getContext(), "PBX auto-login successful", true);
+                    } else {
+                        MessageUtils.toast(preference.getContext(), "PBX service unregistered", true);
+                    }
+                }
+            }
+        };
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(NgnRegistrationEventArgs.ACTION_REGISTRATION_EVENT);
+        activity.registerReceiver(mSipBroadCastRecv, intentFilter);
+        // Check again after 5 seconds
+        Handler handler = new Handler();
+        final DoubangoUtils finalMDoubango1 = mDoubango;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (finalMDoubango1.isSipServiceRegistered()) {
+                    MessageUtils.toast(preference.getContext(), "PBX +5secs check successful", true);
+                } else {
+                    MessageUtils.toast(preference.getContext(), "PBX +5secs check unregistered", true);
+                }
+            }
+        }, 5000);
+    }
+
     /**
      * This fragment shows notification preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class VoicemailPreferenceFragment extends PreferenceFragment {
+        //private static UserBean mUserBean;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_voicemail);
+
+            //// Get user info from bundle
+            //Bundle bundle = getArguments();
+            //if(bundle != null && mUserBean == null){
+            //    mUserBean = (UserBean) bundle.getSerializable(CONSTANTS.BUNDLE_EXTRA_USER);
+            //}
 
 //            Preference buttonSignIn = (Preference) findPreference(getString(R.string.pref_key_setting_voicemail_signin));
 //            buttonSignIn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -385,6 +444,49 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     Intent intent = new Intent(preference.getContext(), AudioRecordActivity.class);
                     startActivity(intent);
+                    return true;
+                }
+            });
+
+            Preference buttonCheckConnection = (Preference) findPreference(getString(R.string.pref_key_setting_check_voicemail_connection));
+            buttonCheckConnection.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(final Preference preference) {
+                    DoubangoUtils mDoubango;
+                    mDoubango = new DoubangoUtils(preference.getContext());
+                    mDoubango.Init();
+                    if (mDoubango.isSipServiceRegistered()) {
+                        MessageUtils.toast(preference.getContext(), "Already connected to pbx", true);
+                    }
+                    else {
+                        MessageUtils.toast(preference.getContext(), "Not signed in, trying to reconnect", true);
+                    }
+                    //
+                    // Try pbx auto sign-in
+                    if (mDoubango == null)
+                        mDoubango = new DoubangoUtils(preference.getContext());
+                    if(!mDoubango.Init()){
+                        MessageUtils.toast(preference.getContext(), "Problem initiating Doubango services", false);
+                    } else{
+                        // Starts the engine
+                        if (!mDoubango.getEngine().isStarted()) {
+                            if (mDoubango.getEngine().start()) {
+                                MessageUtils.toast(preference.getContext(), "Engine started", false);
+                                if(mUserBean != null && mUserBean.getAsteriskExtension() != null) {
+                                    tryPbxAutoSignIn(mDoubango, preference, getActivity());
+                                }
+                            } else {
+                                MessageUtils.toast(preference.getContext(), "Failed to start the engine", false);
+                            }
+                        } else{
+                            MessageUtils.toast(preference.getContext(), "Engine was already started\nTrying to signin again", false);
+                            if(mUserBean != null && mUserBean.getAsteriskExtension() != null)
+                                tryPbxAutoSignIn(mDoubango, preference, getActivity());
+                            else
+                                MessageUtils.toast(preference.getContext(), "User info not available", false);
+                        }
+                    }
+                    //
                     return true;
                 }
             });

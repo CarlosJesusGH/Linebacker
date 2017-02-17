@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -53,6 +54,7 @@ import com.cmsys.linebacker.bean.SettingsBean;
 import com.cmsys.linebacker.bean.UserBean;
 import com.cmsys.linebacker.util.AppInfoUtils;
 import com.cmsys.linebacker.util.AppLinkIndexing;
+import com.cmsys.linebacker.util.AppPermissionsUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.CallLogUtils;
 import com.cmsys.linebacker.util.CheckInputDataUtils;
@@ -154,6 +156,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 attemptPasswordRecovery();
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Button mGiveAppPermissions = (Button) findViewById(R.id.give_app_permissions);
+            mGiveAppPermissions.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    attemptGivePermissions();
+                }
+            });
+            mGiveAppPermissions.setVisibility(View.VISIBLE);
+        }
 
         Button mDeleteUser = (Button) findViewById(R.id.delete_user);
         mDeleteUser.setOnClickListener(new OnClickListener() {
@@ -272,6 +285,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 populateAutoComplete();
             }
         }
+        switch (requestCode) {
+            case CONSTANTS.MY_PERMISSIONS_REQUEST_ID: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    MessageUtils.toast(getApplicationContext(), "permission granted", false);
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+                    MessageUtils.toast(getApplicationContext(), "permission denied", false);
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
 
@@ -285,13 +317,56 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return;
         }
 
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        if (email.equals(password) && email.equals("development")){
+            CONSTANTS.SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER = CONSTANTS.SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER_DEV;
+            CONSTANTS.SYNC_WS_ASTERISk_UPDATE_RECORDINGS_TRIGGER = CONSTANTS.SYNC_WS_ASTERISk_UPDATE_RECORDINGS_TRIGGER_DEV;
+            CONSTANTS.SYNC_WS_LOGIN_API = CONSTANTS.SYNC_WS_LOGIN_API_DEV;
+            CONSTANTS.SYNC_WS_REGISTER_API = CONSTANTS.SYNC_WS_REGISTER_API_DEV;
+            CONSTANTS.SYNC_WS_PBX_ACCOUNT_API = CONSTANTS.SYNC_WS_PBX_ACCOUNT_API_DEV;
+            CONSTANTS.SYNC_WS_ASTERISk_REMOVE_LOG = CONSTANTS.SYNC_WS_ASTERISk_REMOVE_LOG_DEV;
+            CONSTANTS.SYNC_WS_UPLOAD_AUDIO_API = CONSTANTS.SYNC_WS_UPLOAD_AUDIO_API_DEV;
+            CONSTANTS.SYNC_WS_REPORT_CASE_API = CONSTANTS.SYNC_WS_REPORT_CASE_API_DEV;
+            CONSTANTS.FIREBASE_APP_NAME = CONSTANTS.FIREBASE_APP_NAME_DEV;
+            MessageUtils.toast(getApplicationContext(), "Mode change to DEVELOPMENT", true);
+            return;
+        } else if (email.equals(password) && email.equals("production")){
+            CONSTANTS.SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER = CONSTANTS.SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER_PROD;
+            CONSTANTS.SYNC_WS_ASTERISk_UPDATE_RECORDINGS_TRIGGER = CONSTANTS.SYNC_WS_ASTERISk_UPDATE_RECORDINGS_TRIGGER_PROD;
+            CONSTANTS.SYNC_WS_LOGIN_API = CONSTANTS.SYNC_WS_LOGIN_API_PROD;
+            CONSTANTS.SYNC_WS_REGISTER_API = CONSTANTS.SYNC_WS_REGISTER_API_PROD;
+            CONSTANTS.SYNC_WS_PBX_ACCOUNT_API = CONSTANTS.SYNC_WS_PBX_ACCOUNT_API_PROD;
+            CONSTANTS.SYNC_WS_ASTERISk_REMOVE_LOG = CONSTANTS.SYNC_WS_ASTERISk_REMOVE_LOG_PROD;
+            CONSTANTS.SYNC_WS_UPLOAD_AUDIO_API = CONSTANTS.SYNC_WS_UPLOAD_AUDIO_API_PROD;
+            CONSTANTS.SYNC_WS_REPORT_CASE_API = CONSTANTS.SYNC_WS_REPORT_CASE_API_PROD;
+            CONSTANTS.FIREBASE_APP_NAME = CONSTANTS.FIREBASE_APP_NAME_PROD;
+            MessageUtils.toast(getApplicationContext(), "Mode change to PRODUCTION", true);
+            return;
+        }
+
+        //if (!AppPermissionsUtils.checkPermissionsAndRequest(this)){
+        //    MessageUtils.toast(getApplicationContext(), "Please grant app permissions", true);
+        //    return;
+        //}
+
+        //if(!AppPermissionsUtils.mayRequestContacts(this)) {
+        //    MessageUtils.toast(getApplicationContext(), "Please grant app permissions", true);
+        //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        //        requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+        //    }
+        //    return;
+        //}
+
+        if(!AppPermissionsUtils.checkPermissionsAndRequest(this)) {
+            MessageUtils.toast(getApplicationContext(), "Please grant app permissions", true);
+            return;
+        }
+
+        // Reset errors.
+        mEmailView.setError(null);
+        mPasswordView.setError(null);
 
         boolean cancel = false;
         View focusView = null;
@@ -800,6 +875,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             MessageUtils.toast(getApplicationContext(), getString(R.string.error_all_fields_required), false);
         }
+    }
+
+    void attemptGivePermissions(){
+        final MessageUtils msg = new MessageUtils(this,"Give permissions", "In the following screen, go to " +
+                "\"Permissions\" and accept all the items.\nLater press back to return to Linebacker.", 0, false);
+        msg.getBAccept().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+                msg.dismiss();
+            }
+        });
+        msg.getBCancel().setVisibility(View.VISIBLE);
+        msg.show();
     }
 
     private boolean isEmailValid(String email) {

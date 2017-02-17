@@ -16,9 +16,12 @@ import android.os.Environment;
 public class CONSTANTS {
 
     //---DB names----------------
-    public static int DB_VERSION = 1;
-    public static String DB_NAME = "cmsys_db.sqlite";
-    public static String DB_PATH = "/data/data/com.cmsys/databases/";
+    public static final int DB_VERSION = 1;
+    public static final String DB_NAME = "cmsys_db.sqlite";
+    public static final String DB_PATH = "/data/data/com.cmsys/databases/";
+
+    //---App permission request constants-----
+    public static final int MY_PERMISSIONS_REQUEST_ID = 101;
 
     //---Shared Preferences------
     public static String PREFS_NAME = "MyPrefsFile";
@@ -44,17 +47,41 @@ public class CONSTANTS {
     public static String SYNC_WS_ASTERISk_GET_USER_DATA = SYNC_WS_COMMON_PATH + "asteriskGetNewUserData.json";
     public static String SYNC_WS_ASTERISk_TEST_VOICE_MAIL = SYNC_WS_COMMON_PATH + "asteriskTestVoicemailSetup.json";
     //    public static String SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER = SYNC_WS_COMMON_PATH + "asteriskUpdateContactsTrigger.json";
-    public static String SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER = "http://linebacker.privacyprotector.org/api/contactsByUser/store/all/";
-    public static String SYNC_WS_ASTERISk_UPDATE_RECORDINGS_TRIGGER = "http://linebacker.privacyprotector.org/api/recordedAudiosByUser/audio/";
-    public static String SYNC_WS_LOGIN_API = "http://linebacker.privacyprotector.org/api/login";
-    public static String SYNC_WS_REGISTER_API = "http://linebacker.privacyprotector.org/api/register";
-    public static String SYNC_WS_PBX_ACCOUNT_API = "http://linebacker.privacyprotector.org/api/account";
-    public static String SYNC_WS_ASTERISk_REMOVE_LOG = "http://linebacker.privacyprotector.org/api/deleteAudio/";
-    public static String SYNC_WS_UPLOAD_AUDIO_API = "http://linebacker.privacyprotector.org/api/voicemail";
-    public static String SYNC_WS_REPORT_CASE_API = "http://linebacker.privacyprotector.org/api/filingacase";
+    public static String PBX_SIP_DOMAIN = "voip.mylinebacker.net";
+    public static String PBX_SIP_SERVER_HOST = "voip.mylinebacker.net";
+    public static int PBX_SIP_SERVER_PORT = 5060;
+    //
+    public static String SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER = "http://www.privacyprotector.org/api/contactsByUser/store/all/";
+    public static String SYNC_WS_ASTERISk_UPDATE_RECORDINGS_TRIGGER = "http://www.privacyprotector.org/api/recordedAudiosByUser/audio/";
+    public static String SYNC_WS_LOGIN_API = "http://www.privacyprotector.org/api/login";
+    public static String SYNC_WS_REGISTER_API = "http://www.privacyprotector.org/api/register";
+    public static String SYNC_WS_PBX_ACCOUNT_API = "http://www.privacyprotector.org/api/account";
+    public static String SYNC_WS_ASTERISk_REMOVE_LOG = "http://www.privacyprotector.org/api/deleteAudio/";
+    public static String SYNC_WS_UPLOAD_AUDIO_API = "http://www.privacyprotector.org/api/voicemail";
+    public static String SYNC_WS_REPORT_CASE_API = "http://www.privacyprotector.org/api/filingacase";
+    //
+    public static String SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER_DEV = "http://linebacker.privacyprotector.org/api/contactsByUser/store/all/";
+    public static String SYNC_WS_ASTERISk_UPDATE_RECORDINGS_TRIGGER_DEV = "http://linebacker.privacyprotector.org/api/recordedAudiosByUser/audio/";
+    public static String SYNC_WS_LOGIN_API_DEV = "http://linebacker.privacyprotector.org/api/login";
+    public static String SYNC_WS_REGISTER_API_DEV = "http://linebacker.privacyprotector.org/api/register";
+    public static String SYNC_WS_PBX_ACCOUNT_API_DEV = "http://linebacker.privacyprotector.org/api/account";
+    public static String SYNC_WS_ASTERISk_REMOVE_LOG_DEV = "http://linebacker.privacyprotector.org/api/deleteAudio/";
+    public static String SYNC_WS_UPLOAD_AUDIO_API_DEV = "http://linebacker.privacyprotector.org/api/voicemail";
+    public static String SYNC_WS_REPORT_CASE_API_DEV = "http://linebacker.privacyprotector.org/api/filingacase";
+    //
+    public static String SYNC_WS_ASTERISk_UPDATE_CONTACTS_TRIGGER_PROD = "http://www.privacyprotector.org/api/contactsByUser/store/all/";
+    public static String SYNC_WS_ASTERISk_UPDATE_RECORDINGS_TRIGGER_PROD = "http://www.privacyprotector.org/api/recordedAudiosByUser/audio/";
+    public static String SYNC_WS_LOGIN_API_PROD = "http://www.privacyprotector.org/api/login";
+    public static String SYNC_WS_REGISTER_API_PROD = "http://www.privacyprotector.org/api/register";
+    public static String SYNC_WS_PBX_ACCOUNT_API_PROD = "http://www.privacyprotector.org/api/account";
+    public static String SYNC_WS_ASTERISk_REMOVE_LOG_PROD = "http://www.privacyprotector.org/api/deleteAudio/";
+    public static String SYNC_WS_UPLOAD_AUDIO_API_PROD = "http://www.privacyprotector.org/api/voicemail";
+    public static String SYNC_WS_REPORT_CASE_API_PROD = "http://www.privacyprotector.org/api/filingacase";
 
     //---Firebase------------------
     public static String FIREBASE_APP_NAME = "linebacker";
+    public static String FIREBASE_APP_NAME_DEV = "linebacker-dev";
+    public static String FIREBASE_APP_NAME_PROD = "linebacker";
     public static String FIREBASE_APP_URL = "https://" + CONSTANTS.FIREBASE_APP_NAME + ".firebaseio.com/";
     public static String FIREBASE_DOC_USER = "user";
     public static String FIREBASE_DOC_RECORDED_AUDIOS = "recordedAudiosByUser";

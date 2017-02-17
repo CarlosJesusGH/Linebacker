@@ -182,8 +182,10 @@ public class MessageUtils extends AlertDialog{
 		//builder.setIcon(R.drawable.dialog_question);
 		builder.setTitle(pTitle);
 		///builder.setInverseBackgroundForced(true);	// Removed 20151129
-		builder.setPositiveButton("Yes", pPositiveClickListenter);
-		builder.setNegativeButton("No", pNegativeClickListenter);
+		if (pPositiveClickListenter != null)
+		    builder.setPositiveButton("Yes", pPositiveClickListenter);
+        if (pNegativeClickListenter != null)
+		    builder.setNegativeButton("No", pNegativeClickListenter);
 		AlertDialog alert = builder.create();
 		alert.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);

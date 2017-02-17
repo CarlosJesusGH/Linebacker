@@ -38,9 +38,9 @@ public class DoubangoUtils {
     private final Engine mEngine;
     private final INgnConfigurationService mConfigurationService;
     private final INgnSipService mSipService;
-    private final static String SIP_DOMAIN = "voip.mylinebacker.net";
-    private final static String SIP_SERVER_HOST = "voip.mylinebacker.net";
-    private final static int SIP_SERVER_PORT = 5060;
+    private final static String SIP_DOMAIN = CONSTANTS.PBX_SIP_DOMAIN;
+    private final static String SIP_SERVER_HOST = CONSTANTS.PBX_SIP_SERVER_HOST;
+    private final static int SIP_SERVER_PORT = CONSTANTS.PBX_SIP_SERVER_PORT;
     private static String SIP_USERNAME = null;
     private static String SIP_PASSWORD = null; //"Linebacker2016*";
     public final static String EXTRAT_SIP_SESSION_ID = "SipSession";

@@ -40,6 +40,7 @@ import com.cmsys.linebacker.io.DataIO;
 import com.cmsys.linebacker.observer.PhoneContactsObserver;
 import com.cmsys.linebacker.util.AppInfoUtils;
 import com.cmsys.linebacker.util.AppInitialSetupUtils;
+import com.cmsys.linebacker.util.AppPermissionsUtils;
 import com.cmsys.linebacker.util.CONSTANTS;
 import com.cmsys.linebacker.util.ExceptionUtils;
 // CJG 20161203
@@ -172,7 +173,7 @@ public class RecordingLogActivity extends AppCompatActivity
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(NgnRegistrationEventArgs.ACTION_REGISTRATION_EVENT);
         registerReceiver(mSipBroadCastRecv, intentFilter);
-        // Check again after 3 seconds
+        // Check again after 5 seconds
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -189,6 +190,10 @@ public class RecordingLogActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+        if(!AppPermissionsUtils.checkPermissions(this)){
+            logOutAndGoLogin();
+            MessageUtils.toast(getApplicationContext(), "App permissions not granted", true);
+        }
         if(isSearchOpened || isFiltered){
             isSearchOpened = ViewUtils.handleMenuSearch(this, mRecordingAdapter, true, mSearchAction);
             if(isFiltered){
@@ -292,6 +297,11 @@ public class RecordingLogActivity extends AppCompatActivity
                     } else {
                         MessageUtils.toast(getApplicationContext(), "Failed to start the engine", false);
                     }
+                } else{
+                    MessageUtils.toast(getApplicationContext(), "Engine was already started\n" +
+                            "Trying to signin again", false);
+                    if(mUserBean != null && mUserBean.getAsteriskExtension() != null)
+                        tryPbxAutoSignIn();
                 }
             }
         } else{
@@ -380,27 +390,27 @@ public class RecordingLogActivity extends AppCompatActivity
         //firebaseRef.orderByKey().limitToLast(100)
         firebaseRef
                 .addChildEventListener(new ChildEventListener() {
-            // Retrieve new posts as they are added to the database
-            @Override
-            public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
-                //adapter.add((String) dataSnapshot.child("AudioId").getValue());
-                //System.out.println(snapshot.getValue());
-                RecordingBean newRecording = snapshot.getValue(RecordingBean.class);
-                newRecording.setKey(snapshot.getKey());
-                mRecordingAdapter.add(newRecording);
-                ViewUtils.hideProgressBar(progressBar);
-                resetNavigationDrawerFilters();
-            }
+                    // Retrieve new posts as they are added to the database
+                    @Override
+                    public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
+                        //adapter.add((String) dataSnapshot.child("AudioId").getValue());
+                        //System.out.println(snapshot.getValue());
+                        RecordingBean newRecording = snapshot.getValue(RecordingBean.class);
+                        newRecording.setKey(snapshot.getKey());
+                        mRecordingAdapter.add(newRecording);
+                        ViewUtils.hideProgressBar(progressBar);
+                        resetNavigationDrawerFilters();
+                    }
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                //adapter.remove((String) dataSnapshot.child("AudioId").getValue());
-                mRecordingAdapter.remove(dataSnapshot.getValue(RecordingBean.class));
-            }
-            @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-            @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-            @Override public void onCancelled(FirebaseError firebaseError) {}
-        });
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        //adapter.remove((String) dataSnapshot.child("AudioId").getValue());
+                        mRecordingAdapter.remove(dataSnapshot.getValue(RecordingBean.class));
+                    }
+                    @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+                    @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+                    @Override public void onCancelled(FirebaseError firebaseError) {}
+                });
         //
         firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -474,6 +484,7 @@ public class RecordingLogActivity extends AppCompatActivity
         }
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
+            intent.putExtra(CONSTANTS.BUNDLE_EXTRA_USER, mUserBean);
             //Intent intent = new Intent(this, AudioRecordActivity.class);
             startActivity(intent);
             return true;
@@ -563,35 +574,7 @@ public class RecordingLogActivity extends AppCompatActivity
             mu.show();
         }
         if (id == R.id.action_logout) {
-            UserAuthUtils.logUserOut(this);
-            SharedPreferencesUtils.removeAll(this);
-            if(mDoubango.getEngine().isStarted()) {
-                if(mDoubango.isSipServiceRegistered())
-                    mDoubango.serverSignOut();
-                mDoubango.getEngine().stop();
-            }
-
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            //
-            /*int notificationId = (int) Calendar.getInstance().getTimeInMillis();
-            ArrayList<NotificationCompat.Action> actions = new ArrayList<>();
-            //
-            // Create Intent
-            Intent intent = new Intent(this, NotificationButtonReceiver.class);
-            intent.putExtra(CONSTANTS.NOTIFICATION_ID, notificationId);
-            intent.putExtra(CONSTANTS.ACTION_ID, CONSTANTS.ACTION_CALL_BACK);
-            intent.putExtra(CONSTANTS.PHONE_NUMBER_ID, "123456789");
-            // Create PendingIntent
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, notificationId + 0,  // Id must be different for every action button
-                    intent, PendingIntent.FLAG_CANCEL_CURRENT);
-            // Create Notification Action
-            NotificationCompat.Action action = new NotificationCompat.Action
-                    .Builder(R.drawable.ic_call_24dp, "Call Back", pendingIntent).build();
-            // Add Action to array
-            actions.add(action);
-            //
-            MessageUtils.notification(getApplicationContext(), "LINEBACKER Handled Call", "Incoming Number: 123456789", notificationId, null, actions, true);*/
+            logOutAndGoLogin();
             return true;
         }
 //        if (id == R.id.action_registration_status) {
@@ -608,7 +591,18 @@ public class RecordingLogActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void logOutAndGoLogin() {
+        UserAuthUtils.logUserOut(this);
+        SharedPreferencesUtils.removeAll(this);
+        if(mDoubango != null && mDoubango.getEngine().isStarted()) {
+            if(mDoubango.isSipServiceRegistered())
+                mDoubango.serverSignOut();
+            mDoubango.getEngine().stop();
+        }
 
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

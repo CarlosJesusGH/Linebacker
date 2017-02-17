@@ -85,6 +85,15 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/give_app_permissions"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/action_give_app_permissions"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <Button
                 android:id="@+id/password_recovery"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"

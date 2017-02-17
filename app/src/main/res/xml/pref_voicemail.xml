@@ -25,4 +25,9 @@
         android:key="@string/pref_key_setting_voicemail_record"
         android:summary="@string/pref_description_setting_voicemail_record" />
 
+    <Preference
+        android:title="@string/pref_title_setting_check_voicemail_connection"
+        android:key="@string/pref_key_setting_check_voicemail_connection"
+        android:summary="@string/pref_description_setting_check_voicemail_connection" />
+
 </PreferenceScreen>

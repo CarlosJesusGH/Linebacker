@@ -8,9 +8,9 @@ android {
     defaultConfig {
         applicationId "com.cmsys.linebacker"
         minSdkVersion 16
-        targetSdkVersion 23
-        versionCode 5
-        versionName "1.0 Dec-25"
+        targetSdkVersion 23     //use 23 for GoogleConsole and 22 for avoid doubango error on avd v23(6.0)
+        versionCode 10
+        versionName "0.1.0 Feb-17"
         // Enabling multidex support. http://developer.android.com/tools/building/multidex.html
         // CJG 20161202
         multiDexEnabled true
