@@ -41,6 +41,12 @@ public class AudioRecordActivity extends AppCompatActivity {
         cbSendFile.setServerUrl(CONSTANTS.SYNC_WS_UPLOAD_AUDIO_API);
         cbSendFile.addPostParams("id", UserAuthUtils.getUserId(getApplicationContext()));
         cbSendFile.addPostParams("name", "unavail");
+        //
+        // Add views that will be hidden when executing some task
+        cbPlay.addViewToHide(cbRecord);
+        cbPlay.addViewToHide(cbSendFile);
+        cbRecord.addViewToHide(cbPlay);
+        cbRecord.addViewToHide(cbSendFile);
     }
 
     @Override

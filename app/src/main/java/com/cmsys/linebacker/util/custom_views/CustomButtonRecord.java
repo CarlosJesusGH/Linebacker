@@ -1,13 +1,25 @@
 package com.cmsys.linebacker.util.custom_views;
 
 import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.media.ToneGenerator;
+import android.net.Uri;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.cmsys.linebacker.R;
+import com.cmsys.linebacker.util.MessageUtils;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by CarlosJesusGH on 2/12/16.
@@ -28,6 +40,21 @@ public class CustomButtonRecord extends Button {
     private String startText = "start", stopText = "stop";
     private boolean mStartRecording = true;
     public MediaRecorder mRecorder = null;
+    private List<View> viewsToDisable;
+
+    public void addViewToHide(View view){
+        viewsToDisable.add(view);
+    }
+
+    private void changeViewsVisible(int newState){
+        for (View iter: viewsToDisable) {
+            try {
+                iter.setVisibility(newState);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void setFileName(String mFileName) {
         this.mFileName = mFileName;
@@ -47,8 +74,10 @@ public class CustomButtonRecord extends Button {
             onRecord(mStartRecording);
             if (mStartRecording) {
                 setText(stopText);
+                changeViewsVisible(View.INVISIBLE);
             } else {
                 setText(startText);
+                changeViewsVisible(View.VISIBLE);
             }
             mStartRecording = !mStartRecording;
         }
@@ -58,6 +87,7 @@ public class CustomButtonRecord extends Button {
         super(ctx);
         setText(startText);
         setOnClickListener(clicker);
+        viewsToDisable = new ArrayList<>();
     }
 
     public CustomButtonRecord(Context context, AttributeSet attrs)
@@ -65,13 +95,31 @@ public class CustomButtonRecord extends Button {
         super(context, attrs);
         setText(startText);
         setOnClickListener(clicker);
+        viewsToDisable = new ArrayList<>();
     }
 
     private void onRecord(boolean start) {
         if (start) {
-            startRecording();
+            playBeep();
+            MessageUtils.toast(getContext(), getContext().getString(R.string.message_after_beep), false);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startRecording();
+                }
+            }, 1000);
+
         } else {
             stopRecording();
+        }
+    }
+
+    private void playBeep() {
+        try {
+            ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_DTMF, 100);
+            toneG.startTone(ToneGenerator.TONE_DTMF_0, 1000);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

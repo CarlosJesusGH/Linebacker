@@ -42,6 +42,7 @@
     <string name="message_firebase_email_password_sent">Email password sent successfully</string>
     <string name="message_firebase_user_password_changed">Password changed successfully</string>
     <string name="message_firebase_user_removed">Firebase user removed successfully</string>
+    <string name="message_after_beep">After beep</string>
 
     <!--Error Messages-->
     <string name="common_error_invalid_email">This email address is invalid</string>

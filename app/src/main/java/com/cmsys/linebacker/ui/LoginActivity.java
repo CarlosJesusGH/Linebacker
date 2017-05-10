@@ -558,12 +558,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         protected void onPostExecute(RestMessageRegisterBean restMessageBean) {
                             super.onPostExecute(restMessageBean);
                             if (restMessageBean != null && restMessageBean.isCreated()) {
-                                MessageUtils.toast(getApplicationContext(), restMessageBean.getMessage(), false);
+                                //MessageUtils.toast(getApplicationContext(), restMessageBean.getMessage(), false);
                                 mu.cancel();
+                                MessageUtils msg = new MessageUtils(mActivity,"Next step", restMessageBean.getMessage(), 0, true);
                             } else if (restMessageBean != null)
-                                if (restMessageBean.getErrors() != null && restMessageBean.getErrors().size() > 0)
-                                    MessageUtils.toast(getApplicationContext(), restMessageBean.getErrors().get(0), false);
-                                else
+                                if (restMessageBean.getErrors() != null && restMessageBean.getErrors().size() > 0) {
+                                    //MessageUtils.toast(getApplicationContext(), restMessageBean.getErrors().get(0), false);
+                                    MessageUtils msg = new MessageUtils(mActivity, "Error", restMessageBean.getErrors().get(0), 0, true);
+                                }else
                                     MessageUtils.toast(getApplicationContext(), getString(R.string.error_api_connect), false);
                             MessageUtils.hideProgressBarAndShowAcceptButtons(mu);
                         }

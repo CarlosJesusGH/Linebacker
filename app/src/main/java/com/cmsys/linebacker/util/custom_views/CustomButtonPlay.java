@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by CarlosJesusGH on 2/12/16.
@@ -30,6 +32,21 @@ public class CustomButtonPlay extends Button {
     private String startText = "start", stopText = "stop";
     private boolean mStartPlaying = true;
     public MediaPlayer mPlayer = null;
+    private List<View> viewsToDisable;
+
+    public void addViewToHide(View view){
+        viewsToDisable.add(view);
+    }
+
+    private void changeViewsVisible(int newState){
+        for (View iter: viewsToDisable) {
+            try {
+                iter.setVisibility(newState);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void setFileName(String mFileName) {
         this.mFileName = mFileName;
@@ -49,8 +66,10 @@ public class CustomButtonPlay extends Button {
             onPlay(mStartPlaying);
             if (mStartPlaying) {
                 setText(stopText);
+                changeViewsVisible(View.INVISIBLE);
             } else {
                 setText(startText);
+                changeViewsVisible(View.VISIBLE);
             }
             mStartPlaying = !mStartPlaying;
         }
@@ -60,6 +79,7 @@ public class CustomButtonPlay extends Button {
         super(ctx);
         setText(startText);
         setOnClickListener(clicker);
+        viewsToDisable = new ArrayList<>();
     }
 
     public CustomButtonPlay(Context context, AttributeSet attrs)
@@ -67,6 +87,7 @@ public class CustomButtonPlay extends Button {
         super(context, attrs);
         setText(startText);
         setOnClickListener(clicker);
+        viewsToDisable = new ArrayList<>();
     }
 
     private void onPlay(boolean start) {
